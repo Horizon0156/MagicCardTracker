@@ -1,0 +1,159 @@
+:root {
+
+    --primaryColor: #F44336;
+    --successColor: #649349;
+}
+
+html, body {
+
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: rgba(255,255,255,0.87);
+    background-color: #1B1C22; 
+}
+
+body {
+    overflow: hidden;
+}
+
+#scrollContext {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.bg-elevated {
+
+    background-color: #25262c;
+}
+
+.magic-card {
+
+    height: auto;
+    max-height: 60vh;
+    max-width: 100%;
+    border-radius: 5%;
+    cursor: pointer;
+}
+
+.magic-card.thumbnail {
+
+    width: 200px;
+}
+
+.color-white-60
+{
+    color: rgba(255,255,255,0.6)
+}
+
+a, .btn-link, a:hover, .action-link {
+    color: var(--primaryColor);
+    text-decoration: none;
+}
+
+.action-link,
+.selectable {
+    cursor: pointer;
+}
+
+.color-primary {
+
+    color: var(--primaryColor);
+}
+
+.btn-primary {
+    color: white;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
+}
+
+.btn-primary:hover {
+
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
+}
+
+.btn-outline-primary {
+    color: var(--primaryColor);
+    border-color: var(--primaryColor);
+}
+
+.btn-outline-primary:hover {
+    color: var(--primaryColor);
+    background-color: transparent;
+    border-color: var(--primaryColor);
+}
+
+.loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader.fade-out-background {
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.loader img {
+
+    width: 5vh;
+    filter: invert(1);
+    animation: turner 4s linear infinite;
+}
+
+@keyframes turner {
+    from{  transform: rotateY(360deg)   }
+    to  {  transform: rotateY(0deg) }
+}
+
+.form-control {
+
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: white !important;
+    border: none;
+    border-bottom: 1px solid white;
+    border-radius: 0;
+}
+
+.form-check-input:checked {
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
+}
+
+.form-control:focus {
+    border-color: var(--primaryColor);
+}
+
+.form-control::-webkit-input-placeholder{ 
+    color: rgba(255,255,255,0.8) !important;
+}
+
+.content {
+    padding: 1rem;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

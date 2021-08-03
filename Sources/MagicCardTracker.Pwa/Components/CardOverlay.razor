@@ -1,0 +1,111 @@
+@using Commands
+@using Contracts
+@using MediatR;
+@using System.Threading
+@using Queries
+
+@inject IMediator Mediator;
+
+@if (_isVisible)
+{
+<div class="backdrop overflow-auto">
+    <div class="container d-flex flex-grow-1">
+        <div class="row flex-grow-1 align-items-center">
+            <div class="col-md-6 d-flex justify-content-center">
+                <div class="content">
+                    <img class="magic-card" @onclick="@Close" src="@_cardImageUrl" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-elevated content">
+                <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
+                @if (_card != null)
+                {
+                <div>
+                    Trade-in value
+                </div>
+                <div class="mt-2 color-white-60">
+                    <table class="w-100">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th> EUR </th>
+                                <th> USD </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> Standard </td>
+                                <td> @(_card.Prices?.StandardInEuros?.ToString() ?? "-") € </td>
+                                <td> @(_card.Prices?.StandardInDollars?.ToString() ?? "-") $ </td>
+                            </tr>
+                            <tr>
+                                <td> Foil </td>
+                                <td> @(_card.Prices?.FoiledInEuros?.ToString() ?? "-") € </td>
+                                <td> @(_card.Prices?.FoiledInDollars?.ToString() ?? "-") $ </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <label class="mt-4">Collected</label>
+                <div class="mt-2 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="standardCount" class="color-white-60">Standard</label>
+                        <input id="standardCount" class="form-control" type="number" min=0 @bind="@_card.Count"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="foilCount" class="color-white-60">Foil</label>
+                        <input id="foilCount" class="form-control" type="number" min=0 @bind="@_card.FoilCount"></input>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
+                    <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
+                </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
+@code
+{
+    private string _cardImageUrl { get; set; }
+
+    private CollectedCard _card { get; set; }
+
+    private bool _isVisible;
+
+    private bool _isBusy;
+
+    public async Task OpenAsync(Card card)
+    {
+        _cardImageUrl = card.ImageUrl;
+        _isVisible = true;
+        _isBusy = true;
+        StateHasChanged();
+
+        _card = card is CollectedCard
+            ? (CollectedCard)card
+            : await Mediator.Send(new GetCollectableCard(card));
+        _isBusy = false;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        _isVisible = false;
+        _card = null;
+        StateHasChanged();
+    }
+
+    private async Task UpdateCollection()
+    {
+        var command = new AddCard(_card);
+        await Mediator.Send(command, CancellationToken.None);
+        Close();
+    }
+}

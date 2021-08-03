@@ -1,0 +1,104 @@
+﻿@using System.Threading
+@using MagicCardTracker.Pwa.Helpers
+@inject NavigationManager _navigationManager
+@inject IBrowserTools _browserTools
+
+<nav class="navbar navbar-dark navbar-expand-lg">
+
+    <div class="container-fluid">
+        <div clas="navbar-brand">
+            <img class="img-fluid" src="MCT_Logo_Wide.png" style="height:40px" />
+        </div>
+        <button class="navbar-toggler border-0 shadow-none" @onclick="ToggleNavMenu">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="@_navbarClass navbar-collapse">
+            <div class="flex-grow-1 d-flex align-items-center mx-4">
+                <i class="bi bi-search"></i>
+                <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
+                    <input class="form-control border-0" type="search" @bind="_queryString"
+                        placeholder="Search for Magic cards...">
+                </form>
+            </div>
+            <ul class="navbar-nav mt-2 mt-lg-0 ms-4 ms-lg-0">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/collection" @onclick="CloseNavMenu">
+                        <i class="bi bi-book me-2 me-lg-1"></i> Collection
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/sets" @onclick="CloseNavMenu">
+                        <i class="bi bi-collection me-2 me-lg-1"></i> Sets
+                    </NavLink>
+                </li>
+                @* <li class="nav-item">
+                    <NavLink class="nav-link" href="/decks" @onclick="CloseNavMenu">
+                        <i class="bi bi-box-seam me-2 me-lg-1"></i> Decks
+                    </NavLink>
+                </li> *@
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/profile" @onclick="CloseNavMenu">
+                        <i class="bi bi-pie-chart-fill me-2 me-lg-1"></i> Profile
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@code
+{
+    private bool _collapseNavMenu = true;
+
+    private string _queryString;
+
+    private string _navbarClass => _collapseNavMenu ? "collapse" : null;
+
+    public void Dispose()
+    {
+        _navigationManager.LocationChanged -= SetQueryOnSearch;
+        _navigationManager.LocationChanged -= ScrollToTop;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        _navigationManager.LocationChanged += SetQueryOnSearch;
+        _navigationManager.LocationChanged += ScrollToTop;
+
+        return Task.CompletedTask;
+    }
+
+    private void NavigateToSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(_queryString))
+        {
+            _navigationManager.NavigateTo($"/search/{_queryString}");
+        }
+        CloseNavMenu();
+    }
+
+    private void ScrollToTop(object sender, LocationChangedEventArgs e)
+    {
+        _browserTools.ScrollToTopAsync(CancellationToken.None);
+    }
+
+    private void SetQueryOnSearch(object sender, LocationChangedEventArgs e)
+    {
+        var searchIndex = e.Location.IndexOf("/search/");
+
+        _queryString = searchIndex > 0
+            ? e.Location.Substring(searchIndex + 8)
+            : null;
+        StateHasChanged();
+    }
+
+    private void CloseNavMenu()
+    {
+        _collapseNavMenu = true;
+    }
+
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
+}

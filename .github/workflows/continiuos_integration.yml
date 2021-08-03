@@ -1,0 +1,29 @@
+name: 🚨 Continious Integration
+
+on:
+  push:
+    branches-ignore: 
+      - main
+  pull_request: 
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
+jobs:
+  build:
+    name: 🚨 Continious Integration
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🔧 Checkout repository
+      uses: actions/checkout@v2
+    - name: 🔧 Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: 🛠 Restore dependencies
+      run: dotnet restore
+    - name: 🛠 Build solution
+      run: dotnet build --no-restore
+    - name: 🧬 Test solution
+      run: dotnet test --no-build --verbosity normal

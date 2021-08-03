@@ -1,0 +1,171 @@
+@page "/profile"
+@using Commands
+@using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Contracts
+@using MediatR
+@using System.Threading
+@using Models
+@using Queries
+@implements IDisposable
+@inject IMediator _mediator
+
+<LoadingIndicator IsBusy="@_isLoading" 
+                  FadeOutBackground="true" 
+                  Text="@_loadingInformation"/>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Statistics
+            </label>
+            <label class="color-white-60">
+                Five most valuable cards
+            </label>
+            @if(_collectionStatistic != null)
+            {
+                <div class="mt-2 d-flex flex-wrap justify-content-center">
+                    <img class="magic-card thumbnail" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
+                    <ol class="mt-2 color-white-60">
+                        @foreach (var card in _collectionStatistic.FiveMostValuableCards)
+                        {
+                        <li class="selectable" @onclick="@(() => ShowCardAsync(card))">
+                            <div class="d-flex flex-column">                        
+                                <span> @card.Name</span>
+                                <small>
+                                    @if(card.Prices?.StandardInEuros != null) 
+                                    {
+                                        <span class="me-1">€@(card.Prices?.StandardInEuros?.ToString())</span>
+                                    }
+                                    @if(card.Prices?.StandardInDollars != null) 
+                                    {
+                                        <span>$@(card.Prices?.StandardInDollars?.ToString())</span>
+                                    }
+                                </small>
+                            </div>
+                        </li>
+                        }
+                    </ol>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-6 mt-2 mt-md-0">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Your collection
+            </label>
+            <label class="color-white-60"> Number of cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfCardsCollected</span></label>
+            <label class="ms-4 color-white-60"> Common: <span class="float-end">@_collectionStatistic?.NumberOfCommonCards</span></label>
+            <label class="ms-4 color-white-60"> Uncommon: <span class="float-end">@_collectionStatistic?.NumberOfUncommonCards</span></label>
+            <label class="ms-4 color-white-60"> Rare: <span class="float-end">@_collectionStatistic?.NumberOfRareCards</span></label>
+            <label class="ms-4 color-white-60"> Mythic: <span class="float-end">@_collectionStatistic?.NumberOfMythicCards</span></label>
+            <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
+            <label class="color-white-60"> Total collection value in EUR: <span class="float-end">@_collectionStatistic?.CollectionValueInEuros €</span></label>
+            <label class="color-white-60"> Total collection value in USD: <span class="float-end">@_collectionStatistic?.CollectionValueInDollars $</span></label>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                Data management
+            </div>
+            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">
+                Export Library
+            </button>
+
+            <label class="mt-2 btn btn-primary">
+                <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
+                Import Library
+            </label>
+            <button class="mt-2 btn btn-primary" @onclick="@UpdateSetsAsync">
+                Update Sets
+            </button>
+            <button class="mt-2 btn btn-primary" @onclick="@UpdateCollectionAsync">
+                Update Collection
+            </button>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                About
+            </div>
+            <label class="color-white-60">Version: <span class="float-end">1.0.3</span></label>
+        </div>
+    </div>
+</div>
+
+<CardOverlay @ref="_cardOverlay"/>
+
+@code 
+{
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private string _loadingInformation;
+
+    private CollectionStatistic _collectionStatistic;
+
+    private CardOverlay _cardOverlay;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return LoadCollectionAsync();
+    }
+
+    private async Task LoadCollectionAsync()
+    {
+        _loadingInformation = null;
+        _isLoading = true;
+        _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
+    {
+        _loadingInformation = "Importing library...";
+        _isLoading = true;
+        using (var libraryStream = e.File.OpenReadStream())
+        {
+            await _mediator.Send(new ImportLibrary(libraryStream), _cts.Token);
+            await LoadCollectionAsync();
+            _isLoading = false;
+        }
+    }
+
+    private async Task ExportLibraryAsync()
+    {
+        _loadingInformation = "Exporting library...";
+        _isLoading = true;
+        await _mediator.Send(new ExportLibrary(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task UpdateSetsAsync()
+    {
+        _loadingInformation = "Updating set information...";
+        _isLoading = true;
+        await _mediator.Send(new UpdateSets(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task UpdateCollectionAsync()
+    {
+        _loadingInformation = "Updating collection...";
+        _isLoading = true;
+        await _mediator.Send(new UpdateCollection(), _cts.Token);
+        await LoadCollectionAsync();
+        _isLoading = false;
+    }
+
+    private Task ShowCardAsync(Card card)
+    {
+        return card != null
+            ? _cardOverlay.OpenAsync(card)
+            : Task.CompletedTask;
+    }
+}

@@ -1,0 +1,112 @@
+@page "/collection/quick-collect"
+
+@using Commands
+@using Exceptions
+@using MagicCardTracker.Contracts
+@using System.Threading
+@using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Pwa.Notifications
+@using MediatR
+@using Models
+@inject IMediator _mediator
+@inject INotificationService _notificationService
+@implements IDisposable
+
+<div class="row">
+    <div class="col-12 lead">
+        <a href="collection">&lt; Collection</a> | Quick Collect
+    </div>
+</div>
+
+<EditForm Model="_cardId" OnValidSubmit="@AddCardToCollectionAsync">
+    <div class="row mt-2 mb-4">
+        <div class="col-md-3 content bg-elevated">
+            <input class="form-control w-100" @bind="_cardId.SetCode" placeholder="Set Code" />
+        </div>
+        <div class="col-md-3 content bg-elevated">
+            <input class="form-control w-100" @bind="_cardId.CardNumber" placeholder="Card number" />
+        </div>
+        <div class="col-md-6 content bg-elevated d-flex align-items-center">
+            <InputRadioGroup @bind-Value="_cardId.LanguageCode">
+                <div class="form-check">
+                    <InputRadio class="form-check-input" Value="LanguageCodes.English" />
+                    <img class="form-check-label img-fluid align-text-bottom" style="width: 32px;" src="EN.png"/>
+                </div>
+                <div class="form-check ms-2">
+                    <InputRadio class="form-check-input" Value="LanguageCodes.German" />
+                    <img class="form-check-label img-fluid align-text-bottom" style="width: 32px;" src="DE.png"/>
+                </div>
+            </InputRadioGroup>
+            <div class="form-check ms-4">
+                <InputCheckbox class="form-check-input" id="foil" @bind-Value="_collectAsFoil"/>
+                <label class="form-check-label" for="foil">
+                    Foil
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary ms-auto"> Add </button>
+        </div>
+    </div>
+</EditForm>
+
+<CardDisplay ShowCountBadge="true" Cards="@_quickCollectionStack.Reverse()"></CardDisplay>
+
+<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="true" Text="Loading card information..."></LoadingIndicator>
+
+
+@code {
+
+    private CardIdentity _cardId = new CardIdentity { LanguageCode = LanguageCodes.German };
+    private bool _collectAsFoil;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+    private bool _isLoading;
+    private HashSet<CollectedCard> _quickCollectionStack = new HashSet<CollectedCard>();
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    private async Task AddCardToCollectionAsync()
+    {
+        if (!_cardId.IsValid)
+        {
+            return;
+        }
+
+        _isLoading = true;
+
+        try
+        {
+            var card = await _mediator.Send(
+            new AddCardByNumber(
+                _cardId.SetCode,
+                _cardId.CardNumber,
+                _cardId.LanguageCode,
+                _collectAsFoil),
+            _cts.Token);
+        _quickCollectionStack.Add(card);
+        }
+        catch (CardNotFoundException)
+        {
+            _notificationService.SendNotification(new Notification($"The card #{_cardId.CardNumber} ({_cardId.SetCode}) could not be found", NotificationType.Error));
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private class CardIdentity
+    {
+        public string SetCode { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public string LanguageCode { get; set; }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(SetCode)
+                            && !string.IsNullOrWhiteSpace(CardNumber)
+                            && !string.IsNullOrWhiteSpace(LanguageCode);
+    }
+}

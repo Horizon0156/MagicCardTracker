@@ -1,0 +1,13 @@
+@using MagicCardTracker.Pwa.Components
+@inherits LayoutComponentBase
+
+<div class="vh-100 d-flex flex-column">
+    <NavMenu />
+    <Notifications/>
+    <div id="scrollContext" class="d-flex flex-column flex-grow-1">
+        <div class="mt-2 flex-grow-1 container d-flex flex-column">
+            @Body
+        </div>
+        <Footer />
+    </div>
+</div>

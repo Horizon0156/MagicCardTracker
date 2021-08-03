@@ -1,0 +1,85 @@
+﻿@page "/search/{Query}"
+@using Contracts
+@using MagicCardTracker.Pwa.Components
+@using System.Threading
+@using MediatR
+@using Models
+@using Queries
+@inject IMediator _mediator
+@implements IDisposable
+
+<div class="row">
+    <div class="col-12 lead d-flex justify-content-between">
+        <span>Search results</span>
+    </div>
+</div>
+
+@if (!_isLoading || _cachedCards != null)
+{
+    <CardDisplay Cards="@_cachedCards">
+        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
+            Phew... Sorry, there was no card that matches your search criteria
+        </div>
+    </CardDisplay>
+
+    @if (_searchResult?.HasMoreResults ?? false)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="content text-center">
+                    <span class="action-link" @onclick="@LoadMoreAsync"> Show more... </span>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="_cachedCards != null"></LoadingIndicator>
+
+@code {
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private IEnumerable<Card> _cachedCards;
+
+    private CardSearchResult _searchResult;
+
+    [Parameter]
+    public string Query { get; set; }
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return SearchAsync();
+    }
+
+    private async Task SearchAsync()
+    {
+        _searchResult = null;
+
+        if (string.IsNullOrWhiteSpace(Query))
+        {
+            return;
+        }
+
+        _isLoading = true;
+        _searchResult = await _mediator.Send(new SearchCards(Query));
+        _cachedCards = _searchResult.Cards;
+        _isLoading = false;
+    }
+
+    private async Task LoadMoreAsync()
+    {
+        _isLoading = true;
+        _searchResult = await _mediator.Send(new SearchCards(Query, _searchResult.Page + 1));
+        _cachedCards = _cachedCards.Concat(_searchResult.Cards);
+        _isLoading = false;
+    }
+}

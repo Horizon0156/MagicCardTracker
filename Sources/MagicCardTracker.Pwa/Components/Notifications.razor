@@ -1,0 +1,48 @@
+@using MagicCardTracker.Pwa.Notifications
+@implements IDisposable
+@inject INotificationService _notificationService
+
+<div id="notification-container" class="content pull-right">
+
+    @foreach (var notification in _activeNotifications)
+    {
+        <div class="notification content mt-1 @notification.NotificationType.ToString().ToLower()">
+            @notification.Message
+        </div>
+    }
+</div>
+
+@code
+{
+    private List<Notification> _activeNotifications = new List<Notification>();
+
+    protected override Task OnInitializedAsync()
+    {
+        _notificationService.NotificationReceived += DisplayNotification;
+
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        _notificationService.NotificationReceived -= DisplayNotification;
+    }
+
+    private void DisplayNotification(object sender, Notification notification)
+    {
+        _activeNotifications.Add(notification);
+        StateHasChanged();
+
+        // We fire and forget the dismiss activity as we do not want to block the notification chain. 
+        // Nevertheless, we won't swallow any Exception
+        DismissNotificationAfterTimeoutAsync(notification)
+            .ContinueWith(t => throw t.Exception, TaskContinuationOptions.OnlyOnFaulted);
+    }
+
+    private async Task DismissNotificationAfterTimeoutAsync(Notification notification)
+    {
+        await Task.Delay(5000);
+        _activeNotifications.Remove(notification);
+        StateHasChanged();
+    }
+}

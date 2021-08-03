@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2"/>
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.0.5"/>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0"/>
+  </ItemGroup>
+  <ItemGroup>
+    <OpenApiReference Include="Resources/ScryfallApi.yml">
+      <ClassName>{controller}Client</ClassName>
+      <Options>/GenerateClientInterfaces:true</Options>
+    </OpenApiReference>
+  </ItemGroup>
+</Project>
