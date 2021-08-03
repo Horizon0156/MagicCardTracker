@@ -1,0 +1,12 @@
+@if (IsBusy) 
+{
+    <div class="loader">
+        <img src="Loader.svg">
+    </div>
+}
+
+@code {
+    
+    [Parameter]
+    public bool IsBusy { get; set; }
+}

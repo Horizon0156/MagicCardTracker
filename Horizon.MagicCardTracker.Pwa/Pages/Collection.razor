@@ -1,0 +1,62 @@
+@page "/collection"
+@using Horizon.MagicCardTracker.Contracts
+@using System.Threading
+@using MediatR
+@using Queries
+@inject IMediator _mediator
+@implements IDisposable
+
+<div class="row">
+
+    <div class="lead">
+        Collected cards
+    </div>
+</div>
+
+@if(_collection != null)
+{
+    <div class="row mt-4">
+        @foreach (var card in _collection)
+        {
+            <div class="col-3 mt-2">
+                <img 
+                    class="img-fluid" 
+                    style="border-radius: 5%;" 
+                    src="@(card.ImageUrl)"
+                    @onclick="@(async () => await OpenDetailsAsync(card))"/>
+            </div>
+        }
+    </div>
+}
+
+<CardOverlay @ref="_cardOverlay"></CardOverlay>
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@code {
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private IEnumerable<CollectedCard> _collection;
+
+    private CardOverlay _cardOverlay;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private Task OpenDetailsAsync(Card card)
+    {
+        return _cardOverlay.OpenAsync(card);
+    }
+}

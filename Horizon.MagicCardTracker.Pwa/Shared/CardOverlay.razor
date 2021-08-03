@@ -1,0 +1,111 @@
+@using Commands
+@using Contracts
+@using MediatR;
+@using System.Threading
+@using Queries
+
+@inject IMediator Mediator;
+
+@if (_isVisible) 
+{
+    <div class="backdrop">
+        <div class="card-popup">
+            <img class="img-fluid" src="@_card.ImageUrl"/>
+            <div class="content ml-4">
+
+            <div>
+                Trade-in value
+            </div>
+            <div class="mt-2 color-white-60">
+                <table class="w-100">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th> EUR </th>
+                            <th> USD </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> Standard </td>
+                            <td> @(_card.Prices?.StandardInEuros?.ToString() ?? "-") € </td>
+                            <td> @(_card.Prices?.StandardInDollars?.ToString() ?? "-") $ </td>
+                        </tr>
+                        <tr>
+                            <td> Foil </td>
+                            <td> @(_card.Prices?.FoiledInEuros?.ToString() ?? "-") € </td>
+                            <td> @(_card.Prices?.FoiledInDollars?.ToString() ?? "-") $ </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <label class="mt-2">In collection</label>
+            <div class="d-flex flex-column">
+                <span class="color-white-60">Standard</span>
+                <div class="d-flex justify-content-between">
+                    <div @onclick="@(() => AddStandardCards(-1))"><span class="oi oi-minus color-primary" aria-hidden="true"></span></div>
+                    <span>@_card.Count</span>
+                    <div @onclick="@(() => AddStandardCards(1))"><span class="oi oi-plus color-primary" aria-hidden="true"></span></div>
+                </div>
+                <span class="color-white-60">Foil</span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div @onclick="@(() => AddFoilCards(-1))"><span class="oi oi-minus color-primary" aria-hidden="true"></span></div>
+                    <span>@_card.FoilCount</span>
+                    <div @onclick="@(() => AddFoilCards(1))"><span class="oi oi-plus color-primary" aria-hidden="true"></span></div>
+                </div>
+            </div>
+            <div class="mt-2 d-flex justify-content-end">
+                <button class="btn btn-primary mr-2" @onclick="@UpdateCollection"> Save </button>
+                <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+}
+
+@code
+{
+    private CollectedCard _card { get; set; }
+
+    private bool _isVisible;
+
+    public async Task OpenAsync(Card card)
+    {
+        _card = card is CollectedCard
+            ? (CollectedCard) card
+            : await Mediator.Send(new GetCollectableCard(card));
+        _isVisible = true;
+
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        _isVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task UpdateCollection()
+    {
+        var command = new AddCard(_card);
+        await Mediator.Send(command, CancellationToken.None);
+        Close();
+    }
+
+    private void AddStandardCards(int amount)
+    {
+        var total = _card.Count + amount;
+        _card.Count = total >= 0
+            ? total
+            : 0;
+    }
+
+    private void AddFoilCards(int amount)
+    {
+        var total = _card.FoilCount + amount;
+        _card.FoilCount = total >= 0
+            ? total
+            : 0;
+    }
+}

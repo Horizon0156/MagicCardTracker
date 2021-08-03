@@ -1,0 +1,39 @@
+
+.backdrop {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #1B1C22;
+    justify-content: center;
+    align-items: center;
+}
+
+th {
+    font-weight: normal;
+}
+
+.content { 
+    border-radius: 15px;
+    background-color:  #25262c;
+    min-width: 250px;
+}
+
+.card-popup {
+    display: flex;
+}
+
+.card-popup img {
+    max-height: 50vh;
+    border-radius: 5%;
+}
+
+@media (min-width: 641px) {
+    .backdrop {
+       left: 250px;
+    }
+}

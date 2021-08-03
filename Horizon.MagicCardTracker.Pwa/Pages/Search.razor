@@ -1,0 +1,85 @@
+﻿@page "/"
+@using Horizon.MagicCardTracker.ScryfallClient
+@using Horizon.MagicCardTracker.SrcyfallClient.Extensions
+@using Card = Horizon.MagicCardTracker.Contracts.Card
+@using CardList = Horizon.MagicCardTracker.Contracts.CardList
+@using System.Threading
+@inject IScryfallClient _scryfallClient
+@implements IDisposable
+
+<div class="row">
+
+    <div class="col-12">
+        <form @onsubmit="@SearchAsync">
+            <input 
+                class="form-control w-100" 
+                @bind="_searchText" 
+                placeholder="Search"/>
+        </form>
+    </div>
+</div>
+
+@if(_searchResult != null)
+{
+    <div class="row mt-4">
+        @foreach (var card in _searchResult.Cards)
+        {
+            <div class="col-3 mt-2">
+                <img 
+                    class="img-fluid" 
+                    style="border-radius: 5%;" 
+                    src="@(card.ImageUrl)"
+                    @onclick="@(async () => await OpenDetailsAsync(card))"/>
+            </div>
+        }
+    </div>
+}
+
+<CardOverlay @ref="_cardOverlay"></CardOverlay>
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@code {
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private string _searchText;
+
+    private bool _isLoading;
+
+    private CardList _searchResult;
+
+    private CardOverlay _cardOverlay;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    private Task OpenDetailsAsync(Card card)
+    {
+        return _cardOverlay.OpenAsync(card);
+    }
+
+    private async Task SearchAsync()
+    {
+        _searchResult = null;
+
+        if (string.IsNullOrEmpty(_searchText))
+        {
+            return;
+        }
+
+        _isLoading = true;
+
+        var query = _searchText.Replace(" ", "+");
+
+        _searchResult = (await _scryfallClient.SearchCardsAsync(query, true, _cts.Token)).ToContract();
+        _isLoading = false;
+    }
+}
