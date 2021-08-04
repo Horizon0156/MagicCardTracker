@@ -52,6 +52,13 @@ namespace Horizon.MargicCardTracker.Storage
                 : collectableCard;
         }
 
+        public async Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken)
+        {
+            await RecoverCardLibraryIfNeeded(cancellationToken);
+
+            return _collectedCards.FirstOrDefault(c => c.SetCode == setCode && c.Number == cardNumber && c.LanguageCode == languageCode);
+        }
+
         private async Task RecoverCardLibraryIfNeeded(CancellationToken cancellationToken)
         {
             if (_isCardLibraryLoaded) 

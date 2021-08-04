@@ -9,5 +9,11 @@ namespace Horizon.MagicCardTracker.ScryfallClient
             string query, 
             bool includeForeignLanguages, 
             CancellationToken cancellationToken);
+
+        Task<Card> GetCardByNumberAsync(
+            string setCode,
+            string cardNumber,
+            string? languageCode,
+            CancellationToken cancellationToken);
     }
 }

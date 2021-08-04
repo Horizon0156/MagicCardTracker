@@ -8,6 +8,11 @@ html, body {
     /* elevation 25262c */
 }
 
+bg-elevated {
+
+    background-color: #25262c;
+}
+
 .color-white-60
 {
     color: rgba(255,255,255,0.6)

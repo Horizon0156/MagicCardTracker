@@ -6,13 +6,16 @@
 
 @inject IMediator Mediator;
 
-@if (_isVisible) 
+@if (_isVisible)
 {
     <div class="backdrop">
-        <div class="card-popup">
-            <img class="img-fluid" src="@_card.ImageUrl"/>
-            <div class="content ml-4">
-
+    <div class="card-popup">
+        
+        <img class="img-fluid" src="@_cardImageUrl" />
+        <div class="content ml-4">
+            <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
+            @if (_card != null)
+            {
             <div>
                 Trade-in value
             </div>
@@ -43,46 +46,59 @@
             <div class="d-flex flex-column">
                 <span class="color-white-60">Standard</span>
                 <div class="d-flex justify-content-between">
-                    <div @onclick="@(() => AddStandardCards(-1))"><span class="oi oi-minus color-primary" aria-hidden="true"></span></div>
+                    <div @onclick="@(() => AddStandardCards(-1))"><span class="oi oi-minus color-primary"
+                            aria-hidden="true"></span></div>
                     <span>@_card.Count</span>
-                    <div @onclick="@(() => AddStandardCards(1))"><span class="oi oi-plus color-primary" aria-hidden="true"></span></div>
+                    <div @onclick="@(() => AddStandardCards(1))"><span class="oi oi-plus color-primary"
+                            aria-hidden="true"></span></div>
                 </div>
                 <span class="color-white-60">Foil</span>
                 <div class="d-flex justify-content-between align-items-center">
-                    <div @onclick="@(() => AddFoilCards(-1))"><span class="oi oi-minus color-primary" aria-hidden="true"></span></div>
+                    <div @onclick="@(() => AddFoilCards(-1))"><span class="oi oi-minus color-primary"
+                            aria-hidden="true"></span></div>
                     <span>@_card.FoilCount</span>
-                    <div @onclick="@(() => AddFoilCards(1))"><span class="oi oi-plus color-primary" aria-hidden="true"></span></div>
+                    <div @onclick="@(() => AddFoilCards(1))"><span class="oi oi-plus color-primary"
+                            aria-hidden="true"></span></div>
                 </div>
             </div>
             <div class="mt-2 d-flex justify-content-end">
                 <button class="btn btn-primary mr-2" @onclick="@UpdateCollection"> Save </button>
                 <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
             </div>
-            </div>
+            }
         </div>
     </div>
-    
+</div>
+
 }
 
 @code
 {
+    private string _cardImageUrl { get; set; }
     private CollectedCard _card { get; set; }
 
     private bool _isVisible;
 
+    private bool _isBusy;
+
     public async Task OpenAsync(Card card)
     {
-        _card = card is CollectedCard
-            ? (CollectedCard) card
-            : await Mediator.Send(new GetCollectableCard(card));
+        _cardImageUrl = card.ImageUrl;
         _isVisible = true;
+        _isBusy = true;
+        StateHasChanged();
 
+        _card = card is CollectedCard
+            ? (CollectedCard)card
+            : await Mediator.Send(new GetCollectableCard(card));
+        _isBusy = false;
         StateHasChanged();
     }
 
     public void Close()
     {
         _isVisible = false;
+        _card = null;
         StateHasChanged();
     }
 
@@ -97,15 +113,15 @@
     {
         var total = _card.Count + amount;
         _card.Count = total >= 0
-            ? total
-            : 0;
+        ? total
+        : 0;
     }
 
     private void AddFoilCards(int amount)
     {
         var total = _card.FoilCount + amount;
         _card.FoilCount = total >= 0
-            ? total
-            : 0;
+        ? total
+        : 0;
     }
 }

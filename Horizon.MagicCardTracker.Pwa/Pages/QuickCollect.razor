@@ -1,0 +1,77 @@
+@page "/collection/quick-collect"
+@using Commands
+@using Horizon.MagicCardTracker.Contracts
+@using System.Threading
+@using MediatR
+@inject IMediator _mediator
+@implements IDisposable
+
+<div class="row">
+    <div class="col-12 lead">
+        <a href="collection">Collected cards</a> | Quick Collect
+    </div>
+</div>
+
+<form @onsubmit="@AddCardToCollectionAsync">
+    <div class="row bl-elevator">
+        <div class="col-4">
+            <input class="form-control w-100" @bind="_setCode" placeholder="Set Code" />
+        </div>
+        <div class="col-4">
+            <input class="form-control w-100" @bind="_cardNumber" placeholder="Card number" />
+        </div>
+        <div class="col-4">
+            <input class="form-control w-100" @bind="_languageCode" placeholder="Language" />
+            <input type="submit" hidden />
+        </div>
+    </div>
+</form>
+
+<div class="row mt-4">
+    @foreach (var card in _quickCollectionStack)
+    {
+        <div class="col-3 mt-2">
+            <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
+            @onclick="@(async () => await OpenDetailsAsync(card))" />
+        </div>
+    }
+</div>
+
+<CardOverlay @ref="_cardOverlay"></CardOverlay>
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@code {
+
+    private string _setCode;
+
+    private string _cardNumber;
+
+    private string _languageCode = "de";
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private List<CollectedCard> _quickCollectionStack = new List<CollectedCard>();
+
+    private CardOverlay _cardOverlay;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    private async Task AddCardToCollectionAsync()
+    {
+        _isLoading = true;
+        var card = await _mediator.Send(new AddCardByNumber(_setCode, _cardNumber, _languageCode), _cts.Token);
+        _quickCollectionStack.Add(card);
+        _isLoading = false;
+    }
+
+    private Task OpenDetailsAsync(Card card)
+    {
+        return _cardOverlay.OpenAsync(card);
+    }
+}

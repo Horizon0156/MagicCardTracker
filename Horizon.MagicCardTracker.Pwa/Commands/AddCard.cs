@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Horizon.MagicCardTracker.Pwa.Commands
 {
-    public class AddCard : IRequest
+    internal class AddCard : IRequest
     {
         public AddCard(CollectedCard card)
         {

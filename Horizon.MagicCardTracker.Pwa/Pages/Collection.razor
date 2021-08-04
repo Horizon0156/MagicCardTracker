@@ -7,25 +7,22 @@
 @implements IDisposable
 
 <div class="row">
-
-    <div class="lead">
-        Collected cards
+    <div class="col-12 lead d-flex justify-content-between">
+        <span>Collected cards</span>
+        <a href="collection/quick-collect"> Quick Collect</a>
     </div>
 </div>
 
-@if(_collection != null)
+@if (_collection != null)
 {
     <div class="row mt-4">
         @foreach (var card in _collection)
-        {
-            <div class="col-3 mt-2">
-                <img 
-                    class="img-fluid" 
-                    style="border-radius: 5%;" 
-                    src="@(card.ImageUrl)"
-                    @onclick="@(async () => await OpenDetailsAsync(card))"/>
-            </div>
-        }
+            {
+                <div class="col-3 mt-2">
+                    <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
+                @onclick="@(async () => await OpenDetailsAsync(card))" />
+                </div>
+            }
     </div>
 }
 
@@ -34,9 +31,17 @@
 
 @code {
 
+    private string _setCode;
+
+    private string _cardNumber;
+
+    private string _languageCode = "de";
+
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
     private bool _isLoading;
+
+    private List<CollectedCard> _quickCollectionStack = new List<CollectedCard>();
 
     private IEnumerable<CollectedCard> _collection;
 
