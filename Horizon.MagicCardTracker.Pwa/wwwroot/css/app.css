@@ -69,8 +69,8 @@ a, .btn-link {
 }
 
 @keyframes turner{
-    from{  transform: rotateY(0deg)   }
-    to  {  transform: rotateY(360deg) }
+    from{  transform: rotateY(360deg)   }
+    to  {  transform: rotateY(0deg) }
 }
 
 .form-control {

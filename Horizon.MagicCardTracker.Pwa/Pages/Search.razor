@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/search/{Query}"
 @using Horizon.MagicCardTracker.ScryfallClient
 @using Horizon.MagicCardTracker.SrcyfallClient.Extensions
 @using Card = Horizon.MagicCardTracker.Contracts.Card
@@ -8,14 +8,8 @@
 @implements IDisposable
 
 <div class="row">
-
-    <div class="col-12">
-        <form @onsubmit="@SearchAsync">
-            <input 
-                class="form-control w-100" 
-                @bind="_searchText" 
-                placeholder="Search"/>
-        </form>
+    <div class="col-12 lead d-flex justify-content-between">
+        <span>Search results</span>
     </div>
 </div>
 
@@ -42,13 +36,14 @@
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
-    private string _searchText;
-
     private bool _isLoading;
 
     private CardList _searchResult;
 
     private CardOverlay _cardOverlay;
+
+    [Parameter]
+    public string Query { get; set; }
 
     public void Dispose()
     {
@@ -56,9 +51,9 @@
         _cts.Dispose();
     }
 
-    protected override Task OnInitializedAsync()
+    protected override Task OnParametersSetAsync()
     {
-        return Task.CompletedTask;
+        return SearchAsync();
     }
 
     private Task OpenDetailsAsync(Card card)
@@ -70,14 +65,14 @@
     {
         _searchResult = null;
 
-        if (string.IsNullOrEmpty(_searchText))
+        if (string.IsNullOrEmpty(Query))
         {
             return;
         }
 
         _isLoading = true;
 
-        var query = _searchText.Replace(" ", "+");
+        var query = Query.Replace(" ", "+");
 
         _searchResult = (await _scryfallClient.SearchCardsAsync(query, true, _cts.Token)).ToContract();
         _isLoading = false;
