@@ -8,19 +8,19 @@
 
 <div class="row">
     <div class="col-12 lead">
-        <a href="collection">Collected cards</a> | Quick Collect
+        <a href="collection">&lt; Collected cards</a> | Quick Collect
     </div>
 </div>
 
 <form @onsubmit="@AddCardToCollectionAsync">
-    <div class="row bl-elevator">
-        <div class="col-4">
+    <div class="row mt-2">
+        <div class="col-4 content bg-elevated">
             <input class="form-control w-100" @bind="_setCode" placeholder="Set Code" />
         </div>
-        <div class="col-4">
+        <div class="col-4 content bg-elevated">
             <input class="form-control w-100" @bind="_cardNumber" placeholder="Card number" />
         </div>
-        <div class="col-4">
+        <div class="col-4 content bg-elevated">
             <input class="form-control w-100" @bind="_languageCode" placeholder="Language" />
             <input type="submit" hidden />
         </div>

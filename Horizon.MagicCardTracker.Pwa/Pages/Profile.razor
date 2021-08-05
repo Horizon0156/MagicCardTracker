@@ -1,0 +1,65 @@
+@page "/profile"
+@using MediatR;
+@using System.Threading;
+@using Models
+@using Queries
+@implements IDisposable
+@inject IMediator _mediator;
+
+
+<div class="row">
+    <div class="col-6">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Statistics
+            </label>
+            <label class="color-white-60">
+                Most valuable card 
+            </label>
+            @if(_collectionStatistic?.MostValuableCard != null)
+            {
+                <img class="magic-card thumbnail mx-auto" src="@_collectionStatistic.MostValuableCard.ImageUrl">
+            }
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Your collection
+            </label>
+            <label class="color-white-60"> Number of cards in collection: <span class="float-right">@_collectionStatistic?.NumberOfCardsCollected</span></label>
+            <label class="color-white-60"> Number of unique cards in collection: <span class="float-right">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
+            <label class="color-white-60"> Total collection value in EUR: <span class="float-right">@_collectionStatistic?.CollectionValueInEuros €</span></label>
+            <label class="color-white-60"> Total collection value in USD: <span class="float-right">@_collectionStatistic?.CollectionValueInDollars $</span></label>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                Data management
+            </div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private CollectionStatistic _collectionStatistic;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
+        _isLoading = false;
+    }
+
+    
+}

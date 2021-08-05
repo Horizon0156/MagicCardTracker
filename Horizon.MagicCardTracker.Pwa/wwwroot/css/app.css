@@ -8,9 +8,22 @@ html, body {
     /* elevation 25262c */
 }
 
-bg-elevated {
+.bg-elevated {
 
     background-color: #25262c;
+}
+
+.magic-card {
+
+    height: auto;
+    max-height: 60vh;
+    max-width: 100%;
+    border-radius: 5%;
+}
+
+.magic-card.thumbnail {
+
+    width: 200px;
 }
 
 .color-white-60
