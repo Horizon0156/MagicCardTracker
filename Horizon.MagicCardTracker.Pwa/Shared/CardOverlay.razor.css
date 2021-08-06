@@ -30,9 +30,3 @@ th {
     max-height: 50vh;
     border-radius: 5%;
 }
-
-@media (min-width: 641px) {
-    .backdrop {
-       left: 250px;
-    }
-}

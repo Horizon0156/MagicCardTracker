@@ -70,5 +70,17 @@ namespace Horizon.MargicCardTracker.Storage
             _collectedCards = collectedCards?.ToHashSet() ?? new HashSet<CollectedCard>();
             _isCardLibraryLoaded = true;
         }
+
+        public Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken)
+        {
+            _collectedCards = new HashSet<CollectedCard>(collectedCards);
+            return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
+        }
+
+        public Task ClearCollectionAsync(CancellationToken cancellationToken)
+        {
+            _collectedCards.Clear();
+            return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
+        }
     }
 }

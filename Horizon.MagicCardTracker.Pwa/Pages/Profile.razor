@@ -1,4 +1,5 @@
 @page "/profile"
+@using Commands
 @using MediatR;
 @using System.Threading;
 @using Models
@@ -36,6 +37,13 @@
             <div class="lead">
                 Data management
             </div>
+            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">Export Library</button>
+
+            <label class="mt-2 btn btn-primary">
+                <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
+                Import Library
+            </label>
+            
         </div>
     </div>
 </div>
@@ -54,12 +62,29 @@
         _cts.Dispose();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
+    {
+        return LoadCollectionAsync();
+    }
+
+    private async Task LoadCollectionAsync()
     {
         _isLoading = true;
         _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
         _isLoading = false;
     }
 
-    
+    private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
+    {
+        using (var libraryStream = e.File.OpenReadStream())
+        {
+            await _mediator.Send(new ImportLibraryCommand(libraryStream), _cts.Token);
+            await LoadCollectionAsync();
+        }
+    }
+
+    private Task ExportLibraryAsync()
+    {
+        return _mediator.Send(new ExportLibraryCommand(), _cts.Token);
+    }
 }

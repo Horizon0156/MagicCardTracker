@@ -42,10 +42,10 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
                 NumberOfUniqueCardsCollected = collection.Length,
                 CollectionValueInEuros = collection.Sum(c => GetTotalCardValueInEuros(c)),
                 CollectionValueInDollars = collection.Sum(c => GetTotalCardValueInDollars(c)),
-                MostValuableCard = collection.Aggregate(
+                MostValuableCard = collection.Length > 0 ? collection.Aggregate(
                     (c1, c2) => GetTotalCardValueInDollars(c1) > GetTotalCardValueInDollars(c2) 
                                     ? c1 
-                                    : c2)
+                                    : c2) : null
             };
         }
 

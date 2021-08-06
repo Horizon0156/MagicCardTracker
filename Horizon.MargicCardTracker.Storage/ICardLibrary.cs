@@ -21,5 +21,9 @@ namespace Horizon.MargicCardTracker.Storage
         Task<CollectedCard> SearchInCollectionAsync(Card card, CancellationToken cancellationToken);
 
         Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken);
+
+        Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken);
+
+        Task ClearCollectionAsync(CancellationToken cancellationToken);
     }
 }
