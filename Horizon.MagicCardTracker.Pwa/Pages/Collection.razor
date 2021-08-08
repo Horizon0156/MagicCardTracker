@@ -17,7 +17,7 @@
 @if (_collection != null)
 {
     <div class="row">
-        @foreach (var card in _collection)
+        @foreach (var card in _collection.Reverse())
             {
                 <div class="col-3 mt-2">
                     <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
