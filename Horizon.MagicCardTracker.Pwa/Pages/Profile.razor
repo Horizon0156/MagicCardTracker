@@ -28,10 +28,10 @@
             <label class="lead">
                 Your collection
             </label>
-            <label class="color-white-60"> Number of cards in collection: <span class="float-right">@_collectionStatistic?.NumberOfCardsCollected</span></label>
-            <label class="color-white-60"> Number of unique cards in collection: <span class="float-right">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
-            <label class="color-white-60"> Total collection value in EUR: <span class="float-right">@_collectionStatistic?.CollectionValueInEuros €</span></label>
-            <label class="color-white-60"> Total collection value in USD: <span class="float-right">@_collectionStatistic?.CollectionValueInDollars $</span></label>
+            <label class="color-white-60"> Number of cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfCardsCollected</span></label>
+            <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
+            <label class="color-white-60"> Total collection value in EUR: <span class="float-end">@_collectionStatistic?.CollectionValueInEuros €</span></label>
+            <label class="color-white-60"> Total collection value in USD: <span class="float-end">@_collectionStatistic?.CollectionValueInDollars $</span></label>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -43,7 +43,12 @@
                 <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
                 Import Library
             </label>
-            
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                About
+            </div>
+            <label class="color-white-60">Version: <span class="float-end">0.7.1</span></label>
         </div>
     </div>
 </div>

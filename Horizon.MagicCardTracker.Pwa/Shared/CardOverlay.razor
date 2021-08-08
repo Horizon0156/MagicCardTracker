@@ -9,9 +9,9 @@
 @if (_isVisible)
 {
 <div class="backdrop">
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
+    <div class="container d-flex flex-grow-1">
+        <div class="row flex-grow-1 align-items-center">
+            <div class="col-6 d-flex justify-content-center">
                 <div class="bg-elevated content">
                     <img class="magic-card" src="@_cardImageUrl" />
                 </div>
@@ -50,7 +50,7 @@
                 <label class="mt-2">In collection</label>
                 <div class="d-flex flex-column">
                     <span class="color-white-60">Standard</span>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-around align-items-center">
                         <div @onclick="@(() => AddStandardCards(-1))"><span class="oi oi-minus color-primary"
                                 aria-hidden="true"></span></div>
                         <span>@_card.Count</span>
@@ -58,7 +58,7 @@
                                 aria-hidden="true"></span></div>
                     </div>
                     <span class="color-white-60">Foil</span>
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-around align-items-center">
                         <div @onclick="@(() => AddFoilCards(-1))"><span class="oi oi-minus color-primary"
                                 aria-hidden="true"></span></div>
                         <span>@_card.FoilCount</span>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <div class="mt-2 d-flex justify-content-end">
-                    <button class="btn btn-primary mr-2" @onclick="@UpdateCollection"> Save </button>
+                    <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
                     <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
                 </div>
                 }

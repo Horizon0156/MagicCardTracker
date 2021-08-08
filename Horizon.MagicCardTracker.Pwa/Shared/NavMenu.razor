@@ -2,64 +2,64 @@
 
 <nav class="navbar navbar-dark navbar-expand-lg">
 
-  <img class="img-fluid" src="Logo_temp.png" style="height:45px"/>
-
+  <div class="container-fluid">
+  <div clas="navbar-brand">
+    <img class="img-fluid" src="Logo_temp.png" style="height:40px" />
+  </div>
   <button class="navbar-toggler" @onclick="ToggleNavMenu">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="@_navbarClass navbar-collapse" @onclick="ToggleNavMenu">
     <div class="flex-grow-1 d-flex align-items-center mx-4">
-        <span class="oi oi-magnifying-glass" aria-hidden="true"></span> 
-        <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
-        <input class="form-control border-0" 
-               type="search"
-               @bind="_queryString"
-               placeholder="Search for Magic cards...">
-        </form>
+      <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+      <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
+        <input class="form-control border-0" type="search" @bind="_queryString" placeholder="Search for Magic cards...">
+      </form>
     </div>
     <ul class="navbar-nav mt-2 mt-lg-0">
       <li class="nav-item">
-        <NavLink class="nav-link" Match="NavLinkMatch.All" href="/collection"> 
-            <span class="oi oi-book" aria-hidden="true"></span> Collection 
-        </NavLink> 
+        <NavLink class="nav-link" Match="NavLinkMatch.All" href="/collection">
+          <span class="oi oi-book" aria-hidden="true"></span> Collection
+        </NavLink>
       </li>
       <li class="nav-item">
-        <NavLink class="nav-link" href="/sets"> 
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Sets 
-        </NavLink> 
+        <NavLink class="nav-link" href="/sets">
+          <span class="oi oi-list-rich" aria-hidden="true"></span> Sets
+        </NavLink>
       </li>
       <li class="nav-item">
-        <NavLink class="nav-link" href="/decks"> 
-            <span class="oi oi-box" aria-hidden="true"></span> Decks 
-        </NavLink> 
+        <NavLink class="nav-link" href="/decks">
+          <span class="oi oi-box" aria-hidden="true"></span> Decks
+        </NavLink>
       </li>
       <li class="nav-item">
-        <NavLink class="nav-link" href="/profile"> 
-            <span class="oi oi-pie-chart" aria-hidden="true"></span> Profile 
-        </NavLink> 
+        <NavLink class="nav-link" href="/profile">
+          <span class="oi oi-pie-chart" aria-hidden="true"></span> Profile
+        </NavLink>
       </li>
     </ul>
   </div>
+  </div>
 </nav>
 
-@code 
+@code
 {
-    private bool _collapseNavMenu = true;
+  private bool _collapseNavMenu = true;
 
-    private string _queryString;
+  private string _queryString;
 
-    private string _navbarClass => _collapseNavMenu ? "collapse" : null;
+  private string _navbarClass => _collapseNavMenu ? "collapse" : null;
 
-    private void NavigateToSearch() 
+  private void NavigateToSearch()
+  {
+    if (!string.IsNullOrWhiteSpace(_queryString))
     {
-        if (!string.IsNullOrWhiteSpace(_queryString))
-        {
-            _navigationManager.NavigateTo("/search/" + _queryString);
-        }
+      _navigationManager.NavigateTo("/search/" + _queryString);
     }
+  }
 
-    private void ToggleNavMenu()
-    {
-        _collapseNavMenu = !_collapseNavMenu;
-    }
+  private void ToggleNavMenu()
+  {
+    _collapseNavMenu = !_collapseNavMenu;
+  }
 }

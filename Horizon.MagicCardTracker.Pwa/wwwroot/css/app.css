@@ -31,8 +31,9 @@ html, body {
     color: rgba(255,255,255,0.6)
 }
 
-a, .btn-link {
+a, .btn-link, a:hover {
     color: #F44336;
+    text-decoration: none;
 }
 
 .color-primary {
@@ -96,6 +97,11 @@ a, .btn-link {
     border-radius: 0;
 }
 
+.form-check-input:checked {
+    background-color: #C2351B;
+    border-color: #C2351B;
+}
+
 .form-control:focus {
     border-color: #C2351B;
 }
@@ -106,18 +112,6 @@ a, .btn-link {
 
 .content {
     padding: 1rem;
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
 }
 
 #blazor-error-ui {
