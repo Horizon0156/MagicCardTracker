@@ -6,7 +6,7 @@ using Horizon.MagicCardTracker.Pwa.Commands;
 using Horizon.MagicCardTracker.Pwa.Queries;
 using Horizon.MagicCardTracker.ScryfallClient;
 using Horizon.MagicCardTracker.SrcyfallClient.Extensions;
-using Horizon.MargicCardTracker.Storage;
+using Horizon.MagicCardTracker.Storage;
 using MediatR;
 
 namespace Horizon.MagicCardTracker.Pwa.Handlers

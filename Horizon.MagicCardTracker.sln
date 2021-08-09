@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.MagicCardTracker.Sc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{31276C50-F2E2-11EB-81D1-C9284C5463FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.MargicCardTracker.Storage", "Horizon.MargicCardTracker.Storage\Horizon.MargicCardTracker.Storage.csproj", "{EA231D79-09EE-45D7-84B0-014E1AD675AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.MagicCardTracker.Storage", "Horizon.MagicCardTracker.Storage\Horizon.MagicCardTracker.Storage.csproj", "{EA231D79-09EE-45D7-84B0-014E1AD675AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{94BB0FB0-F2E2-11EB-81D1-C9284C5463FF}"
 EndProject

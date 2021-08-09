@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Horizon.MagicCardTracker.Contracts;
 using Horizon.MagicCardTracker.Pwa.Models;
 using Horizon.MagicCardTracker.Pwa.Queries;
-using Horizon.MargicCardTracker.Storage;
+using Horizon.MagicCardTracker.Storage;
 using MediatR;
 
 namespace Horizon.MagicCardTracker.Pwa.Handlers

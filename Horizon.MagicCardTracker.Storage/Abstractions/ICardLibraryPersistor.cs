@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Horizon.MagicCardTracker.Contracts;
 
-namespace Horizon.MargicCardTracker.Storage.Abstrations
+namespace Horizon.MagicCardTracker.Storage.Abstrations
 {
     /// <summary>
     ///     Definition for a client specific single user storage persistence.

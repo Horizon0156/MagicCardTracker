@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Horizon.MagicCardTracker.Contracts;
 
-namespace Horizon.MargicCardTracker.Storage
+namespace Horizon.MagicCardTracker.Storage
 {
     public interface ICardLibrary
     {

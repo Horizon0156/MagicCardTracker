@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Horizon.MagicCardTracker.Contracts;
-using Horizon.MargicCardTracker.Storage.Abstrations;
+using Horizon.MagicCardTracker.Storage.Abstrations;
 
-namespace Horizon.MargicCardTracker.Storage
+namespace Horizon.MagicCardTracker.Storage
 {
     public class SingleUserCardLibrary : ICardLibrary
     {

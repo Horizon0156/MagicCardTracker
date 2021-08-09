@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Horizon.MagicCardTracker.Contracts;
 using Horizon.MagicCardTracker.Pwa.Commands;
-using Horizon.MargicCardTracker.Storage;
+using Horizon.MagicCardTracker.Storage;
 using MediatR;
 using Microsoft.JSInterop;
 

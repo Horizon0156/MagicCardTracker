@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Horizon.MagicCardTracker.Contracts;
-using Horizon.MargicCardTracker.Storage.Abstrations;
+using Horizon.MagicCardTracker.Storage.Abstrations;
 
 namespace Horizon.MagicCardTracker.Pwa.Storage
 {

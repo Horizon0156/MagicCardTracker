@@ -21,7 +21,7 @@
     <ProjectReference Include="..\Horizon.MagicCardTracker.SryfallClient.Extensions\Horizon.MagicCardTracker.ScryfallClient.Extensions.csproj" />
     <ProjectReference Include="..\Horizon.MagicCardTracker.Contracts\Horizon.MagicCardTracker.Contracts.csproj" />
     <ProjectReference Include="..\Horizon.MagicCardTracker.ScryfallClient\Horizon.MagicCardTracker.ScryfallClient.csproj" />
-    <ProjectReference Include="..\Horizon.MargicCardTracker.Storage\Horizon.MargicCardTracker.Storage.csproj" />
+    <ProjectReference Include="..\Horizon.MagicCardTracker.Storage\Horizon.MagicCardTracker.Storage.csproj" />
   </ItemGroup>
 
 </Project>
