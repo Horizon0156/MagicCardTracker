@@ -5,8 +5,8 @@ using Horizon.MagicCardTracker.Contracts;
 using Horizon.MagicCardTracker.Pwa.Commands;
 using Horizon.MagicCardTracker.Pwa.Queries;
 using Horizon.MagicCardTracker.ScryfallClient;
-using Horizon.MagicCardTracker.SrcyfallClient.Extensions;
 using Horizon.MagicCardTracker.Storage;
+using AutoMapper;
 using MediatR;
 
 namespace Horizon.MagicCardTracker.Pwa.Handlers
@@ -19,13 +19,16 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
     {
         private readonly ICardLibrary _cardLibrary;
         private readonly IScryfallClient _scryfallClient;
+        private readonly IMapper _mapper;
 
         public CardCollectionHandler(
             ICardLibrary cardLibrary,
-            IScryfallClient scryfallClient)
+            IScryfallClient scryfallClient,
+            IMapper mapper)
         {
             _cardLibrary = cardLibrary;
             _scryfallClient = scryfallClient;
+            _mapper = mapper;
         }
 
         public Task<IEnumerable<CollectedCard>> Handle(GetCollectedCards request, CancellationToken cancellationToken)
@@ -63,7 +66,7 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
                 request.CardNumber, 
                 request.LanguageCode, 
                 cancellationToken);
-            var card = desiredCard.ToContract();
+            var card = _mapper.Map<Contracts.Card>(desiredCard);
             await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
             var collectableCard = new CollectedCard(card, 1, 0);
             await _cardLibrary.AddCardAsync(collectableCard, cancellationToken);
@@ -88,7 +91,7 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
 
             if (originalCard != null)
             {
-                card.Prices = originalCard.ToContract().Prices;
+                card.Prices = _mapper.Map<PricingInformation>(originalCard.Prices);
             }
         }
     }

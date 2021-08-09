@@ -1,10 +1,10 @@
 ﻿@page "/search/{Query}"
+@using Contracts
 @using Horizon.MagicCardTracker.Pwa.Components
-@using Horizon.MagicCardTracker.ScryfallClient
-@using Horizon.MagicCardTracker.SrcyfallClient.Extensions
-@using CardList = Horizon.MagicCardTracker.Contracts.CardList
 @using System.Threading
-@inject IScryfallClient _scryfallClient
+@using MediatR
+@using Queries
+@inject IMediator _mediator
 @implements IDisposable
 
 <div class="row">
@@ -17,7 +17,7 @@
 
 @if (!_isLoading)
 {
-    <CardDisplay Cards="@_searchResult?.Cards">
+    <CardDisplay Cards="@_searchResult">
         <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
             Phew... Sorry, there was no card that matches your search criteria
         </div>
@@ -31,7 +31,7 @@
 
     private bool _isLoading;
 
-    private CardList _searchResult;
+    private IEnumerable<Card> _searchResult;
 
     [Parameter]
     public string Query { get; set; }
@@ -51,16 +51,14 @@
     {
         _searchResult = null;
 
-        if (string.IsNullOrEmpty(Query))
+        if (string.IsNullOrWhiteSpace(Query))
         {
             return;
         }
 
         _isLoading = true;
-
-        var query = Query.Replace(" ", "+");
-
-        _searchResult = (await _scryfallClient.SearchCardsAsync(query, true, _cts.Token)).ToContract();
+        var searchResult = await _mediator.Send(new SearchCards(Query));
+        _searchResult = searchResult.Cards;
         _isLoading = false;
     }
 }

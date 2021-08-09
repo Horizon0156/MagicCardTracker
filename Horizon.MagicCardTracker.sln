@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{94BB0FB0-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.MagicCardTracker.Contracts", "Horizon.MagicCardTracker.Contracts\Horizon.MagicCardTracker.Contracts.csproj", "{98728F64-E56E-4E5F-9812-6F804B2E58DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.MagicCardTracker.ScryfallClient.Extensions", "Horizon.MagicCardTracker.SryfallClient.Extensions\Horizon.MagicCardTracker.ScryfallClient.Extensions.csproj", "{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,21 +76,8 @@ Global
 		{98728F64-E56E-4E5F-9812-6F804B2E58DA}.Release|x64.Build.0 = Release|Any CPU
 		{98728F64-E56E-4E5F-9812-6F804B2E58DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{98728F64-E56E-4E5F-9812-6F804B2E58DA}.Release|x86.Build.0 = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|x64.Build.0 = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Debug|x86.Build.0 = Debug|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|Any CPU.Build.0 = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|x64.ActiveCfg = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|x64.Build.0 = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|x86.ActiveCfg = Release|Any CPU
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{375B5AD6-2433-4BEB-A97C-FECBF0CCE408} = {31276C50-F2E2-11EB-81D1-C9284C5463FF}
 		{98728F64-E56E-4E5F-9812-6F804B2E58DA} = {31276C50-F2E2-11EB-81D1-C9284C5463FF}
 		{A341E6B0-691E-4663-AE16-36F0F2F6380C} = {94BB0FB0-F2E2-11EB-81D1-C9284C5463FF}
 		{EA231D79-09EE-45D7-84B0-014E1AD675AA} = {31276C50-F2E2-11EB-81D1-C9284C5463FF}

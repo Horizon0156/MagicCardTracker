@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
+using AutoMapper;
 using Blazored.LocalStorage;
+using Horizon.MagicCardTracker.Pwa.Profiles;
 using Horizon.MagicCardTracker.Pwa.Storage;
 using Horizon.MagicCardTracker.ScryfallClient;
 using Horizon.MagicCardTracker.Storage;
@@ -20,11 +22,17 @@ namespace Horizon.MagicCardTracker.Pwa
             builder.Services.AddScoped<IScryfallClient>(sp => new ScryfallHttpClient());
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMediatR(typeof(Program));
+            builder.Services.AddAutoMapper(SetupMappings);
 
             builder.Services.AddScoped<ICardLibraryPersister, LocalStorageCardLibrary>();
             builder.Services.AddScoped<ICardLibrary, SingleUserCardLibrary>();
 
             await builder.Build().RunAsync();
+        }
+
+        private static void SetupMappings(IMapperConfigurationExpression config)
+        {
+            config.AddProfile<ScryfallApiProfile>();
         }
     }
 }
