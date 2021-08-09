@@ -8,15 +8,15 @@
 
 @if (_isVisible)
 {
-<div class="backdrop">
+<div class="backdrop overflow-auto">
     <div class="container d-flex flex-grow-1">
         <div class="row flex-grow-1 align-items-center">
-            <div class="col-6 d-flex justify-content-center">
-                <div class="bg-elevated content">
+            <div class="col-md-6 d-flex justify-content-center">
+                <div class="content">
                     <img class="magic-card" src="@_cardImageUrl" />
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="bg-elevated content">
                 <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
                 @if (_card != null)

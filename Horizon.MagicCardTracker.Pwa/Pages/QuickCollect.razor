@@ -2,6 +2,7 @@
 @using Commands
 @using Horizon.MagicCardTracker.Contracts
 @using System.Threading
+@using Horizon.MagicCardTracker.Pwa.Components
 @using MediatR
 @using Models
 @inject IMediator _mediator
@@ -14,14 +15,14 @@
 </div>
 
 <EditForm Model="_cardId" OnValidSubmit="@AddCardToCollectionAsync">
-    <div class="row mt-2">
-        <div class="col-4 content bg-elevated">
+    <div class="row mt-2 mb-4">
+        <div class="col-md-4 content bg-elevated">
             <input class="form-control w-100" @bind="_cardId.SetCode" placeholder="Set Code" />
         </div>
-        <div class="col-4 content bg-elevated">
+        <div class="col-md-4 content bg-elevated">
             <input class="form-control w-100" @bind="_cardId.CardNumber" placeholder="Card number" />
         </div>
-        <div class="col-4 content bg-elevated d-flex align-items-center">
+        <div class="col-md-4 content bg-elevated d-flex align-items-center">
             <InputRadioGroup @bind-Value="_cardId.LanguageCode">
                 <div class="form-check">
                     <InputRadio class="form-check-input" Value="LanguageCodes.English" />
@@ -37,21 +38,9 @@
     </div>
 </EditForm>
 
-<div class="row mt-4">
-    @foreach (var card in _quickCollectionStack.Reverse())
-    {
-        <div class="col-3 mt-2 position-relative">
-            <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger">
-                @card.TotalCount
-            </span>
-            <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
-            @onclick="@(async () => await OpenDetailsAsync(card))" />
-        </div>
-    }
-</div>
-
-<CardOverlay @ref="_cardOverlay"></CardOverlay>
 <LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+<CardDisplay ShowCountBadge="true" Cards="@_quickCollectionStack.Reverse()"></CardDisplay>
 
 @code {
 
@@ -62,8 +51,6 @@
     private bool _isLoading;
 
     private HashSet<CollectedCard> _quickCollectionStack = new HashSet<CollectedCard>();
-
-    private CardOverlay _cardOverlay;
 
     public void Dispose()
     {
@@ -82,11 +69,6 @@
         var card = await _mediator.Send(new AddCardByNumber(_cardId.SetCode, _cardId.CardNumber, _cardId.LanguageCode), _cts.Token);
         _quickCollectionStack.Add(card);
         _isLoading = false;
-    }
-
-    private Task OpenDetailsAsync(Card card)
-    {
-        return _cardOverlay.OpenAsync(card);
     }
 
     private class CardIdentity

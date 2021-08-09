@@ -1,5 +1,6 @@
 @page "/profile"
 @using Commands
+@using Horizon.MagicCardTracker.Pwa.Components
 @using MediatR;
 @using System.Threading;
 @using Models
@@ -7,9 +8,10 @@
 @implements IDisposable
 @inject IMediator _mediator;
 
+<LoadingIndicator IsBusy="@_isLoading"></LoadingIndicator>
 
 <div class="row">
-    <div class="col-6">
+    <div class="col-md-6">
         <div class="content bg-elevated d-flex flex-column">
             <label class="lead">
                 Statistics
@@ -23,7 +25,7 @@
             }
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-md-6">
         <div class="content bg-elevated d-flex flex-column">
             <label class="lead">
                 Your collection
@@ -81,15 +83,19 @@
 
     private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
     {
+        _isLoading = true;
         using (var libraryStream = e.File.OpenReadStream())
         {
             await _mediator.Send(new ImportLibraryCommand(libraryStream), _cts.Token);
             await LoadCollectionAsync();
+            _isLoading = false;
         }
     }
 
-    private Task ExportLibraryAsync()
+    private async Task ExportLibraryAsync()
     {
-        return _mediator.Send(new ExportLibraryCommand(), _cts.Token);
+        _isLoading = true;
+        await _mediator.Send(new ExportLibraryCommand(), _cts.Token);
+        _isLoading = false;
     }
 }

@@ -1,0 +1,45 @@
+@using Contracts
+
+@if (Cards != null && Cards.Any())
+{
+    <div class="row">
+    @foreach (var card in Cards)
+    {   
+        <div class="col-md-3 col-sm-4 col-6 mt-2 position-relative">
+            @if (ShowCountBadge && card is CollectedCard collectableCard)
+            {
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger">
+                    @collectableCard.TotalCount
+                </span>
+            }
+            <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
+        @onclick="@(async () => await OpenDetailsAsync(card))" />
+        </div>
+    }
+    </div>
+} 
+else
+{
+    @ChildContent
+}
+
+<CardOverlay @ref="_cardOverlay"></CardOverlay>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<Card> Cards { get; set; }
+
+    [Parameter]
+    public bool ShowCountBadge { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private CardOverlay _cardOverlay;
+
+    private Task OpenDetailsAsync(Card card)
+    {
+        return _cardOverlay.OpenAsync(card);
+    }
+}

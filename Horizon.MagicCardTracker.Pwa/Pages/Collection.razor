@@ -2,6 +2,7 @@
 @page "/collection"
 @using Horizon.MagicCardTracker.Contracts
 @using System.Threading
+@using Horizon.MagicCardTracker.Pwa.Components
 @using MediatR
 @using Queries
 @inject IMediator _mediator
@@ -14,39 +15,26 @@
     </div>
 </div>
 
-@if (_collection != null)
-{
-    <div class="row">
-        @foreach (var card in _collection.Reverse())
-            {
-                <div class="col-3 mt-2">
-                    <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
-                @onclick="@(async () => await OpenDetailsAsync(card))" />
-                </div>
-            }
-    </div>
-}
-
-<CardOverlay @ref="_cardOverlay"></CardOverlay>
 <LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
 
+@if (!_isLoading)
+{
+    <CardDisplay Cards="@_collection?.Reverse()">
+        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
+            Hell, no... Looks like you don't have any cards in your collection. Start by adding some :)
+        </div>
+    </CardDisplay>
+}
+
+
+
 @code {
-
-    private string _setCode;
-
-    private string _cardNumber;
-
-    private string _languageCode = "de";
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
     private bool _isLoading;
 
-    private List<CollectedCard> _quickCollectionStack = new List<CollectedCard>();
-
     private IEnumerable<CollectedCard> _collection;
-
-    private CardOverlay _cardOverlay;
 
     public void Dispose()
     {
@@ -59,10 +47,5 @@
         _isLoading = true;
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
         _isLoading = false;
-    }
-
-    private Task OpenDetailsAsync(Card card)
-    {
-        return _cardOverlay.OpenAsync(card);
     }
 }

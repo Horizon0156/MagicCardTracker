@@ -1,7 +1,7 @@
 ﻿@page "/search/{Query}"
+@using Horizon.MagicCardTracker.Pwa.Components
 @using Horizon.MagicCardTracker.ScryfallClient
 @using Horizon.MagicCardTracker.SrcyfallClient.Extensions
-@using Card = Horizon.MagicCardTracker.Contracts.Card
 @using CardList = Horizon.MagicCardTracker.Contracts.CardList
 @using System.Threading
 @inject IScryfallClient _scryfallClient
@@ -13,24 +13,17 @@
     </div>
 </div>
 
-@if(_searchResult != null)
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@if (!_isLoading)
 {
-    <div class="row">
-        @foreach (var card in _searchResult.Cards)
-        {
-            <div class="col-3 mt-2">
-                <img 
-                    class="img-fluid" 
-                    style="border-radius: 5%;" 
-                    src="@(card.ImageUrl)"
-                    @onclick="@(async () => await OpenDetailsAsync(card))"/>
-            </div>
-        }
-    </div>
+    <CardDisplay Cards="@_searchResult?.Cards">
+        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
+            Phew... Sorry, there was no card that matches your search criteria
+        </div>
+    </CardDisplay>
 }
 
-<CardOverlay @ref="_cardOverlay"></CardOverlay>
-<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
 
 @code {
 
@@ -39,8 +32,6 @@
     private bool _isLoading;
 
     private CardList _searchResult;
-
-    private CardOverlay _cardOverlay;
 
     [Parameter]
     public string Query { get; set; }
@@ -54,11 +45,6 @@
     protected override Task OnParametersSetAsync()
     {
         return SearchAsync();
-    }
-
-    private Task OpenDetailsAsync(Card card)
-    {
-        return _cardOverlay.OpenAsync(card);
     }
 
     private async Task SearchAsync()
