@@ -1,0 +1,1238 @@
+openapi: 3.0.1
+info:
+  title: Scryfall API
+  version: '2020-06-10'
+servers:
+- url: https://api.scryfall.com/
+paths:
+  /sets:
+    get:
+      tags:
+      - Sets
+      operationId: Sets_GetAll
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /sets/{code}:
+    get:
+      tags:
+      - Sets
+      operationId: Sets_GetByCode
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/set'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/search:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_Search
+      parameters:
+      - name: q
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: unique
+        in: query
+        schema:
+          type: string
+          enum:
+          - cards
+          - art
+          - prints
+          x-ms-enum:
+            name: unique_strategy
+            modelAsString: false
+        x-ms-enum:
+          name: unique_strategy
+          modelAsString: false
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - name
+          - set
+          - released
+          - rarity
+          - color
+          - usd
+          - tix
+          - eur
+          - cmc
+          - power
+          - toughness
+          - edhrec
+          - artist
+          x-ms-enum:
+            name: sort_order
+            modelAsString: false
+        x-ms-enum:
+          name: sort_order
+          modelAsString: false
+      - name: dir
+        in: query
+        schema:
+          type: string
+          enum:
+          - auto
+          - asc
+          - desc
+          x-ms-enum:
+            name: sort_direction
+            modelAsString: false
+        x-ms-enum:
+          name: sort_direction
+          modelAsString: false
+      - name: include_extras
+        in: query
+        schema:
+          type: boolean
+      - name: include_multilingual
+        in: query
+        schema:
+          type: boolean
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/named:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetNamed
+      parameters:
+      - name: exact
+        in: query
+        schema:
+          type: string
+      - name: fuzzy
+        in: query
+        schema:
+          type: string
+      - name: set
+        in: query
+        schema:
+          type: string
+      - name: format
+        in: query
+        schema:
+          type: string
+      - name: face
+        in: query
+        schema:
+          type: string
+      - name: version
+        in: query
+        schema:
+          type: string
+      - name: pretty
+        in: query
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/autocomplete:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_Autocomplete
+      parameters:
+      - name: q
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/random:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetRandom
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/multiverse/{id}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetByMultiverseId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/mtgo/{id}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetByMtgoId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/arena/{id}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetByArenaId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/{code}/{number}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetByCodeByNumber
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/{code}/{number}/{lang}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetByCodeByNumberByLang
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: lang
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/{id}:
+    get:
+      tags:
+      - Cards
+      operationId: Cards_GetById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/multiverse/{id}/rulings:
+    get:
+      tags:
+      - Rulings
+      operationId: Rulings_GetByMultiverseId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ruling_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/mtgo/{id}/rulings:
+    get:
+      tags:
+      - Rulings
+      operationId: Rulings_GetByMtgoId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ruling_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/{code}/{number}/rulings:
+    get:
+      tags:
+      - Rulings
+      operationId: Rulings_GetByCodeByNumberId
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: number
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ruling_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /cards/{id}/rulings:
+    get:
+      tags:
+      - Rulings
+      operationId: Rulings_GetById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ruling_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /symbology:
+    get:
+      tags:
+      - Symbology
+      operationId: Symbology_GetAll
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card_symbol_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /symbology/parse-mana:
+    get:
+      tags:
+      - Symbology
+      operationId: Symbology_ParseMana
+      parameters:
+      - name: cost
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/mana_cost'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/card-names:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetCardNames
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/word-bank:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetWordBank
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/creature-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetCreatureTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/planeswalker-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetPlaneswalkerTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/land-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetLandTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/artifact-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetArtifactTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/enchantment-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetEnchantmentTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/spell-types:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetSpellTypes
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/powers:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetPowers
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/thoughnesses:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetToughnesses
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/loyalties:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetLoyalties
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /catalog/watermarks:
+    get:
+      tags:
+      - Catalog
+      operationId: Catalog_GetWatermarks
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/catalog'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+components:
+  schemas:
+    card:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        oracle_id:
+          type: string
+          format: uuid
+        multiverse_ids:
+          type: array
+          items:
+            type: integer
+        mtgo_id:
+          type: integer
+        arena_id:
+          type: integer
+        mtgo_foil_id:
+          type: integer
+        uri:
+          type: string
+          format: uri
+        scryfall_uri:
+          type: string
+          format: uri
+        prints_search_uri:
+          type: string
+          format: uri
+        rulings_uri:
+          type: string
+          format: uri
+        name:
+          type: string
+        printed_name:
+          type: string
+          nullable: true
+        lang:
+          type: string
+        layout:
+          type: string
+          enum:
+          - normal
+          - split
+          - flip
+          - transform
+          - modal_dfc
+          - meld
+          - leveler
+          - class
+          - saga
+          - adventure
+          - planar
+          - scheme
+          - vanguard
+          - token
+          - double_faced_token
+          - emblem
+          - augment
+          - host
+          - art_series
+          - double_sided
+          x-ms-enum:
+            name: layouts
+            modelAsString: false
+        cmc:
+          type: number
+          format: double
+        type_line:
+          type: string
+        oracle_text:
+          type: string
+        mana_cost:
+          type: string
+        power:
+          type: string
+        toughness:
+          type: string
+        loyalty:
+          type: string
+        life_modifier:
+          type: string
+        hand_modifier:
+          type: string
+        foil:
+          type: boolean
+        colors:
+          type: array
+          items:
+            $ref: '#/components/schemas/colors'
+        color_indicator:
+          type: array
+          items:
+            $ref: '#/components/schemas/colors'
+        color_identity:
+          type: array
+          items:
+            $ref: '#/components/schemas/colors'
+        all_parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/related_cards'
+        card_faces:
+          type: array
+          items:
+            $ref: '#/components/schemas/card_face'
+        legalities:
+          $ref: '#/components/schemas/legality'
+        reserved:
+          type: boolean
+        edhrec_rank:
+          type: integer
+          format: int32
+        set:
+          type: string
+        set_name:
+          type: string
+        collector_number:
+          type: string
+        set_search_uri:
+          type: string
+        scryfall_set_uri:
+          type: string
+          format: uri
+        prices:
+          $ref: '#/components/schemas/prices'
+        image_uris:
+          $ref: '#/components/schemas/image_uri'
+        highres_image:
+          type: boolean
+        reprint:
+          type: boolean
+        digital:
+          type: boolean
+        rarity:
+          type: string
+          enum:
+          - common
+          - uncommon
+          - rare
+          - mythic
+          x-ms-enum:
+            name: rarity
+            modelAsString: false
+        flavor_text:
+          type: string
+        artist:
+          type: string
+        illustration_id:
+          type: string
+          format: uuid
+        frame:
+          type: string
+        full_art:
+          type: boolean
+        watermark:
+          type: string
+        border_color:
+          type: string
+          enum:
+          - black
+          - borderless
+          - gold
+          - silver
+          - white
+          x-ms-enum:
+            name: border_colors
+            modelAsString: false
+        story_spotlight_number:
+          type: integer
+        story_spotlight_uri:
+          type: string
+          format: uri
+        timeshifted:
+          type: boolean
+        colorshifted:
+          type: boolean
+        futureshifted:
+          type: boolean
+        purchase_uris:
+          type: object
+          additionalProperties:
+            type: string
+        related_uris:
+          type: object
+          additionalProperties:
+            type: string
+    card_face:
+      type: object
+      properties:
+        name:
+          type: string
+        printed_name:
+          type: string
+          nullable: true
+        type_line:
+          type: string
+        oracle_text:
+          type: string
+        mana_cost:
+          type: string
+        colors:
+          type: array
+          items:
+            $ref: '#/components/schemas/colors'
+        color_indicator:
+          type: array
+          items:
+            $ref: '#/components/schemas/colors'
+        power:
+          type: string
+        toughness:
+          type: string
+        loyalty:
+          type: string
+        flavor_text:
+          type: string
+        illustration_id:
+          type: string
+          format: uuid
+        image_uris:
+          $ref: '#/components/schemas/image_uri'
+    colors:
+      type: string
+      enum:
+      - W
+      - U
+      - B
+      - R
+      - G
+      x-ms-enum:
+        name: colors
+        modelAsString: false
+    legality:
+      type: object
+      properties:
+        standard:
+          $ref: '#/components/schemas/legal_status'
+        future:
+          $ref: '#/components/schemas/legal_status'
+        frontier:
+          $ref: '#/components/schemas/legal_status'
+        modern:
+          $ref: '#/components/schemas/legal_status'
+        legacy:
+          $ref: '#/components/schemas/legal_status'
+        pauper:
+          $ref: '#/components/schemas/legal_status'
+        vintage:
+          $ref: '#/components/schemas/legal_status'
+        penny:
+          $ref: '#/components/schemas/legal_status'
+        commander:
+          $ref: '#/components/schemas/legal_status'
+        1v1:
+          $ref: '#/components/schemas/legal_status'
+        duel:
+          $ref: '#/components/schemas/legal_status'
+        brawl:
+          $ref: '#/components/schemas/legal_status'
+    legal_status:
+      type: string
+      enum:
+      - legal
+      - not_legal
+      - restricted
+      - banned
+      x-ms-enum:
+        name: legal_status
+        modelAsString: false
+    image_uri:
+      type: object
+      properties:
+        small:
+          type: string
+          format: uri
+        normal:
+          type: string
+          format: uri
+        large:
+          type: string
+          format: uri
+        png:
+          type: string
+          format: uri
+        art_crop:
+          type: string
+          format: uri
+        border_crop:
+          type: string
+          format: uri
+    related_cards:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        uri:
+          type: string
+          format: uri
+    catalog:
+      type: object
+      properties:
+        total_items:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            type: string
+    set:
+      type: object
+      properties:
+        code:
+          type: string
+        mtgo_code:
+          type: string
+        name:
+          type: string
+        set_type:
+          type: string
+          enum:
+          - core
+          - expansion
+          - masters
+          - masterpiece
+          - from_the_vault
+          - spellbook
+          - premium_deck
+          - duel_deck
+          - commander
+          - planechase
+          - conspiracy
+          - archenemy
+          - vanguard
+          - funny
+          - starter
+          - box
+          - promo
+          - token
+          - memorabilia
+          - treasure_chest
+          x-ms-enum:
+            name: set_types
+            modelAsString: false
+        released_at:
+          type: string
+          format: date
+        block_code:
+          type: string
+        block:
+          type: string
+        parent_set_code:
+          type: string
+        card_count:
+          type: integer
+        digital:
+          type: boolean
+        foil:
+          type: boolean
+        icon_svg_uri:
+          type: string
+          format: uri
+        search_uri:
+          type: string
+          format: uri
+    prices:
+      type: object
+      properties:
+        usd: 
+          type: number
+          nullable: true
+        usd_foil: 
+          type: number
+          nullable: true
+        eur: 
+          type: number
+          nullable: true
+        eur_foil: 
+          type: number
+          nullable: true
+        tix: 
+          type: number
+          nullable: true
+    ruling:
+      type: object
+      properties:
+        source:
+          type: string
+        published_at:
+          type: string
+          format: date
+        comment:
+          type: string
+    card_symbol:
+      type: object
+      properties:
+        symbol:
+          type: string
+        loose_variant:
+          type: string
+        english:
+          type: string
+        transposable:
+          type: boolean
+        represents_mana:
+          type: boolean
+        cmc:
+          type: number
+          format: double
+        appears_in_mana_costs:
+          type: boolean
+        funny:
+          type: boolean
+        colors:
+          $ref: '#/components/schemas/colors'
+    mana_cost:
+      type: object
+      properties:
+        cost:
+          type: string
+        cmc:
+          type: number
+          format: double
+        colors:
+          $ref: '#/components/schemas/colors'
+        colorless:
+          type: boolean
+        monocolored:
+          type: boolean
+        multicolored:
+          type: boolean
+    card_list:
+      type: object
+      properties:
+        total_cards:
+          type: integer
+          format: int32
+        has_more:
+          type: boolean
+        next_page:
+          type: string
+          format: uri
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/card'
+    set_list:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/set'
+    ruling_list:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ruling'
+    card_symbol_list:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/card_symbol'
+    error:
+      type: object
+      properties:
+        status:
+          type: integer
+        code:
+          type: string
+        details:
+          type: string
+        type:
+          type: string
+        warnings:
+          type: array
+          items:
+            type: string
