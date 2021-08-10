@@ -18,16 +18,16 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
         IRequestHandler<GetCollectableCard, CollectedCard>
     {
         private readonly ICardLibrary _cardLibrary;
-        private readonly IScryfallClient _scryfallClient;
+        private readonly IScryfallClientFactory _scryfallClientFactory;
         private readonly IMapper _mapper;
 
         public CardCollectionHandler(
             ICardLibrary cardLibrary,
-            IScryfallClient scryfallClient,
+            IScryfallClientFactory scryfallClientFactory,
             IMapper mapper)
         {
             _cardLibrary = cardLibrary;
-            _scryfallClient = scryfallClient;
+            _scryfallClientFactory = scryfallClientFactory;
             _mapper = mapper;
         }
 
@@ -61,11 +61,13 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
                 return collectedCard;
             }
 
-            var desiredCard = await _scryfallClient.GetCardByNumberAsync(
-                request.SetCode, 
-                request.CardNumber, 
-                request.LanguageCode, 
-                cancellationToken);
+            var desiredCard = await _scryfallClientFactory
+                                .Cards
+                                .GetByCodeByNumberByLangAsync(
+                                    request.SetCode, 
+                                    request.CardNumber, 
+                                    request.LanguageCode, 
+                                    cancellationToken);
             var card = _mapper.Map<Contracts.Card>(desiredCard);
             await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
             var collectableCard = new CollectedCard(card, 1, 0);
@@ -87,7 +89,9 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
                 return;
             }
 
-            var originalCard = await _scryfallClient.GetCardByNumberAsync(card.SetCode, card.Number, "en", cancellationToken);
+            var originalCard = await _scryfallClientFactory
+                                        .Cards
+                                        .GetByCodeByNumberByLangAsync(card.SetCode, card.Number, "en", cancellationToken);
 
             if (originalCard != null)
             {

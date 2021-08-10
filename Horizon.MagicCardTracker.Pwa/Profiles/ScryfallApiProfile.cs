@@ -1,4 +1,5 @@
-
+using System;
+using System.Linq;
 using AutoMapper;
 
 namespace Horizon.MagicCardTracker.Pwa.Profiles
@@ -8,34 +9,48 @@ namespace Horizon.MagicCardTracker.Pwa.Profiles
         public ScryfallApiProfile()
         {
             CreateMap<ScryfallClient.Prices, Contracts.PricingInformation>()
-                .ForMember(p => p.StandardInEuros, cfg => cfg.MapFrom(p => p.Euros))
-                .ForMember(p => p.StandardInDollars, cfg => cfg.MapFrom(p => p.Dollars))
-                .ForMember(p => p.FoiledInEuros, cfg => cfg.MapFrom(p => p.EurosFoiled))
-                .ForMember(p => p.FoiledInDollars, cfg => cfg.MapFrom(p => p.DollarsFoiled));
+                .ForMember(p => p.StandardInEuros, cfg => cfg.MapFrom(p => p.Eur))
+                .ForMember(p => p.StandardInDollars, cfg => cfg.MapFrom(p => p.Usd))
+                .ForMember(p => p.FoiledInEuros, cfg => cfg.MapFrom(p => p.Eur_foil))
+                .ForMember(p => p.FoiledInDollars, cfg => cfg.MapFrom(p => p.Usd_foil));
 
             CreateMap<ScryfallClient.Card, Contracts.Card>()
-                .ForMember(c => c.HasFoilVersion, cfg => cfg.MapFrom(c => c.HasFoil))
+                .ForMember(c => c.SetCode, cfg => cfg.MapFrom(c => c.Set))
+                .ForMember(c => c.Number, cfg => cfg.MapFrom(c => c.Collector_number))
+                .ForMember(c => c.LanguageCode, cfg => cfg.MapFrom(c => c.Lang))
+                .ForMember(c => c.HasFoilVersion, cfg => cfg.MapFrom(c => c.Foil))
                 .ForMember(c => c.ScryfallId, cfg => cfg.MapFrom(c => c.Id))
                 .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, false)))
                 .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, true)))
                 .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
         }
 
+        private decimal? ParsePrice(string price)
+        {
+            
+            var result = decimal.TryParse(price, out var parsedPrice)
+                ? parsedPrice
+                : (decimal?) null;
+            return result;
+        }
+
         private static string NormalizeName(ScryfallClient.Card card)
         {
-            return card.Layout == ScryfallClient.KnownLayouts.Transform    
-                ? $"{card.Faces[0].Name ?? card.Faces[0].OriginalName} " + 
-                  $"// {card.Faces[1].Name ?? card.Faces[1].OriginalName}"
-                : card.Name ?? card.OriginalName;
+            var cardFaces = card.Card_faces?.ToArray();
+            return card.Layout == ScryfallClient.CardLayout.Transform    
+                ? $"{cardFaces[0].Printed_name ?? cardFaces[0].Name} " + 
+                  $"// {cardFaces[1].Printed_name ?? cardFaces[1].Name}"
+                : card.Printed_name ?? card.Name;
         }
 
         private static string NormalizeImageUrl(ScryfallClient.Card card, bool useBackside)
         {
-            return card.Layout == ScryfallClient.KnownLayouts.Transform
+            var cardFaces = card.Card_faces?.ToArray();
+            return card.Layout == ScryfallClient.CardLayout.Transform  
                 ? useBackside 
-                    ? card.Faces[1].Images.Normal 
-                    : card.Faces[0].Images.Normal
-                : card.Images.Normal;
+                    ? cardFaces[1].Image_uris.Normal.ToString()
+                    : cardFaces[0].Image_uris.Normal.ToString()
+                : card.Image_uris.Normal.ToString();
         }
     }
 }

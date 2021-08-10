@@ -12,26 +12,35 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
 {
     internal class CardSearchHandler : IRequestHandler<SearchCards, CardSearchResult>
     {
-        private readonly IScryfallClient _scryfallClient;
+        private readonly IScryfallClientFactory _scryfallClientFactory;
         private readonly IMapper _mapper;
 
         public CardSearchHandler(
-            IScryfallClient scryfallClient,
+            IScryfallClientFactory scryfallClientFactory,
             IMapper mapper)
         {
-            _scryfallClient = scryfallClient;
+            _scryfallClientFactory = scryfallClientFactory;
             _mapper = mapper;
         }
         public async Task<CardSearchResult> Handle(SearchCards request, CancellationToken cancellationToken)
         {
             var query = request.Query.Replace(" ", "+");
-            var searchResult = await _scryfallClient.SearchCardsAsync(query, true, cancellationToken);
+            var searchResult = await _scryfallClientFactory
+                                        .Cards
+                                        .SearchAsync(query,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     include_multilingual: true,
+                                                     null,
+                                                     cancellationToken: cancellationToken);
 
             return new CardSearchResult
             {
-                HasMoreResults = searchResult.HasMoreCards,
-                NumberOfMatchedCards = searchResult.TotalCards,
-                Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Cards)
+                HasMoreResults = searchResult.Has_more,
+                NumberOfMatchedCards = searchResult.Total_cards,
+                Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Data)
             };
         }
     }

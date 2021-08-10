@@ -19,11 +19,12 @@ namespace Horizon.MagicCardTracker.Pwa
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped<IScryfallClient>(sp => new ScryfallHttpClient());
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMediatR(typeof(Program));
             builder.Services.AddAutoMapper(SetupMappings);
+            builder.Services.AddHttpClient();
 
+            builder.Services.AddScoped<IScryfallClientFactory, ScryfallClientFactory>();
             builder.Services.AddScoped<ICardLibraryPersister, LocalStorageCardLibrary>();
             builder.Services.AddScoped<ICardLibrary, SingleUserCardLibrary>();
 
