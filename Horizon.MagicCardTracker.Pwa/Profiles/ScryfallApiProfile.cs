@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using AutoMapper;
+using Horizon.MagicCardTracker.Pwa.Models;
 
 namespace Horizon.MagicCardTracker.Pwa.Profiles
 {
@@ -23,6 +24,14 @@ namespace Horizon.MagicCardTracker.Pwa.Profiles
                 .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, false)))
                 .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, true)))
                 .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
+
+            CreateMap<ScryfallClient.Set, Set>()
+                .ForMember(s => s.Code, cfg => cfg.MapFrom(s => s.Code))
+                .ForMember(s => s.Name, cfg => cfg.MapFrom(s => s.Name))
+                .ForMember(s => s.ReleaseDate, cfg => cfg.MapFrom(s => s.Released_at.DateTime))
+                .ForMember(s => s.SetIconUrl, cfg => cfg.MapFrom(s => s.Icon_svg_uri))
+                .ForMember(s => s.NumberOfCards, cfg => cfg.MapFrom(s => s.Card_count))
+                .ForMember(s => s.NumberOfCollectedCards, cfg => cfg.Ignore());
         }
 
         private decimal? ParsePrice(string price)

@@ -2,64 +2,87 @@
 
 <nav class="navbar navbar-dark navbar-expand-lg">
 
-  <div class="container-fluid">
-  <div clas="navbar-brand">
-    <img class="img-fluid" src="Logo_temp.png" style="height:40px" />
-  </div>
-  <button class="navbar-toggler" @onclick="ToggleNavMenu">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="@_navbarClass navbar-collapse" @onclick="ToggleNavMenu">
-    <div class="flex-grow-1 d-flex align-items-center mx-4">
-      <i class="bi bi-search"></i>
-      <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
-        <input class="form-control border-0" type="search" @bind="_queryString" placeholder="Search for Magic cards...">
-      </form>
+    <div class="container-fluid">
+        <div clas="navbar-brand">
+            <img class="img-fluid" src="Logo_temp.png" style="height:40px" />
+        </div>
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="@_navbarClass navbar-collapse" @onclick="ToggleNavMenu">
+            <div class="flex-grow-1 d-flex align-items-center mx-4">
+                <i class="bi bi-search"></i>
+                <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
+                    <input class="form-control border-0" type="search" @bind="_queryString"
+                        placeholder="Search for Magic cards...">
+                </form>
+            </div>
+            <ul class="navbar-nav mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <NavLink class="nav-link" Match="NavLinkMatch.All" href="/collection">
+                        <i class="bi bi-book"></i> Collection
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/sets">
+                        <i class="bi bi-collection"></i> Sets
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/decks">
+                        <i class="bi bi-box-seam"></i> Decks
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/profile">
+                        <i class="bi bi-pie-chart-fill"></i> Profile
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
     </div>
-    <ul class="navbar-nav mt-2 mt-lg-0">
-      <li class="nav-item">
-        <NavLink class="nav-link" Match="NavLinkMatch.All" href="/collection">
-          <i class="bi bi-book"></i> Collection
-        </NavLink>
-      </li>
-      <li class="nav-item">
-        <NavLink class="nav-link" href="/sets">
-          <i class="bi bi-collection"></i> Sets
-        </NavLink>
-      </li>
-      <li class="nav-item">
-        <NavLink class="nav-link" href="/decks">
-          <i class="bi bi-box-seam"></i>  Decks
-        </NavLink>
-      </li>
-      <li class="nav-item">
-        <NavLink class="nav-link" href="/profile">
-          <i class="bi bi-pie-chart-fill"></i> Profile
-        </NavLink>
-      </li>
-    </ul>
-  </div>
-  </div>
 </nav>
 
 @code
 {
-  private bool _collapseNavMenu = true;
+    private bool _collapseNavMenu = true;
 
-  private string _queryString;
+    private string _queryString;
 
-  private string _navbarClass => _collapseNavMenu ? "collapse" : null;
+    private string _navbarClass => _collapseNavMenu ? "collapse" : null;
 
-  private void NavigateToSearch()
-  {
-    if (!string.IsNullOrWhiteSpace(_queryString))
+    public void Dispose()
     {
-      _navigationManager.NavigateTo("/search/" + _queryString);
+        _navigationManager.LocationChanged -= SetQueryOnSearch;
     }
-  }
 
-  private void ToggleNavMenu()
-  {
-    _collapseNavMenu = !_collapseNavMenu;
-  }
+    protected override Task OnInitializedAsync()
+    {
+        _navigationManager.LocationChanged += SetQueryOnSearch;
+
+        return Task.CompletedTask;
+    }
+
+    private void NavigateToSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(_queryString))
+        {
+            _navigationManager.NavigateTo($"/search/{_queryString}");
+        }
+    }
+
+    private void SetQueryOnSearch(object sender, LocationChangedEventArgs e)
+    {
+        var searchIndex = e.Location.IndexOf("/search/");
+
+        _queryString = searchIndex > 0
+            ? e.Location.Substring(searchIndex + 8)
+            : null;
+        StateHasChanged();
+    }
+
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
 }

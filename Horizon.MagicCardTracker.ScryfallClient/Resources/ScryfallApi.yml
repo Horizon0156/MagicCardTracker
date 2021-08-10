@@ -1083,9 +1083,10 @@ components:
           - spellbook
           - premium_deck
           - duel_deck
+          - draft_innovation
+          - treasure_chest
           - commander
           - planechase
-          - conspiracy
           - archenemy
           - vanguard
           - funny
@@ -1094,7 +1095,6 @@ components:
           - promo
           - token
           - memorabilia
-          - treasure_chest
           x-ms-enum:
             name: set_types
             modelAsString: false

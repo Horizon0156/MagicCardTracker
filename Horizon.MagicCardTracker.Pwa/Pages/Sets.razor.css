@@ -1,0 +1,21 @@
+
+.set-icon {
+
+    width: 40px;
+    height: auto;
+    filter: invert(1);
+}
+
+.progress {
+
+    height: .5rem;
+    background-color: #191A1F;
+}
+
+.progress-bar {
+    background-color: #F44336;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
