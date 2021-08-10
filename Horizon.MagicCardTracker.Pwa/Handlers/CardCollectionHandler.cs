@@ -70,6 +70,7 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
                                     cancellationToken);
             var card = _mapper.Map<Contracts.Card>(desiredCard);
             await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
+
             var collectableCard = new CollectedCard(card, 1, 0);
             await _cardLibrary.AddCardAsync(collectableCard, cancellationToken);
             return collectableCard;
@@ -91,7 +92,7 @@ namespace Horizon.MagicCardTracker.Pwa.Handlers
 
             var originalCard = await _scryfallClientFactory
                                         .Cards
-                                        .GetByCodeByNumberByLangAsync(card.SetCode, card.Number, "en", cancellationToken);
+                                        .GetByCodeByNumberAsync(card.SetCode, card.Number, cancellationToken);
 
             if (originalCard != null)
             {
