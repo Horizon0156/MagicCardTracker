@@ -1,0 +1,101 @@
+@page "/profile"
+@using Commands
+@using MagicCardTracker.Pwa.Components
+@using MediatR;
+@using System.Threading;
+@using Models
+@using Queries
+@implements IDisposable
+@inject IMediator _mediator;
+
+<LoadingIndicator IsBusy="@_isLoading"></LoadingIndicator>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Statistics
+            </label>
+            <label class="color-white-60">
+                Most valuable card 
+            </label>
+            @if(_collectionStatistic?.MostValuableCard != null)
+            {
+                <img class="magic-card thumbnail mx-auto" src="@_collectionStatistic.MostValuableCard.ImageUrl">
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Your collection
+            </label>
+            <label class="color-white-60"> Number of cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfCardsCollected</span></label>
+            <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
+            <label class="color-white-60"> Total collection value in EUR: <span class="float-end">@_collectionStatistic?.CollectionValueInEuros €</span></label>
+            <label class="color-white-60"> Total collection value in USD: <span class="float-end">@_collectionStatistic?.CollectionValueInDollars $</span></label>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                Data management
+            </div>
+            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">Export Library</button>
+
+            <label class="mt-2 btn btn-primary">
+                <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
+                Import Library
+            </label>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                About
+            </div>
+            <label class="color-white-60">Version: <span class="float-end">0.8.0</span></label>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private CollectionStatistic _collectionStatistic;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return LoadCollectionAsync();
+    }
+
+    private async Task LoadCollectionAsync()
+    {
+        _isLoading = true;
+        _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
+    {
+        _isLoading = true;
+        using (var libraryStream = e.File.OpenReadStream())
+        {
+            await _mediator.Send(new ImportLibraryCommand(libraryStream), _cts.Token);
+            await LoadCollectionAsync();
+            _isLoading = false;
+        }
+    }
+
+    private async Task ExportLibraryAsync()
+    {
+        _isLoading = true;
+        await _mediator.Send(new ExportLibraryCommand(), _cts.Token);
+        _isLoading = false;
+    }
+}

@@ -1,0 +1,65 @@
+@page "/sets"
+
+@using System.Threading;
+@using MagicCardTracker.Pwa.Components
+@using MediatR;
+@using Models
+@using Queries
+@inject IMediator _mediator;
+@inject NavigationManager _navigationManager;
+@implements IDisposable;
+
+<div class="row">
+    <div class="col-12 lead d-flex justify-content-between">
+        <span>Sets</span>
+    </div>
+</div>
+
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@if (!_isLoading && _collectedSets != null)
+{
+    @foreach (var set in _collectedSets)
+    {
+        <div class="row mt-2 cursor-pointer" @onclick="@(() => BrowseSet(set))">
+            <div class="col-12 d-flex bg-elevated content">
+                <img class="set-icon" src="@set.SetIconUrl"/>
+                <div class="ms-4 d-flex flex-column flex-grow-1">
+                    <span> @set.Name (@set.Code.ToUpper())</span>
+                    <span class="color-white-60">@set.NumberOfCollectedCards / @set.NumberOfCards collected</span>
+                    <div class="progress mt-1">
+                        <div class="progress-bar" role="progressbar" style="width: @(set.Completeness)%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code 
+{
+    private bool _isLoading;
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private IEnumerable<Set> _collectedSets;
+
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _collectedSets = await _mediator.Send(new GetCollectedSets(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private void BrowseSet(Set set)
+    {
+        _navigationManager.NavigateTo($"/search/set:{set.Code}");
+    }
+}

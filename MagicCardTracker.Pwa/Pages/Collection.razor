@@ -1,0 +1,49 @@
+@page "/"
+@page "/collection"
+@using MagicCardTracker.Contracts
+@using System.Threading
+@using MagicCardTracker.Pwa.Components
+@using MediatR
+@using Queries
+@inject IMediator _mediator
+@implements IDisposable
+
+<div class="row">
+    <div class="col-12 lead d-flex justify-content-between">
+        <span>Collected cards</span>
+        <a href="collection/quick-collect"> Quick Collect</a>
+    </div>
+</div>
+
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+@if (!_isLoading)
+{
+    <CardDisplay Cards="@_collection?.Reverse()">
+        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
+            Hell, no... Looks like you don't have any cards in your collection. Start by adding some :)
+        </div>
+    </CardDisplay>
+}
+
+@code {
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private IEnumerable<CollectedCard> _collection;
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
+        _isLoading = false;
+    }
+}

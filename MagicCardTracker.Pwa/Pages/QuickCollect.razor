@@ -1,0 +1,86 @@
+@page "/collection/quick-collect"
+@using Commands
+@using MagicCardTracker.Contracts
+@using System.Threading
+@using MagicCardTracker.Pwa.Components
+@using MediatR
+@using Models
+@inject IMediator _mediator
+@implements IDisposable
+
+<div class="row">
+    <div class="col-12 lead">
+        <a href="collection">&lt; Collected cards</a> | Quick Collect
+    </div>
+</div>
+
+<EditForm Model="_cardId" OnValidSubmit="@AddCardToCollectionAsync">
+    <div class="row mt-2 mb-4">
+        <div class="col-md-4 content bg-elevated">
+            <input class="form-control w-100" @bind="_cardId.SetCode" placeholder="Set Code" />
+        </div>
+        <div class="col-md-4 content bg-elevated">
+            <input class="form-control w-100" @bind="_cardId.CardNumber" placeholder="Card number" />
+        </div>
+        <div class="col-md-4 content bg-elevated d-flex align-items-center">
+            <InputRadioGroup @bind-Value="_cardId.LanguageCode">
+                <div class="form-check">
+                    <InputRadio class="form-check-input" Value="LanguageCodes.English" />
+                    <img class="form-check-label img-fluid align-text-bottom" style="width: 32px;" src="EN.png"/>
+                </div>
+                <div class="form-check ms-2">
+                    <InputRadio class="form-check-input" Value="LanguageCodes.German" />
+                    <img class="form-check-label img-fluid align-text-bottom" style="width: 32px;" src="DE.png"/>
+                </div>
+            </InputRadioGroup>
+            <button type="submit" class="btn btn-primary ms-auto"> Add </button>
+        </div>
+    </div>
+</EditForm>
+
+<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
+
+<CardDisplay ShowCountBadge="true" Cards="@_quickCollectionStack.Reverse()"></CardDisplay>
+
+@code {
+
+    private CardIdentity _cardId = new CardIdentity { LanguageCode = LanguageCodes.German };
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private HashSet<CollectedCard> _quickCollectionStack = new HashSet<CollectedCard>();
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    private async Task AddCardToCollectionAsync()
+    {
+        if (!_cardId.IsValid)
+        {
+            return;
+        }
+
+        _isLoading = true;
+        var card = await _mediator.Send(new AddCardByNumber(_cardId.SetCode, _cardId.CardNumber, _cardId.LanguageCode), _cts.Token);
+        _quickCollectionStack.Add(card);
+        _isLoading = false;
+    }
+
+    private class CardIdentity
+    {
+        public string SetCode { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public string LanguageCode { get; set; }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(SetCode)
+                            && !string.IsNullOrWhiteSpace(CardNumber)
+                            && !string.IsNullOrWhiteSpace(LanguageCode);
+    }
+}
