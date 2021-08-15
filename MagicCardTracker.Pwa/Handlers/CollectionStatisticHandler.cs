@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -40,35 +41,49 @@ namespace MagicCardTracker.Pwa.Handlers
             {
                 NumberOfCardsCollected = collection.Sum(c => c.TotalCount),
                 NumberOfUniqueCardsCollected = collection.Length,
-                CollectionValueInEuros = collection.Sum(c => GetTotalCardValueInEuros(c)),
-                CollectionValueInDollars = collection.Sum(c => GetTotalCardValueInDollars(c)),
-                MostValuableCard = collection.Length > 0 ? collection.Aggregate(
-                    (c1, c2) => GetTotalCardValueInDollars(c1) > GetTotalCardValueInDollars(c2) 
-                                    ? c1 
-                                    : c2) : null
+                CollectionValueInEuros = collection.Sum(c => GetTotalCardValue(c, Currency.Euro)),
+                CollectionValueInDollars = collection.Sum(c => GetTotalCardValue(c, Currency.Dollar)),
+                FiveMostValuableCards = collection.OrderByDescending(c => GetSingleCardValueInDollar(c))
+                                                  .Take(5)
             };
         }
 
-        private decimal GetTotalCardValueInEuros(CollectedCard card)
+        private decimal GetTotalCardValue(CollectedCard card, Currency currency)
         {
             if (!card.Prices.HasPricingInformation)
             {
                 return 0;
             }
 
-            return card.Count * card.Prices.StandardInEuros ?? 0
-                + card.FoilCount * card.Prices.FoiledInEuros ?? 0;
+            return currency == Currency.Euro
+                ? card.Count * card.Prices.StandardInEuros ?? 0
+                    + card.FoilCount * card.Prices.FoiledInEuros ?? 0
+                : card.Count * card.Prices.StandardInDollars ?? 0
+                    + card.FoilCount * card.Prices.FoiledInDollars ?? 0;
         }
 
-        private decimal GetTotalCardValueInDollars(CollectedCard card)
+        private decimal GetSingleCardValueInDollar(CollectedCard card)
         {
             if (!card.Prices.HasPricingInformation)
             {
                 return 0;
             }
 
-            return card.Count * card.Prices.StandardInDollars ?? 0
-                + card.FoilCount * card.Prices.FoiledInDollars ?? 0;
+            var standardValue = card.Count > 0
+                ? card.Prices.StandardInDollars ?? 0
+                : 0;
+
+            var foilValue = card.FoilCount > 0
+                ? card.Prices.FoiledInDollars ?? 0
+                : 0;
+
+            return Math.Max(standardValue, foilValue);
+        }
+
+        private enum Currency
+        {
+            Dollar, 
+            Euro
         }
     }
 }

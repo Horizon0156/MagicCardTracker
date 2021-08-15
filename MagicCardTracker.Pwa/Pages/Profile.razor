@@ -17,11 +17,31 @@
                 Statistics
             </label>
             <label class="color-white-60">
-                Most valuable card 
+                Five most valuable cards
             </label>
-            @if(_collectionStatistic?.MostValuableCard != null)
+            @if(_collectionStatistic != null)
             {
-                <img class="magic-card thumbnail mx-auto" src="@_collectionStatistic.MostValuableCard.ImageUrl">
+                <img class="magic-card thumbnail mx-auto" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
+
+                <table class="mt-2 w-100 color-white-60">
+                        <thead>
+                            <tr>
+                                <th> Name </th>
+                                <th> EUR </th>
+                                <th> USD </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var card in _collectionStatistic.FiveMostValuableCards)
+                            {
+                                <tr>
+                                    <td> @card.Name </td>
+                                    <td> @(card.Prices?.StandardInEuros?.ToString() ?? "-") € </td>
+                                    <td> @(card.Prices?.StandardInDollars?.ToString() ?? "-") $ </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
             }
         </div>
     </div>
@@ -50,7 +70,7 @@
             <div class="lead">
                 About
             </div>
-            <label class="color-white-60">Version: <span class="float-end">0.8.0</span></label>
+            <label class="color-white-60">Version: <span class="float-end">1.0.1</span></label>
         </div>
     </div>
 </div>
