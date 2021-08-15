@@ -14,7 +14,7 @@
         <span>Sets</span>
         @if (_hasCards)
         {
-            <span @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
+            <span class="action-link" @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
         }        
         
     </div>

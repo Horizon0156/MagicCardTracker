@@ -20,14 +20,27 @@
 
 @if (!_isLoading)
 {
-    <CardDisplay Cards="@_collection?.Reverse()">
+    <CardDisplay Cards="@_loadedCards">
         <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
             Hell, no... Looks like you don't have any cards in your collection. Start by adding some :)
         </div>
     </CardDisplay>
+
+    @if (_hasMore)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="content text-center">
+                    <span class="action-link" @onclick="@ShowMore"> Show more... </span>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 @code {
+
+    private const int DEFAULT_COLLECTION_DISPLAY_SIZE = 100;
 
     [Parameter]
     public string SetCode { get; set; }
@@ -36,7 +49,13 @@
 
     private bool _isLoading;
 
+    private int _take;
+
+    private bool _hasMore;
+
     private IEnumerable<CollectedCard> _collection;
+
+    private IEnumerable<CollectedCard> _loadedCards;
 
     public void Dispose()
     {
@@ -47,14 +66,22 @@
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
-        
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
 
         if (!string.IsNullOrWhiteSpace(SetCode))
         {
             _collection = _collection.Where(c => c.SetCode == SetCode);
         }
+        _collection = _collection.Reverse();
+        ShowMore();
 
         _isLoading = false;
+    }
+
+    private void ShowMore()
+    {
+        _take += DEFAULT_COLLECTION_DISPLAY_SIZE;
+        _hasMore = _take < _collection.Count();
+        _loadedCards = _collection.Take(_take);
     }
 }

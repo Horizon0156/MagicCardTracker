@@ -33,14 +33,15 @@ namespace MagicCardTracker.Pwa.Handlers
                                                      null,
                                                      null,
                                                      include_multilingual: true,
-                                                     null,
+                                                     request.Page,
                                                      cancellationToken: cancellationToken);
 
             return new CardSearchResult
             {
                 HasMoreResults = searchResult.Has_more,
                 NumberOfMatchedCards = searchResult.Total_cards,
-                Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Data)
+                Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Data),
+                Page = request.Page ?? 1
             };
         }
     }

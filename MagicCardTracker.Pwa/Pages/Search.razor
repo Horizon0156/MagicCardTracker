@@ -3,6 +3,7 @@
 @using MagicCardTracker.Pwa.Components
 @using System.Threading
 @using MediatR
+@using Models
 @using Queries
 @inject IMediator _mediator
 @implements IDisposable
@@ -15,13 +16,24 @@
 
 <LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
 
-@if (!_isLoading)
+@if (!_isLoading || _cachedCards != null)
 {
-    <CardDisplay Cards="@_searchResult">
+    <CardDisplay Cards="@_cachedCards">
         <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
             Phew... Sorry, there was no card that matches your search criteria
         </div>
     </CardDisplay>
+
+    @if (_searchResult?.HasMoreResults ?? false)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="content text-center">
+                    <span class="action-link" @onclick="@LoadMoreAsync"> Show more... </span>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 
@@ -31,7 +43,9 @@
 
     private bool _isLoading;
 
-    private IEnumerable<Card> _searchResult;
+    private IEnumerable<Card> _cachedCards;
+
+    private CardSearchResult _searchResult;
 
     [Parameter]
     public string Query { get; set; }
@@ -57,8 +71,16 @@
         }
 
         _isLoading = true;
-        var searchResult = await _mediator.Send(new SearchCards(Query));
-        _searchResult = searchResult.Cards;
+        _searchResult = await _mediator.Send(new SearchCards(Query));
+        _cachedCards = _searchResult.Cards;
+        _isLoading = false;
+    }
+
+    private async Task LoadMoreAsync()
+    {
+        _isLoading = true;
+        _searchResult = await _mediator.Send(new SearchCards(Query, _searchResult.Page + 1));
+        _cachedCards = _cachedCards.Concat(_searchResult.Cards);
         _isLoading = false;
     }
 }

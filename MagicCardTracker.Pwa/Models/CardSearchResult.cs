@@ -11,5 +11,7 @@ namespace MagicCardTracker.Pwa.Models
         public int NumberOfMatchedCards { get; set; }
 
         public IEnumerable<Card> Cards { get; set; }
+
+        public int Page { get; set; }
     }
 }
