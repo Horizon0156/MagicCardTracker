@@ -17,13 +17,13 @@
 
 <EditForm Model="_cardId" OnValidSubmit="@AddCardToCollectionAsync">
     <div class="row mt-2 mb-4">
-        <div class="col-md-4 content bg-elevated">
+        <div class="col-md-3 content bg-elevated">
             <input class="form-control w-100" @bind="_cardId.SetCode" placeholder="Set Code" />
         </div>
-        <div class="col-md-4 content bg-elevated">
+        <div class="col-md-3 content bg-elevated">
             <input class="form-control w-100" @bind="_cardId.CardNumber" placeholder="Card number" />
         </div>
-        <div class="col-md-4 content bg-elevated d-flex align-items-center">
+        <div class="col-md-6 content bg-elevated d-flex align-items-center">
             <InputRadioGroup @bind-Value="_cardId.LanguageCode">
                 <div class="form-check">
                     <InputRadio class="form-check-input" Value="LanguageCodes.English" />
@@ -34,6 +34,12 @@
                     <img class="form-check-label img-fluid align-text-bottom" style="width: 32px;" src="DE.png"/>
                 </div>
             </InputRadioGroup>
+            <div class="form-check ms-4">
+                <InputCheckbox class="form-check-input" id="foil" @bind-Value="_collectAsFoil"/>
+                <label class="form-check-label" for="foil">
+                    Foil
+                </label>
+            </div>
             <button type="submit" class="btn btn-primary ms-auto"> Add </button>
         </div>
     </div>
@@ -46,11 +52,9 @@
 @code {
 
     private CardIdentity _cardId = new CardIdentity { LanguageCode = LanguageCodes.German };
-
+    private bool _collectAsFoil;
     private CancellationTokenSource _cts = new CancellationTokenSource();
-
     private bool _isLoading;
-
     private HashSet<CollectedCard> _quickCollectionStack = new HashSet<CollectedCard>();
 
     public void Dispose()
@@ -68,7 +72,11 @@
 
         _isLoading = true;
         var card = await _mediator.Send(
-            new AddCardByNumber(_cardId.SetCode, _cardId.CardNumber, _cardId.LanguageCode),
+            new AddCardByNumber(
+                _cardId.SetCode,
+                _cardId.CardNumber,
+                _cardId.LanguageCode,
+                _collectAsFoil),
             _cts.Token);
         _quickCollectionStack.Add(card);
         _isLoading = false;

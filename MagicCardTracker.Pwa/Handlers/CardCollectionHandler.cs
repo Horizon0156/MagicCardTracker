@@ -55,7 +55,15 @@ namespace MagicCardTracker.Pwa.Handlers
 
             if (collectedCard != null)
             {
-                collectedCard.Count++;
+                if (request.AddAsFoil) 
+                {
+                    collectedCard.FoilCount++;
+                }
+                else
+                {
+                    collectedCard.Count++;
+                }
+                
                 await _cardLibrary.AddCardAsync(collectedCard, cancellationToken);
 
                 return collectedCard;
@@ -71,7 +79,9 @@ namespace MagicCardTracker.Pwa.Handlers
             var card = _mapper.Map<Contracts.Card>(desiredCard);
             await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
 
-            var collectableCard = new CollectedCard(card, 1, 0);
+            var collectableCard = request.AddAsFoil
+                ? new CollectedCard(card, 0, 1)
+                : new CollectedCard(card, 1, 0);
             await _cardLibrary.AddCardAsync(collectableCard, cancellationToken);
             return collectableCard;
         }
