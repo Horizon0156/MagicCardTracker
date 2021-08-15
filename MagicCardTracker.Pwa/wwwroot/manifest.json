@@ -7,7 +7,7 @@
   "theme_color": "#03173d",
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "MCT_Logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
