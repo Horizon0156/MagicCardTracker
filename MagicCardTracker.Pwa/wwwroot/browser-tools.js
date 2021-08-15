@@ -1,4 +1,9 @@
 
+function scrollToTop() {
+
+    document.getElementById('scrollContext').scrollTo(0, 0);
+}
+
 function saveFileAs(filename, fileContent) {
 
     var link = document.createElement('a');

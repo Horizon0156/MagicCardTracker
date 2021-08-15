@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Blazored.LocalStorage;
 using MagicCardTracker.Pwa.Cache;
+using MagicCardTracker.Pwa.Helpers;
 using MagicCardTracker.Pwa.Profiles;
 using MagicCardTracker.Pwa.Storage;
 using MagicCardTracker.ScryfallClient;
@@ -24,6 +25,8 @@ namespace MagicCardTracker.Pwa
             builder.Services.AddMediatR(typeof(Program));
             builder.Services.AddAutoMapper(SetupMappings);
             builder.Services.AddHttpClient();
+
+            builder.Services.AddTransient<IBrowserTools, JSBrowserTools>();
 
             builder.Services.AddScoped<IScryfallClientFactory, ScryfallClientFactory>();
             builder.Services.AddScoped<ICardLibraryPersister, LocalStorageCardLibrary>();

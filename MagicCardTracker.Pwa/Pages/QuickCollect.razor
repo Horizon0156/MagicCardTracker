@@ -1,4 +1,5 @@
 @page "/collection/quick-collect"
+
 @using Commands
 @using MagicCardTracker.Contracts
 @using System.Threading
@@ -66,7 +67,9 @@
         }
 
         _isLoading = true;
-        var card = await _mediator.Send(new AddCardByNumber(_cardId.SetCode, _cardId.CardNumber, _cardId.LanguageCode), _cts.Token);
+        var card = await _mediator.Send(
+            new AddCardByNumber(_cardId.SetCode, _cardId.CardNumber, _cardId.LanguageCode),
+            _cts.Token);
         _quickCollectionStack.Add(card);
         _isLoading = false;
     }

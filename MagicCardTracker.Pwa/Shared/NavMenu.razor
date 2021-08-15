@@ -1,10 +1,13 @@
-﻿@inject NavigationManager _navigationManager
+﻿@using System.Threading
+@using MagicCardTracker.Pwa.Helpers
+@inject NavigationManager _navigationManager
+@inject IBrowserTools _browserTools
 
 <nav class="navbar navbar-dark navbar-expand-lg">
 
     <div class="container-fluid">
         <div clas="navbar-brand">
-            <img class="img-fluid" src="logo-mtg.png" style="height:40px" />
+            <img class="img-fluid" src="MCT_Logo_Wide.png" style="height:40px" />
         </div>
         <button class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
@@ -54,11 +57,13 @@
     public void Dispose()
     {
         _navigationManager.LocationChanged -= SetQueryOnSearch;
+        _navigationManager.LocationChanged -= ScrollToTop;
     }
 
     protected override Task OnInitializedAsync()
     {
         _navigationManager.LocationChanged += SetQueryOnSearch;
+        _navigationManager.LocationChanged += ScrollToTop;
 
         return Task.CompletedTask;
     }
@@ -69,6 +74,11 @@
         {
             _navigationManager.NavigateTo($"/search/{_queryString}");
         }
+    }
+
+    private void ScrollToTop(object sender, LocationChangedEventArgs e)
+    {
+        _browserTools.ScrollToTopAsync(CancellationToken.None);
     }
 
     private void SetQueryOnSearch(object sender, LocationChangedEventArgs e)

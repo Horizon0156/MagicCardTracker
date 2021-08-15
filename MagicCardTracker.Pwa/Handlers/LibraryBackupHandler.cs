@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicCardTracker.Contracts;
 using MagicCardTracker.Pwa.Commands;
+using MagicCardTracker.Pwa.Helpers;
 using MagicCardTracker.Storage;
 using MediatR;
-using Microsoft.JSInterop;
 
 namespace MagicCardTracker.Pwa.Handlers
 {
@@ -14,14 +14,14 @@ namespace MagicCardTracker.Pwa.Handlers
         IRequestHandler<ExportLibraryCommand>,
         IRequestHandler<ImportLibraryCommand>
     {
-        private readonly IJSRuntime _jsRuntime;
+        private readonly IBrowserTools _browserTools;
         private readonly ICardLibrary _cardLibrary;
 
         public LibraryBackupHandler(
-            IJSRuntime jsRuntime,
+            IBrowserTools browserTools,
             ICardLibrary cardLibrary)
         {
-            _jsRuntime = jsRuntime;
+            _browserTools = browserTools;
             _cardLibrary = cardLibrary;
         }
 
@@ -41,11 +41,10 @@ namespace MagicCardTracker.Pwa.Handlers
             var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
             var serializedCollection = JsonSerializer.Serialize(collection);
 
-            await _jsRuntime.InvokeAsync<object>(
-                "saveFileAs",
-                cancellationToken,
+            await _browserTools.SaveAsFileAsync(
                 "MCTLibrary.json",
-                serializedCollection);
+                serializedCollection,
+                cancellationToken);
 
             return Unit.Value;
         }
