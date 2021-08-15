@@ -20,3 +20,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Magic Card Tracker is unofficial Fan Content permitted under the Fan Content Policy. 
+Not approved/endorsed by Wizards. 
+Portions of the materials used are property of Wizards of the Coast.
+(c)Wizards of the Coast LLC.

@@ -1,5 +1,6 @@
 @page "/"
 @page "/collection"
+@page "/collection/{SetCode}"
 @using MagicCardTracker.Contracts
 @using System.Threading
 @using MagicCardTracker.Pwa.Components
@@ -28,6 +29,9 @@
 
 @code {
 
+    [Parameter]
+    public string SetCode { get; set; }
+    
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
     private bool _isLoading;
@@ -43,7 +47,14 @@
     protected override async Task OnInitializedAsync()
     {
         _isLoading = true;
+        
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
+
+        if (!string.IsNullOrWhiteSpace(SetCode))
+        {
+            _collection = _collection.Where(c => c.SetCode == SetCode);
+        }
+
         _isLoading = false;
     }
 }
