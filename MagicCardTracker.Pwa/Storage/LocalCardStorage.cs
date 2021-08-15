@@ -23,7 +23,6 @@ namespace MagicCardTracker.Pwa.Storage
 
         public async Task<IEnumerable<CollectedCard>> RestoreLibraryAsync(CancellationToken cancellationToken)
         {
-            System.Console.WriteLine("Restored library from collection");
             var collection = await _localStorage.GetItemAsync<CollectedCard[]>("cards", cancellationToken);
             
             return collection;

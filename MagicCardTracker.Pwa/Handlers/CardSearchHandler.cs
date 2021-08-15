@@ -25,7 +25,10 @@ namespace MagicCardTracker.Pwa.Handlers
         public async Task<CardSearchResult> Handle(SearchCards request, CancellationToken cancellationToken)
         {
             var query = request.Query.Replace(" ", "+");
-            var searchResult = await _scryfallClientFactory
+            
+            try
+            {
+                var searchResult = await _scryfallClientFactory
                                         .Cards
                                         .SearchAsync(query,
                                                      null,
@@ -36,13 +39,24 @@ namespace MagicCardTracker.Pwa.Handlers
                                                      request.Page,
                                                      cancellationToken: cancellationToken);
 
-            return new CardSearchResult
+                return new CardSearchResult
+                {
+                    HasMoreResults = searchResult.Has_more,
+                    NumberOfMatchedCards = searchResult.Total_cards,
+                    Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Data),
+                    Page = request.Page ?? 1
+                };
+            }
+            catch (ApiException e)
             {
-                HasMoreResults = searchResult.Has_more,
-                NumberOfMatchedCards = searchResult.Total_cards,
-                Cards = _mapper.Map<IEnumerable<Contracts.Card>>(searchResult.Data),
-                Page = request.Page ?? 1
-            };
+                return new CardSearchResult
+                {
+                    HasMoreResults = false,
+                    NumberOfMatchedCards = 0,
+                    Cards = null,
+                    Page = 1
+                };
+            }
         }
     }
 }
