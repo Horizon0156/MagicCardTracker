@@ -25,5 +25,6 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm,linux/amd64 \
-            --push
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:dev .
+            --push \
+            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:dev \
+            .
