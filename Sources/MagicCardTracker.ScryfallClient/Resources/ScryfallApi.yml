@@ -374,7 +374,6 @@ paths:
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Success
@@ -478,7 +477,6 @@ paths:
         required: true
         schema:
           type: string
-          format: uuid
       responses:
         200:
           description: Success
@@ -757,10 +755,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
         oracle_id:
           type: string
-          format: uuid
         multiverse_ids:
           type: array
           items:
@@ -901,7 +897,6 @@ components:
           type: string
         illustration_id:
           type: string
-          format: uuid
         frame:
           type: string
         full_art:
@@ -970,7 +965,6 @@ components:
           type: string
         illustration_id:
           type: string
-          format: uuid
         image_uris:
           $ref: '#/components/schemas/image_uri'
     colors:
@@ -1047,7 +1041,6 @@ components:
       properties:
         id:
           type: string
-          format: uuid
         name:
           type: string
         uri:
