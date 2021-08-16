@@ -1,17 +1,21 @@
-name: 📦 Ship Docker DEV image
+name: 📦 Ship Docker PROD image
 on:
   push:
-    branches: [ main ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    tags: [ v* ]
 
 jobs:
   deploy:
-    name: 📦 Ship Docker DEV image
+    name: 📦 Ship Docker PROD image
     runs-on: ubuntu-latest
     steps:
       - name: 🔧 Checkout repository
         uses: actions/checkout@v2
+      - name: 🏷 Extract version
+        id: version
+        run: |
+          version=$(git describe --tags $(git rev-list --tags --max-count=1) | cut -c2-)
+          echo Version: $version
+          echo "::set-output name=version::$version"
       - name: 🔧 Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: 🔧 Set up Docker Buildx
@@ -24,5 +28,6 @@ jobs:
           docker buildx build \
             --platform linux/arm,linux/amd64 \
             --push \
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:dev \
+            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:latest \
+            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:${{ steps.version.outputs.version }} \
             .

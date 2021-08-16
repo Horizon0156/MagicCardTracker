@@ -47,7 +47,7 @@ namespace MagicCardTracker.Pwa.Handlers
                     Page = request.Page ?? 1
                 };
             }
-            catch (ApiException e)
+            catch (ApiException)
             {
                 return new CardSearchResult
                 {
