@@ -10,9 +10,12 @@ jobs:
     steps:
       - name: 🔧 Checkout repository
         uses: actions/checkout@v2
-      - name: Extract version
-        id: tag_version
-        run: echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/:12}
+      - name: 🏷 Extract version
+        id: version
+        run: |
+          version=$(git describe --tags $(git rev-list --tags --max-count=1) | cut -c2-)
+          echo Version: $version
+          echo "::set-output name=version::$version"
       - name: 🔧 Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: 🔧 Set up Docker Buildx
@@ -26,5 +29,5 @@ jobs:
             --platform linux/arm,linux/amd64 \
             --push \
             --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:latest \
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:${{ steps.tag_version.outputs.SOURCE_TAG }} \
+            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:${{ steps.version.outputs.version }} \
             .
