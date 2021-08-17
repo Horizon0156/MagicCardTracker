@@ -17,7 +17,7 @@
         @if (_hasCards)
         {
             <span class="ms-2 action-link" @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
-        }        
+        }    
         </div>  
     </div>
 </div>
@@ -26,11 +26,13 @@
 
 @if (!_isLoading && _collectedSets != null)
 {
-    @foreach (var set in _showAll ? _collectedSets : _collectedSets.Where(s => s.NumberOfCollectedCards > 0))
+    @foreach (var set in _showAll 
+                ? _collectedSets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0) 
+                : _collectedSets.Where(s => s.NumberOfCollectedCards > 0))
     {
         <div class="row mt-2 cursor-pointer" @onclick="@(() => BrowseSet(set))">
             <div class="col-12 d-flex bg-elevated content">
-                <img class="set-icon" src="@set.SetIconUrl"/>
+                <img class="set-icon" src="@set.SetIconUrl" alt="@set.Code.ToUpper()"/>
                 <div class="ms-4 d-flex flex-column flex-grow-1">
                     <span> @set.Name (@set.Code.ToUpper())</span>
                     <span class="color-white-60">@set.NumberOfCollectedCards / @set.NumberOfCards collected</span>
@@ -62,15 +64,25 @@
         _cts.Dispose();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
+    {
+        return LoadSetsAsync(forceRefresh: false);
+    }
+
+    private async Task LoadSetsAsync(bool forceRefresh)
     {
         _isLoading = true;
-        _collectedSets = await _mediator.Send(new GetCollectedSets(), _cts.Token);
+        _collectedSets = await _mediator.Send(new GetCollectedSets(forceRefresh), _cts.Token);
 
         _hasCards = _collectedSets.Any(s => s.NumberOfCollectedCards > 0);
         _showAll = !_hasCards;
 
         _isLoading = false;
+    }
+
+    private Task RefreshAsync()
+    {
+        return LoadSetsAsync(forceRefresh: true);
     }
 
     private void ToggleShowAll()

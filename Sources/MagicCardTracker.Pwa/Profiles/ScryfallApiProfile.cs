@@ -31,6 +31,9 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForMember(s => s.ReleaseDate, cfg => cfg.MapFrom(s => s.Released_at.DateTime))
                 .ForMember(s => s.SetIconUrl, cfg => cfg.MapFrom(s => s.Icon_svg_uri))
                 .ForMember(s => s.NumberOfCards, cfg => cfg.MapFrom(s => s.Card_count))
+                .ForMember(s => s.IsCoreOrExpansionSet, cfg => cfg.MapFrom(
+                    s => s.Set_type == ScryfallClient.Set_type.Core 
+                      || s.Set_type == ScryfallClient.Set_type.Expansion))
                 .ForMember(s => s.NumberOfCollectedCards, cfg => cfg.Ignore());
         }
 

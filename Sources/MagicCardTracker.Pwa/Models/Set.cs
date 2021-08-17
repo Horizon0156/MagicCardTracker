@@ -16,6 +16,8 @@ namespace MagicCardTracker.Pwa.Models
 
         public string SetIconUrl { get; set; }
 
+        public bool IsCoreOrExpansionSet { get; set; }
+
         public int Completeness => NumberOfCards > 0
             ? NumberOfCollectedCards * 100 / NumberOfCards 
             : 0;
