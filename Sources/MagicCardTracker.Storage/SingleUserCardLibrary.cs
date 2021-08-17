@@ -7,6 +7,9 @@ using MagicCardTracker.Storage.Abstrations;
 
 namespace MagicCardTracker.Storage
 {
+    /// <summary>
+    ///     Implementation of a card library for a single user.
+    /// </summary>
     public class SingleUserCardLibrary : ICardLibrary
     {
         private HashSet<CollectedCard> _collectedCards;
@@ -15,11 +18,17 @@ namespace MagicCardTracker.Storage
 
         private readonly ICardLibraryPersister _libraryPersister;
 
+        /// <summary>
+        ///     Created a new SingleUserCardLibrary.
+        /// </summary>
+        /// <param name="libraryPersister"> An instance of a library persister. </param>
         public SingleUserCardLibrary(ICardLibraryPersister libraryPersister)
         {
             _libraryPersister = libraryPersister;
             _collectedCards = new HashSet<CollectedCard>();
         }
+
+        /// <inheritdoc />
         public async Task AddCardAsync(CollectedCard card, CancellationToken cancellationToken)
         {
             await RecoverCardLibraryIfNeeded(cancellationToken);
@@ -34,6 +43,7 @@ namespace MagicCardTracker.Storage
             await _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<CollectedCard>> GetCollectedCardsAsync(CancellationToken cancellationToken)
         {
             await RecoverCardLibraryIfNeeded(cancellationToken);
@@ -41,6 +51,7 @@ namespace MagicCardTracker.Storage
             return _collectedCards;
         }
 
+        /// <inheritdoc />
         public async Task<CollectedCard> SearchInCollectionAsync(Card card, CancellationToken cancellationToken)
         {
             await RecoverCardLibraryIfNeeded(cancellationToken);
@@ -52,6 +63,7 @@ namespace MagicCardTracker.Storage
                 : collectableCard;
         }
 
+        /// <inheritdoc />
         public async Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken)
         {
             await RecoverCardLibraryIfNeeded(cancellationToken);
@@ -59,6 +71,7 @@ namespace MagicCardTracker.Storage
             return _collectedCards.FirstOrDefault(c => c.SetCode == setCode && c.Number == cardNumber && c.LanguageCode == languageCode);
         }
 
+        /// <inheritdoc />
         private async Task RecoverCardLibraryIfNeeded(CancellationToken cancellationToken)
         {
             if (_isCardLibraryLoaded) 
@@ -71,12 +84,14 @@ namespace MagicCardTracker.Storage
             _isCardLibraryLoaded = true;
         }
 
+        /// <inheritdoc />
         public Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken)
         {
             _collectedCards = new HashSet<CollectedCard>(collectedCards);
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
         }
 
+        /// <inheritdoc />
         public Task ClearCollectionAsync(CancellationToken cancellationToken)
         {
             _collectedCards.Clear();
