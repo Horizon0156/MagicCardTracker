@@ -46,10 +46,14 @@ namespace MagicCardTracker.Pwa.Handlers
 
         public async Task<CollectedCard> Handle(AddCardByNumber request, CancellationToken cancellationToken)
         {
+            var setCode = request.SetCode.ToLower().Trim();
+            var cardNumber = request.CardNumber.TrimStart('0').Trim();
+            var languageCode = request.LanguageCode.ToLower().Trim();
+
             var collectedCard = await _cardLibrary.SearchInCollectionByIdAsync(
-                request.SetCode,
-                request.CardNumber,
-                request.LanguageCode,
+                setCode,
+                cardNumber,
+                languageCode,
                 cancellationToken
             );
 
@@ -72,9 +76,9 @@ namespace MagicCardTracker.Pwa.Handlers
             var desiredCard = await _scryfallClientFactory
                                 .Cards
                                 .GetByCodeByNumberByLangAsync(
-                                    request.SetCode, 
-                                    request.CardNumber, 
-                                    request.LanguageCode, 
+                                    setCode, 
+                                    cardNumber, 
+                                    languageCode, 
                                     cancellationToken);
             var card = _mapper.Map<Contracts.Card>(desiredCard);
             await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
