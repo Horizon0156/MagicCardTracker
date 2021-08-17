@@ -39,7 +39,9 @@ namespace MagicCardTracker.Pwa.Handlers
         {
             var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
             var cardsBySet = collection.GroupBy(c => c.SetCode);
-            var collectedSets = await GetCommonSetsAsync(cancellationToken);
+            var collectedSets = request.ForceRefresh
+                ? await GetCommonSetsAsync(cancellationToken)
+                : await GetCommonSetsFromCacheAsync(cancellationToken);
 
             foreach (var setCode in cardsBySet)
             {
@@ -53,7 +55,8 @@ namespace MagicCardTracker.Pwa.Handlers
             return collectedSets;
         }
 
-        private async Task<List<Set>> GetCommonSetsAsync(CancellationToken cancellationToken)
+        private async Task<List<Set>> GetCommonSetsFromCacheAsync(
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -61,19 +64,25 @@ namespace MagicCardTracker.Pwa.Handlers
             }
             catch (CacheMissException)
             {
-                var sets = await _scryfallClientFactory.Sets.GetAllAsync(cancellationToken);
-                var filteredSets = sets.Data
-                                       .Where(s => s.Set_type == Set_type.Core 
-                                                || s.Set_type == Set_type.Expansion)
-                                       .Where(s => s.Released_at < DateTimeOffset.Now 
-                                                && s.Card_count > 0)
-                                       .Select(s => _mapper.Map<Set>(s))
-                                       .OrderByDescending(s => s.ReleaseDate)
-                                       .ToList();
-                await _cache.CacheObject(KnownCacheKeys.Sets, filteredSets, cancellationToken);
-
-                return filteredSets;
+                return await GetCommonSetsAsync(cancellationToken);
             }
+        }
+
+        private async Task<List<Set>> GetCommonSetsAsync(CancellationToken cancellationToken)
+        {
+            var sets = await _scryfallClientFactory.Sets.GetAllAsync(cancellationToken);
+            var filteredSets = sets.Data
+                                    .Where(s => s.Set_type == Set_type.Core 
+                                            || s.Set_type == Set_type.Expansion
+                                            || s.Set_type == Set_type.Commander)
+                                    .Where(s => s.Released_at < DateTimeOffset.Now 
+                                            && s.Card_count > 0)
+                                    .Select(s => _mapper.Map<Set>(s))
+                                    .OrderByDescending(s => s.ReleaseDate)
+                                    .ToList();
+            await _cache.CacheObject(KnownCacheKeys.Sets, filteredSets, cancellationToken);
+
+            return filteredSets;
         }
     }
 }

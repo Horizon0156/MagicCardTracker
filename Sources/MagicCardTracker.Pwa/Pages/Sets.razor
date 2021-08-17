@@ -12,11 +12,13 @@
 <div class="row">
     <div class="col-12 lead d-flex justify-content-between">
         <span>Sets</span>
+        <div>
+        <span class="action-link" @onclick="@RefreshAsync"> Refresh </span>
         @if (_hasCards)
         {
-            <span class="action-link" @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
+            <span class="ms-2 action-link" @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
         }        
-        
+        </div>  
     </div>
 </div>
 
