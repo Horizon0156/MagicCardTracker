@@ -14,8 +14,6 @@
     </div>
 </div>
 
-<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
-
 @if (!_isLoading || _cachedCards != null)
 {
     <CardDisplay Cards="@_cachedCards">
@@ -36,6 +34,7 @@
     }
 }
 
+<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="_cachedCards != null"></LoadingIndicator>
 
 @code {
 

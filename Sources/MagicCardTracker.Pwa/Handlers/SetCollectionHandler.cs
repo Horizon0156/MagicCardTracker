@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MagicCardTracker.Pwa.Cache;
+using MagicCardTracker.Pwa.Commands;
 using MagicCardTracker.Pwa.Queries;
 using MagicCardTracker.ScryfallClient;
 using MagicCardTracker.Storage;
@@ -14,7 +15,9 @@ using Set = MagicCardTracker.Pwa.Models.Set;
 
 namespace MagicCardTracker.Pwa.Handlers
 {
-    internal class SetCollectionHandler : IRequestHandler<GetCollectedSets, IEnumerable<Set>>
+    internal class SetCollectionHandler : 
+        IRequestHandler<GetCollectedSets, IEnumerable<Set>>,
+        IRequestHandler<UpdateSets>
     {
         private readonly ICardLibrary _cardLibrary;
         private readonly IScryfallClientFactory _scryfallClientFactory;
@@ -39,9 +42,7 @@ namespace MagicCardTracker.Pwa.Handlers
         {
             var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
             var cardsBySet = collection.GroupBy(c => c.SetCode);
-            var collectedSets = request.ForceRefresh
-                ? await GetCommonSetsAsync(cancellationToken)
-                : await GetCommonSetsFromCacheAsync(cancellationToken);
+            var collectedSets = await GetCommonSetsFromCacheAsync(cancellationToken);
 
             foreach (var setCode in cardsBySet)
             {
@@ -53,6 +54,13 @@ namespace MagicCardTracker.Pwa.Handlers
             }
 
             return collectedSets;
+        }
+
+        public async Task<Unit> Handle(UpdateSets request, CancellationToken cancellationToken)
+        {
+            await GetCommonSetsAsync(cancellationToken);
+
+            return Unit.Value;
         }
 
         private async Task<List<Set>> GetCommonSetsFromCacheAsync(

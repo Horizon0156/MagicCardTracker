@@ -83,8 +83,15 @@ a, .btn-link, a:hover, .action-link {
     left: 0;
     right: 0;
     display: flex;
+    flex-direction: column;
+    user-select: none;
     justify-content: center;
     align-items: center;
+}
+
+.loader.fade-out-background {
+
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .loader img {

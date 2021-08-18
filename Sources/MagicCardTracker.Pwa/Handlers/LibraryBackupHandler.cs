@@ -11,8 +11,8 @@ using MediatR;
 namespace MagicCardTracker.Pwa.Handlers
 {
     internal class LibraryBackupHandler : 
-        IRequestHandler<ExportLibraryCommand>,
-        IRequestHandler<ImportLibraryCommand>
+        IRequestHandler<ExportLibrary>,
+        IRequestHandler<ImportLibrary>
     {
         private readonly IBrowserTools _browserTools;
         private readonly ICardLibrary _cardLibrary;
@@ -25,7 +25,7 @@ namespace MagicCardTracker.Pwa.Handlers
             _cardLibrary = cardLibrary;
         }
 
-        public async Task<Unit> Handle(ImportLibraryCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ImportLibrary request, CancellationToken cancellationToken)
         {
             var collection = await JsonSerializer.DeserializeAsync<CollectedCard[]>(
                 request.LibraryBackupStream, 
@@ -36,7 +36,7 @@ namespace MagicCardTracker.Pwa.Handlers
             return Unit.Value;
         }
 
-        public async Task<Unit> Handle(ExportLibraryCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ExportLibrary request, CancellationToken cancellationToken)
         {
             var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
             var serializedCollection = JsonSerializer.Serialize(collection);

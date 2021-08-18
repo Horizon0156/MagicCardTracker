@@ -45,9 +45,10 @@
     </div>
 </EditForm>
 
-<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
-
 <CardDisplay ShowCountBadge="true" Cards="@_quickCollectionStack.Reverse()"></CardDisplay>
+
+<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="true" Text="Loading card information..."></LoadingIndicator>
+
 
 @code {
 

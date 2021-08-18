@@ -3,9 +3,9 @@ using MediatR;
 
 namespace MagicCardTracker.Pwa.Commands
 {
-    internal class ImportLibraryCommand : IRequest
+    internal class ImportLibrary : IRequest
     {
-        public ImportLibraryCommand(Stream libraryBackupStream)
+        public ImportLibrary(Stream libraryBackupStream)
         {
             LibraryBackupStream = libraryBackupStream;
         }

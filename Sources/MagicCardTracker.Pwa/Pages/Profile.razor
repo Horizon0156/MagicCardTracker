@@ -8,7 +8,9 @@
 @implements IDisposable
 @inject IMediator _mediator;
 
-<LoadingIndicator IsBusy="@_isLoading"></LoadingIndicator>
+<LoadingIndicator IsBusy="@_isLoading" 
+                  FadeOutBackground="true" 
+                  Text="@_loadingInformation"/>
 
 <div class="row">
     <div class="col-md-6">
@@ -59,12 +61,17 @@
             <div class="lead">
                 Data management
             </div>
-            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">Export Library</button>
+            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">
+                Export Library
+            </button>
 
             <label class="mt-2 btn btn-primary">
                 <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
                 Import Library
             </label>
+            <button class="mt-2 btn btn-primary" @onclick="@UpdateSetsAsync">
+                Update Sets
+            </button>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -81,6 +88,8 @@
 
     private bool _isLoading;
 
+    private string _loadingInformation;
+
     private CollectionStatistic _collectionStatistic;
 
     public void Dispose()
@@ -96,6 +105,7 @@
 
     private async Task LoadCollectionAsync()
     {
+        _loadingInformation = null;
         _isLoading = true;
         _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
         _isLoading = false;
@@ -103,10 +113,11 @@
 
     private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
     {
+        _loadingInformation = "Importing library...";
         _isLoading = true;
         using (var libraryStream = e.File.OpenReadStream())
         {
-            await _mediator.Send(new ImportLibraryCommand(libraryStream), _cts.Token);
+            await _mediator.Send(new ImportLibrary(libraryStream), _cts.Token);
             await LoadCollectionAsync();
             _isLoading = false;
         }
@@ -114,8 +125,17 @@
 
     private async Task ExportLibraryAsync()
     {
+        _loadingInformation = "Exporting library...";
         _isLoading = true;
-        await _mediator.Send(new ExportLibraryCommand(), _cts.Token);
+        await _mediator.Send(new ExportLibrary(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task UpdateSetsAsync()
+    {
+        _loadingInformation = "Updating set information...";
+        _isLoading = true;
+        await _mediator.Send(new UpdateSets(), _cts.Token);
         _isLoading = false;
     }
 }
