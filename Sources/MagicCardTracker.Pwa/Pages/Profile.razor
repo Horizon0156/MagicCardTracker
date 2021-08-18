@@ -1,12 +1,12 @@
 @page "/profile"
 @using Commands
 @using MagicCardTracker.Pwa.Components
-@using MediatR;
-@using System.Threading;
+@using MediatR
+@using System.Threading
 @using Models
 @using Queries
 @implements IDisposable
-@inject IMediator _mediator;
+@inject IMediator _mediator
 
 <LoadingIndicator IsBusy="@_isLoading" 
                   FadeOutBackground="true" 
@@ -147,6 +147,7 @@
         _loadingInformation = "Updating collection...";
         _isLoading = true;
         await _mediator.Send(new UpdateCollection(), _cts.Token);
+        StateHasChanged();
         _isLoading = false;
     }
 }
