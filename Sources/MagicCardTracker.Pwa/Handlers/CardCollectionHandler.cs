@@ -4,32 +4,38 @@ using System.Threading.Tasks;
 using MagicCardTracker.Contracts;
 using MagicCardTracker.Pwa.Commands;
 using MagicCardTracker.Pwa.Queries;
+using MagicCardTracker.Pwa.Notifications;
 using MagicCardTracker.ScryfallClient;
 using MagicCardTracker.Storage;
 using AutoMapper;
 using MediatR;
 using MagicCardTracker.Pwa.Exceptions;
+using System.Linq;
 
 namespace MagicCardTracker.Pwa.Handlers
 {
     internal class CardCollectionHandler : 
-        AsyncRequestHandler<AddCard>, 
+        IRequestHandler<AddCard>, 
         IRequestHandler<AddCardByNumber, CollectedCard>,
         IRequestHandler<GetCollectedCards, IEnumerable<CollectedCard>>,
-        IRequestHandler<GetCollectableCard, CollectedCard>
+        IRequestHandler<GetCollectableCard, CollectedCard>,
+        IRequestHandler<UpdateCollection>
     {
         private readonly ICardLibrary _cardLibrary;
         private readonly IScryfallClientFactory _scryfallClientFactory;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
 
         public CardCollectionHandler(
             ICardLibrary cardLibrary,
             IScryfallClientFactory scryfallClientFactory,
-            IMapper mapper)
+            IMapper mapper,
+            INotificationService notificationService)
         {
             _cardLibrary = cardLibrary;
             _scryfallClientFactory = scryfallClientFactory;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
         public Task<IEnumerable<CollectedCard>> Handle(GetCollectedCards request, CancellationToken cancellationToken)
@@ -98,9 +104,39 @@ namespace MagicCardTracker.Pwa.Handlers
             }
         }
 
-        protected override Task Handle(AddCard request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateCollection request, CancellationToken cancellationToken)
         {
-            return _cardLibrary.AddCardAsync(request.Card, cancellationToken);
+            var library = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
+
+            // Scryfall supports a maximum of 75 card references per collection request
+            // Therefore, we gracefully divide the card collection to chunks of 70 cards.
+            var chunks = library.Select((item, index) => new { index, item })
+                                .GroupBy(x => x.index / 70)
+                                .Select(g => g.Select(x => x.item));
+
+            var updatedCards = new List<Contracts.Card>();
+            foreach (var chunk in chunks)
+            {
+                // In addition, we always update with the English version of the card to get latest price informations
+                var ids = chunk.Select(c => new Card_identifier { Set = c.SetCode, Collector_number = c.Number });
+                var cards = await _scryfallClientFactory.Cards
+                                                        .CollectionAsync(
+                                                            new Card_collection_request { Identifiers = ids.ToArray() },
+                                                            cancellationToken);
+                updatedCards.AddRange(cards.Data.Select(c => _mapper.Map<Contracts.Card>(c)));
+            }
+
+            await _cardLibrary.MergeCollectionAsync(updatedCards, cancellationToken);
+            _notificationService.SendNotification(new Notification($"Updated information for {updatedCards.Count} cards"));
+
+            return Unit.Value;
+        }
+
+         public async Task<Unit> Handle(AddCard request, CancellationToken cancellationToken)
+        {
+            await _cardLibrary.AddCardAsync(request.Card, cancellationToken);
+            
+            return Unit.Value;
         }
 
         private async Task EnrichPricingInformationIfApplicableAsync(Contracts.Card card, CancellationToken cancellationToken)

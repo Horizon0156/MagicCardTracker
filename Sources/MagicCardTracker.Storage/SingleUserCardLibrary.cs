@@ -85,6 +85,21 @@ namespace MagicCardTracker.Storage
         }
 
         /// <inheritdoc />
+        public Task MergeCollectionAsync(IEnumerable<Card> cards, CancellationToken cancellationToken)
+        {
+            foreach (var card in cards)
+            {
+                var collectableCard = new CollectedCard(card, 0, 0);
+
+                if (_collectedCards.TryGetValue(collectableCard, out var collectedCard))
+                {
+                    collectableCard.Prices = collectableCard.Prices;
+                }
+            }
+            return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken)
         {
             _collectedCards = new HashSet<CollectedCard>(collectedCards);

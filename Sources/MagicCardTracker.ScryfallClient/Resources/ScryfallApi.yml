@@ -47,6 +47,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+  /cards/collection:
+    post:
+      tage:
+      - Cards
+      operationId: Cards_Collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/card_collection_request'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/card_list'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
   /cards/search:
     get:
       tags:
@@ -750,6 +774,39 @@ paths:
                 $ref: '#/components/schemas/error'
 components:
   schemas:
+    card_collection_request:
+      type: object
+      properties:
+        identifiers:
+          type: array
+          items: 
+            $ref: '#/components/schemas/card_identifier'
+        pretty:
+          type: boolean
+          nullable: true
+    card_identifier:
+      type: object
+      properties:
+        id:
+          type: string
+        mtgo_id:
+          type: integer
+          format: int32
+          nullable: true
+        multiverse_id:
+          type: integer
+          format: int32
+          nullable: true
+        oracle_id:
+          type: string
+        illustration_id:
+          type: string
+        name:
+          type: string
+        set:
+          type: string
+        collector_number:
+          type: string
     card:
       type: object
       properties:

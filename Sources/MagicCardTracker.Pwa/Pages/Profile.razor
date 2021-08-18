@@ -72,6 +72,9 @@
             <button class="mt-2 btn btn-primary" @onclick="@UpdateSetsAsync">
                 Update Sets
             </button>
+            <button class="mt-2 btn btn-primary" @onclick="@UpdateCollectionAsync">
+                Update Collection
+            </button>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -136,6 +139,14 @@
         _loadingInformation = "Updating set information...";
         _isLoading = true;
         await _mediator.Send(new UpdateSets(), _cts.Token);
+        _isLoading = false;
+    }
+
+    private async Task UpdateCollectionAsync()
+    {
+        _loadingInformation = "Updating collection...";
+        _isLoading = true;
+        await _mediator.Send(new UpdateCollection(), _cts.Token);
         _isLoading = false;
     }
 }

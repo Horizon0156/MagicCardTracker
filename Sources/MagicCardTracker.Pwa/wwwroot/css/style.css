@@ -5,11 +5,10 @@
 }
 
 html, body {
+
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: rgba(255,255,255,0.87);
-    /* background-color: #212121; */
     background-color: #1B1C22; 
-    /* elevation 25262c */
 }
 
 body {
