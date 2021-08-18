@@ -1,3 +1,8 @@
+:root {
+
+    --primaryColor: #F44336;
+    --successColor: #649349;
+}
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -40,7 +45,7 @@ body {
 }
 
 a, .btn-link, a:hover, .action-link {
-    color: #F44336;
+    color: var(--primaryColor);
     text-decoration: none;
 }
 
@@ -50,30 +55,30 @@ a, .btn-link, a:hover, .action-link {
 
 .color-primary {
 
-    color: #F44336;
+    color: var(--primaryColor);
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #F44336;
-    border-color: #F44336;
+    color: white;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
 }
 
 .btn-primary:hover {
 
-    background-color: #F44336;
-    border-color: #F44336;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
 }
 
 .btn-outline-primary {
-    color: #F44336;
-    border-color: #F44336;
+    color: var(--primaryColor);
+    border-color: var(--primaryColor);
 }
 
 .btn-outline-primary:hover {
-    color: #F44336;
+    color: var(--primaryColor);
     background-color: transparent;
-    border-color: #F44336;
+    border-color: var(--primaryColor);
 }
 
 .loader {
@@ -101,7 +106,7 @@ a, .btn-link, a:hover, .action-link {
     animation: turner 4s linear infinite;
 }
 
-@keyframes turner{
+@keyframes turner {
     from{  transform: rotateY(360deg)   }
     to  {  transform: rotateY(0deg) }
 }
@@ -117,12 +122,12 @@ a, .btn-link, a:hover, .action-link {
 }
 
 .form-check-input:checked {
-    background-color: #C2351B;
-    border-color: #C2351B;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
 }
 
 .form-control:focus {
-    border-color: #C2351B;
+    border-color: var(--primaryColor);
 }
 
 .form-control::-webkit-input-placeholder{ 
