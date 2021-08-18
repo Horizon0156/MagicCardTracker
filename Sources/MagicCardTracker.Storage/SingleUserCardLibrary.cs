@@ -93,7 +93,11 @@ namespace MagicCardTracker.Storage
 
                 if (_collectedCards.TryGetValue(collectableCard, out var collectedCard))
                 {
-                    collectableCard.Prices = collectableCard.Prices;
+                    collectedCard.Prices = collectableCard.Prices;
+
+                    // Also migrate fields added after initial release
+                    collectedCard.Rarity = collectableCard.Rarity;
+                    collectedCard.ReleaseAt = collectableCard.ReleaseAt;
                 }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);

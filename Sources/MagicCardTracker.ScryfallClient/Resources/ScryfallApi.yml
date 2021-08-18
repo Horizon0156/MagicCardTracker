@@ -919,6 +919,9 @@ components:
           format: int32
         set:
           type: string
+        released_at:
+          type: string
+          format: date
         set_name:
           type: string
         collector_number:

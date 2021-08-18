@@ -78,7 +78,8 @@
         {
             _collection = _collection.Where(c => c.SetCode == SetCode);
         }
-        _collection = _collection.Reverse();
+        _collection = _collection.OrderByDescending(c => c.ReleaseAt)
+                                 .ThenByDescending(c => c.Rarity);
         ShowMore();
 
         _isLoading = false;

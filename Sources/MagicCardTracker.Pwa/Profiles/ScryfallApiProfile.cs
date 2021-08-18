@@ -23,6 +23,8 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForMember(c => c.ScryfallId, cfg => cfg.MapFrom(c => c.Id))
                 .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, false)))
                 .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, true)))
+                .ForMember(c => c.ReleaseAt, cfg => cfg.MapFrom(c => c.Released_at))
+                .ForMember(c => c.Rarity, cfg => cfg.MapFrom(c => c.Rarity))
                 .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
 
             CreateMap<ScryfallClient.Set, Set>()
