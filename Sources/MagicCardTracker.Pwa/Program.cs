@@ -3,6 +3,7 @@ using AutoMapper;
 using Blazored.LocalStorage;
 using MagicCardTracker.Pwa.Cache;
 using MagicCardTracker.Pwa.Helpers;
+using MagicCardTracker.Pwa.Notifications;
 using MagicCardTracker.Pwa.Profiles;
 using MagicCardTracker.Pwa.Storage;
 using MagicCardTracker.ScryfallClient;
@@ -32,6 +33,7 @@ namespace MagicCardTracker.Pwa
             builder.Services.AddScoped<ICardLibraryPersister, LocalStorageCardLibrary>();
             builder.Services.AddScoped<ICardLibrary, SingleUserCardLibrary>();
             builder.Services.AddScoped<IObjectCache, LocalStorageCache>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
             await builder.Build().RunAsync();
         }

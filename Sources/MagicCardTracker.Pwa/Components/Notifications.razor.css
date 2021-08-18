@@ -1,0 +1,33 @@
+
+#notification-container {
+
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1010;
+    width: 100%;
+}
+
+.notification {
+
+    animation: fadein .5s;
+}
+
+.notification.info {
+    background-color: var(--successColor);
+}
+
+.notification.error {
+    background-color: var(--primaryColor);
+}
+
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
