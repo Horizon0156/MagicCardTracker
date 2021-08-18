@@ -17,6 +17,14 @@ namespace MagicCardTracker.Pwa.Models
 
         public int NumberOfUniqueCardsCollected { get; set; }
 
+        public int NumberOfCommonCards { get; set; }
+
+        public int NumberOfUncommonCards { get; set; }
+
+        public int NumberOfRareCards { get; set; }
+
+        public int NumberOfMythicCards { get; set; }
+
         public decimal CollectionValueInEuros { get; set; }
 
         public decimal CollectionValueInDollars { get; set; }

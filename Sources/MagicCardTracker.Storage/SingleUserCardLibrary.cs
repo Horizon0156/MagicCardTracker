@@ -90,10 +90,19 @@ namespace MagicCardTracker.Storage
             foreach (var card in cards)
             {
                 var collectableCard = new CollectedCard(card, 0, 0);
-
-                if (_collectedCards.TryGetValue(collectableCard, out var collectedCard))
+                var matchedCard = _collectedCards.FirstOrDefault(c => c.SetCode == card.SetCode 
+                                                                   && c.Number == card.Number);
+                if (matchedCard != null)
                 {
-                    collectableCard.Prices = collectableCard.Prices;
+                    matchedCard.Prices = collectableCard.Prices;
+
+                    // Also migrate fields added after initial release
+                    matchedCard.Rarity = collectableCard.Rarity;
+                    matchedCard.ReleaseAt = collectableCard.ReleaseAt;
+                }
+                else 
+                {
+                    System.Console.WriteLine("Mismatch");
                 }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);

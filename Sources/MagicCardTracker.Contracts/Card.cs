@@ -1,4 +1,6 @@
-﻿namespace MagicCardTracker.Contracts
+﻿using System;
+
+namespace MagicCardTracker.Contracts
 {
     public class Card
     {
@@ -27,6 +29,8 @@
             ManaCosts = card.ManaCosts;
             Colors = card.Colors;
             ScryfallId = card.ScryfallId;
+            ReleaseAt = card.ReleaseAt;
+            Rarity = card.Rarity;
         }
 
         public bool HasFoilVersion { get; set; }
@@ -50,5 +54,9 @@
         public string[] Colors { get; set; }
 
         public string ScryfallId { get; set; }
+
+        public CardRarity Rarity { get; set; }
+
+        public DateTimeOffset ReleaseAt { get; set; }
     }
 }
