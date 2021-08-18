@@ -1,4 +1,7 @@
 @page "/privacy-policy"
+@using Microsoft.Extensions.Configuration
+@using Models
+@inject IConfiguration _configuration
 
 <div class="lead">
     Magic Card Tracker Privacy Policy
@@ -62,7 +65,7 @@ from Wikipedia, the free encyclopedia</a>.
 
 <label class="lead">Privacy policies of other websites</label>
 <p class="color-white-60">
-    Margic Card Tracker uses <a href="https://scryfall.com">Scryfall</a> to load information about 
+    Magic Card Tracker uses <a href="https://scryfall.com">Scryfall</a> to load information about 
     cards or sets your are searching for. Our privacy policy applies only to our web application, 
     so if you start searching for a card or browsing cards by set, you should read their 
     <a href="https://scryfall.com/docs/privacy">privacy policy.</a>
@@ -82,5 +85,20 @@ If you have any questions about Magic Card Tracker’s privacy policy,
 the data that is stored on your device, or if you feel that we have not addressed your concern in a 
 satisfactory manner, please do not hesitate to contact us.
 <br><br>
-Email: <a href="mailto:webmaster@swilkes.net">webmaster@swilkes.net</a>
+Hoster of this service: @_settings.HosterName<br>
+Email: <a href="mailto:@_settings.HosterMailAdress">@_settings.HosterMailAdress</a>
 </p>
+
+@code
+{
+    private PrivacyPolicySettings _settings = new PrivacyPolicySettings();
+
+    protected override Task OnInitializedAsync()
+    {
+        _configuration.GetSection(PrivacyPolicySettings.Key)
+                      .Bind(_settings);
+
+        return Task.CompletedTask;
+    }
+    
+}

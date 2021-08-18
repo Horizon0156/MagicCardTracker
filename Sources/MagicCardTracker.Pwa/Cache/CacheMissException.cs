@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace MagicCardTracker.Pwa.Cache
 {
-    public class CacheMissException : Exception
+    internal class CacheMissException : Exception
     {
         public CacheMissException()
         {
