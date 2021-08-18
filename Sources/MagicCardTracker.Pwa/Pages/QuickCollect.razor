@@ -1,12 +1,15 @@
 @page "/collection/quick-collect"
 
 @using Commands
+@using Exceptions
 @using MagicCardTracker.Contracts
 @using System.Threading
 @using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Pwa.Notifications
 @using MediatR
 @using Models
 @inject IMediator _mediator
+@inject INotificationService _notificationService
 @implements IDisposable
 
 <div class="row">
@@ -72,7 +75,10 @@
         }
 
         _isLoading = true;
-        var card = await _mediator.Send(
+
+        try
+        {
+            var card = await _mediator.Send(
             new AddCardByNumber(
                 _cardId.SetCode,
                 _cardId.CardNumber,
@@ -80,7 +86,15 @@
                 _collectAsFoil),
             _cts.Token);
         _quickCollectionStack.Add(card);
-        _isLoading = false;
+        }
+        catch (CardNotFoundException)
+        {
+            _notificationService.SendNotification(new Notification($"The card #{_cardId.CardNumber} ({_cardId.SetCode}) could not be found", NotificationType.Error));
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     private class CardIdentity

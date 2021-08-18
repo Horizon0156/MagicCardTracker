@@ -8,6 +8,7 @@ using MagicCardTracker.ScryfallClient;
 using MagicCardTracker.Storage;
 using AutoMapper;
 using MediatR;
+using MagicCardTracker.Pwa.Exceptions;
 
 namespace MagicCardTracker.Pwa.Handlers
 {
@@ -73,21 +74,28 @@ namespace MagicCardTracker.Pwa.Handlers
                 return collectedCard;
             }
 
-            var desiredCard = await _scryfallClientFactory
+            try
+            {
+                var desiredCard = await _scryfallClientFactory
                                 .Cards
                                 .GetByCodeByNumberByLangAsync(
                                     setCode, 
                                     cardNumber, 
                                     languageCode, 
                                     cancellationToken);
-            var card = _mapper.Map<Contracts.Card>(desiredCard);
-            await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
+                var card = _mapper.Map<Contracts.Card>(desiredCard);
+                await EnrichPricingInformationIfApplicableAsync(card, cancellationToken);
 
-            var collectableCard = request.AddAsFoil
-                ? new CollectedCard(card, 0, 1)
-                : new CollectedCard(card, 1, 0);
-            await _cardLibrary.AddCardAsync(collectableCard, cancellationToken);
-            return collectableCard;
+                var collectableCard = request.AddAsFoil
+                    ? new CollectedCard(card, 0, 1)
+                    : new CollectedCard(card, 1, 0);
+                await _cardLibrary.AddCardAsync(collectableCard, cancellationToken);
+                return collectableCard;
+            }
+            catch (ApiException e)
+            {
+                throw new CardNotFoundException($"{setCode}:{cardNumber} could not be found", e);
+            }
         }
 
         protected override Task Handle(AddCard request, CancellationToken cancellationToken)
@@ -104,9 +112,17 @@ namespace MagicCardTracker.Pwa.Handlers
                 return;
             }
 
-            var originalCard = await _scryfallClientFactory
+            ScryfallClient.Card originalCard;
+            try
+            {
+                originalCard = await _scryfallClientFactory
                                         .Cards
                                         .GetByCodeByNumberAsync(card.SetCode, card.Number, cancellationToken);
+            }
+            catch (ApiException)
+            {
+                originalCard = null;
+            }
 
             if (originalCard != null)
             {
