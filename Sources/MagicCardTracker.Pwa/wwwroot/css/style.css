@@ -25,6 +25,14 @@ body {
     background-color: #25262c;
 }
 
+.bg-good {
+    background-color: var(--successColor);
+}
+
+.bg-bad {
+    background-color: var(--primaryColor);
+}
+
 .magic-card {
 
     height: auto;
@@ -156,4 +164,28 @@ a, .btn-link, a:hover, .action-link {
     position: absolute;
     right: 0.75rem;
     top: 0.5rem;
+}
+
+.rainbow-text {
+
+    background: linear-gradient(53.13deg,#FFD33D 0,#FB8532 16.02%,#EA4A5A 28.06%,#8A63D2 56.92%,#2188FF 72.93%,#34D058 84%,#FFD33D 100%);
+    background-clip: text;
+    display: inline-block;
+    color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 5s alternate infinite;
+    background-size: 300%;
+}
+
+@keyframes shine {
+    0% {
+        background-position:200% center
+    }
+    62.8% {
+        background-position:100% center
+    }
+    100% {
+        background-position:200% center
+    }
 }

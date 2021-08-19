@@ -1,6 +1,8 @@
 @page "/profile"
+@using ChartJs.Blazor.PieChart
 @using Commands
 @using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Pwa.Extensions
 @using MagicCardTracker.Contracts
 @using MediatR
 @using System.Threading
@@ -17,10 +19,7 @@
     <div class="col-md-6">
         <div class="content bg-elevated d-flex flex-column">
             <label class="lead">
-                Statistics
-            </label>
-            <label class="color-white-60">
-                Five most valuable cards
+                Most valuable cards
             </label>
             @if(_collectionStatistic != null)
             {
@@ -49,6 +48,17 @@
                 </div>
             }
         </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <label class="lead">
+                Mana Distribution
+            </label>
+            <div class="mt-2">
+                 @if(_chartConfig != null)
+                {
+                    <Chart Config="_chartConfig"/>
+                }
+            </div>   
+        </div>
     </div>
     <div class="col-md-6 mt-2 mt-md-0">
         <div class="content bg-elevated d-flex flex-column">
@@ -61,8 +71,8 @@
             <label class="ms-4 color-white-60"> Rare: <span class="float-end">@_collectionStatistic?.NumberOfRareCards</span></label>
             <label class="ms-4 color-white-60"> Mythic: <span class="float-end">@_collectionStatistic?.NumberOfMythicCards</span></label>
             <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
-            <label class="color-white-60"> Total collection value in EUR: <span class="float-end">@_collectionStatistic?.CollectionValueInEuros €</span></label>
-            <label class="color-white-60"> Total collection value in USD: <span class="float-end">@_collectionStatistic?.CollectionValueInDollars $</span></label>
+            <label class="color-white-60"> Total collection value: <span class="float-end">€@_collectionStatistic?.CollectionValueInEuros</span></label>
+            <label class="color-white-60"><span class="float-end">$@_collectionStatistic?.CollectionValueInDollars</span></label>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -87,7 +97,7 @@
             <div class="lead">
                 About
             </div>
-            <label class="color-white-60">Version: <span class="float-end">1.0.3</span></label>
+            <label class="color-white-60">Version: <span class="float-end">1.0.4</span></label>
         </div>
     </div>
 </div>
@@ -106,6 +116,8 @@
 
     private CardOverlay _cardOverlay;
 
+    private PieConfig _chartConfig = new PieConfig(true);
+
     public void Dispose()
     {
         _cts.Cancel();
@@ -122,6 +134,7 @@
         _loadingInformation = null;
         _isLoading = true;
         _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
+        _chartConfig.AddManaDistribution(_collectionStatistic);
         _isLoading = false;
     }
 

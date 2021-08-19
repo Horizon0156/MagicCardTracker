@@ -21,44 +21,67 @@
                 <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
                 @if (_card != null)
                 {
-                <div>
-                    Trade-in value
+                <div class="lead">
+                    @_card.Name
                 </div>
-                <div class="mt-2 color-white-60">
-                    <table class="w-100">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th> EUR </th>
-                                <th> USD </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td> Standard </td>
-                                <td> @(_card.Prices?.StandardInEuros?.ToString() ?? "-") € </td>
-                                <td> @(_card.Prices?.StandardInDollars?.ToString() ?? "-") $ </td>
-                            </tr>
-                            <tr>
-                                <td> Foil </td>
-                                <td> @(_card.Prices?.FoiledInEuros?.ToString() ?? "-") € </td>
-                                <td> @(_card.Prices?.FoiledInDollars?.ToString() ?? "-") $ </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="mt-2 color-white-60 row">
+                    <div class="col-6 d-flex flex-column">
+                        <label>Market Price:</label>
+                        <div>
+                            @if(_card.Prices?.StandardInEuros != null) 
+                            {
+                                <span class="me-1">€@(_card.Prices?.StandardInEuros?.ToString("F2"))</span>
+                            }
+                            @if(_card.Prices?.StandardInDollars != null) 
+                            {
+                                <span>$@(_card.Prices?.StandardInDollars?.ToString("F2"))</span>
+                            }
+                        </div>
+                    </div>
+                     <div class="col-6 d-flex flex-column">
+                        <label class="rainbow-text">Foil:</label>
+                        <div>
+                            @if(_card.Prices?.FoiledInEuros != null) 
+                            {
+                                <span class="me-1">€@(_card.Prices?.FoiledInEuros?.ToString("F2"))</span>
+                            }
+                            @if(_card.Prices?.FoiledInDollars != null) 
+                            {
+                                <span>$@(_card.Prices?.FoiledInDollars?.ToString("F2"))</span>
+                            }
+                        </div>
+                    </div>
                 </div>
+                
                 <label class="mt-4">Collected</label>
-                <div class="mt-2 d-flex flex-column">
-                    <div class="mb-3">
-                        <label for="standardCount" class="color-white-60">Standard</label>
+                <div class="mt-2 color-white-60 row">
+                    <div class="col-6 d-flex flex-column">
                         <input id="standardCount" class="form-control" type="number" min=0 @bind="@_card.Count"></input>
+                        <label for="standardCount" class="ms-1 color-white-60">Standard</label>
                     </div>
-                    <div class="mb-3">
-                        <label for="foilCount" class="color-white-60">Foil</label>
+                    <div class="col-6 d-flex flex-column">
                         <input id="foilCount" class="form-control" type="number" min=0 @bind="@_card.FoilCount"></input>
+                        <label for="foilCount" class="ms-1 rainbow-text">Foil</label>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end">
+
+                <label class="mt-4">Legalities</label>
+                <div class="mt-2 d-flex text-center small">
+                    <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Standard)">Standard</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pioneer)">Pioneer</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Modern)">Modern</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Legacy)">Legacy</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Vintage)">Vintage</span>
+                </div>
+                <div class="mt-1 d-flex text-center small">
+                    <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Brawl)">Brawl</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Historic)">Historic</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pauper)">Pauper</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Penny)">Penny</span>
+                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Commander)">Commander</span>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-end">
                     <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
                     <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
                 </div>
@@ -107,5 +130,12 @@
         var command = new AddCard(_card);
         await Mediator.Send(command, CancellationToken.None);
         Close();
+    }
+
+    private static string GetLegalClass(Card card, Legality legality)
+    {
+        return card.Legalities.HasFlag(legality)
+            ? "bg-good"
+            : "bg-bad";
     }
 }

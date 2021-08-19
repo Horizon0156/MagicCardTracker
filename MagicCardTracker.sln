@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A8BF6500
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicCardTracker.ScryfallClient.Tests", "Sources\MagicCardTracker.ScryfallClient.Tests\MagicCardTracker.ScryfallClient.Tests.csproj", "{83E402DC-D16C-4822-BD69-2C7ACC97A590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicCardTracker.Storage.Tests", "MagicCardTracker.Storage.Tests\MagicCardTracker.Storage.Tests.csproj", "{5F90BAF8-2F66-4B33-A448-FBD1FC065DA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicCardTracker.Storage.Tests", "Sources\MagicCardTracker.Storage.Tests\MagicCardTracker.Storage.Tests.csproj", "{5F90BAF8-2F66-4B33-A448-FBD1FC065DA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

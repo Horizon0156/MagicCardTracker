@@ -1,6 +1,6 @@
-using System;
 using System.Linq;
 using AutoMapper;
+using MagicCardTracker.Contracts;
 using MagicCardTracker.Pwa.Models;
 
 namespace MagicCardTracker.Pwa.Profiles
@@ -25,6 +25,7 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, true)))
                 .ForMember(c => c.ReleaseAt, cfg => cfg.MapFrom(c => c.Released_at))
                 .ForMember(c => c.Rarity, cfg => cfg.MapFrom(c => c.Rarity))
+                .ForMember(c => c.Legalities, cfg => cfg.MapFrom(c => FlattenLegality(c.Legalities)))
                 .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
 
             CreateMap<ScryfallClient.Set, Set>()
@@ -37,6 +38,45 @@ namespace MagicCardTracker.Pwa.Profiles
                     s => s.Set_type == ScryfallClient.Set_type.Core 
                       || s.Set_type == ScryfallClient.Set_type.Expansion))
                 .ForMember(s => s.NumberOfCollectedCards, cfg => cfg.Ignore());
+        }
+
+        private Legality FlattenLegality(ScryfallClient.Legality scryfallLegality)
+        {
+            Legality legalities = 0;
+
+            if (scryfallLegality.Standard == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Standard;
+            }
+            if (scryfallLegality.Commander == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Commander;
+            }
+            if (scryfallLegality.Modern == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Modern;
+            }
+            if (scryfallLegality.Brawl == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Brawl;
+            }
+            if (scryfallLegality.Historic == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Historic;
+            }
+            if (scryfallLegality.Pauper == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Pauper;
+            }
+            if (scryfallLegality.Penny == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Penny;
+            }
+            if (scryfallLegality.Pioneer == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Pioneer;
+            }
+            if (scryfallLegality.Vintage == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Vintage;
+            }
+            if (scryfallLegality.Legacy == ScryfallClient.Legal_status.Legal) {
+                legalities |= Legality.Legacy;
+            }
+
+
+            return legalities;
         }
 
         private decimal? ParsePrice(string price)

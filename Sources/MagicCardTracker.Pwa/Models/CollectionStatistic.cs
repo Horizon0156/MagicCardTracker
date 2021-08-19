@@ -25,6 +25,16 @@ namespace MagicCardTracker.Pwa.Models
 
         public int NumberOfMythicCards { get; set; }
 
+        public int NumberOfWhiteCards { get; set; }
+        
+        public int NumberOfBlueCards { get; set; }
+
+        public int NumberOfBlackCards { get; set; }
+
+        public int NumberOfRedCards { get; set; }
+
+        public int NumberOfGreenCards { get; set; }
+
         public decimal CollectionValueInEuros { get; set; }
 
         public decimal CollectionValueInDollars { get; set; }
