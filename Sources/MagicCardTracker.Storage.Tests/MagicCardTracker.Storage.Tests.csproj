@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sources\MagicCardTracker.Storage\MagicCardTracker.Storage.csproj" />
+    <ProjectReference Include="..\MagicCardTracker.Storage\MagicCardTracker.Storage.csproj" />
   </ItemGroup>
 
 </Project>

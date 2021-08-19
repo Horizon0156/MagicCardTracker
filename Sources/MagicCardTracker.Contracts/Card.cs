@@ -31,6 +31,7 @@ namespace MagicCardTracker.Contracts
             ScryfallId = card.ScryfallId;
             ReleaseAt = card.ReleaseAt;
             Rarity = card.Rarity;
+            Legalities = card.Legalities;
         }
 
         public bool HasFoilVersion { get; set; }
@@ -50,6 +51,8 @@ namespace MagicCardTracker.Contracts
         public string Number { get; set; }
 
         public string ManaCosts { get; set; }
+
+        public Legality Legalities { get; set; }
 
         public string[] Colors { get; set; }
 

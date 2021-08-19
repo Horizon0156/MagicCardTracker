@@ -4,19 +4,20 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="4.1.2"/>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.8"/>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.8" PrivateAssets="all"/>
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0"/>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1"/>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.1.2" />
+    <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.8" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js"/>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MagicCardTracker.Contracts\MagicCardTracker.Contracts.csproj"/>
-    <ProjectReference Include="..\MagicCardTracker.ScryfallClient\MagicCardTracker.ScryfallClient.csproj"/>
-    <ProjectReference Include="..\MagicCardTracker.Storage\MagicCardTracker.Storage.csproj"/>
+    <ProjectReference Include="..\MagicCardTracker.Contracts\MagicCardTracker.Contracts.csproj" />
+    <ProjectReference Include="..\MagicCardTracker.ScryfallClient\MagicCardTracker.ScryfallClient.csproj" />
+    <ProjectReference Include="..\MagicCardTracker.Storage\MagicCardTracker.Storage.csproj" />
   </ItemGroup>
 </Project>

@@ -1045,7 +1045,7 @@ components:
           $ref: '#/components/schemas/legal_status'
         future:
           $ref: '#/components/schemas/legal_status'
-        frontier:
+        historic:
           $ref: '#/components/schemas/legal_status'
         modern:
           $ref: '#/components/schemas/legal_status'
@@ -1059,9 +1059,9 @@ components:
           $ref: '#/components/schemas/legal_status'
         commander:
           $ref: '#/components/schemas/legal_status'
-        1v1:
+        gladiator:
           $ref: '#/components/schemas/legal_status'
-        duel:
+        pioneer:
           $ref: '#/components/schemas/legal_status'
         brawl:
           $ref: '#/components/schemas/legal_status'

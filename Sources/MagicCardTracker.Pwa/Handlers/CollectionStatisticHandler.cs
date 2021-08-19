@@ -50,6 +50,11 @@ namespace MagicCardTracker.Pwa.Handlers
                     g => g.Key == CardRarity.Rare)?.Count() ?? 0,
                 NumberOfMythicCards = collectionByRarity.FirstOrDefault(
                     g => g.Key == CardRarity.Mythic)?.Count() ?? 0,
+                NumberOfWhiteCards = collection.Where(c => c.Colors.Contains("W")).Count(),
+                NumberOfBlueCards = collection.Where(c => c.Colors.Contains("U")).Count(),
+                NumberOfBlackCards = collection.Where(c => c.Colors.Contains("B")).Count(),
+                NumberOfRedCards = collection.Where(c => c.Colors.Contains("R")).Count(),
+                NumberOfGreenCards = collection.Where(c => c.Colors.Contains("G")).Count(),
                 CollectionValueInEuros = collection.Sum(c => GetTotalCardValue(c, Currency.Euro)),
                 CollectionValueInDollars = collection.Sum(c => GetTotalCardValue(c, Currency.Dollar)),
                 FiveMostValuableCards = collection.OrderByDescending(c => GetSingleCardValueInDollar(c))

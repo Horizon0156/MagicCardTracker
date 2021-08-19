@@ -99,6 +99,7 @@ namespace MagicCardTracker.Storage
                     // Also migrate fields added after initial release
                     matchedCard.Rarity = collectableCard.Rarity;
                     matchedCard.ReleaseAt = collectableCard.ReleaseAt;
+                    matchedCard.Legalities = collectableCard.Legalities;
                 }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
