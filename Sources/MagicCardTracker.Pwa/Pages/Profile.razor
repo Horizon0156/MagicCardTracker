@@ -53,6 +53,10 @@
                 Your collection
             </label>
             <label class="color-white-60"> Number of cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfCardsCollected</span></label>
+            <label class="ms-4 color-white-60"> Common: <span class="float-end">@_collectionStatistic?.NumberOfCommonCards</span></label>
+            <label class="ms-4 color-white-60"> Uncommon: <span class="float-end">@_collectionStatistic?.NumberOfUncommonCards</span></label>
+            <label class="ms-4 color-white-60"> Rare: <span class="float-end">@_collectionStatistic?.NumberOfRareCards</span></label>
+            <label class="ms-4 color-white-60"> Mythic: <span class="float-end">@_collectionStatistic?.NumberOfMythicCards</span></label>
             <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
             <label class="color-white-60"> Total collection value in EUR: <span class="float-end">@_collectionStatistic?.CollectionValueInEuros €</span></label>
             <label class="color-white-60"> Total collection value in USD: <span class="float-end">@_collectionStatistic?.CollectionValueInDollars $</span></label>
@@ -147,7 +151,7 @@
         _loadingInformation = "Updating collection...";
         _isLoading = true;
         await _mediator.Send(new UpdateCollection(), _cts.Token);
-        StateHasChanged();
+        await LoadCollectionAsync();
         _isLoading = false;
     }
 }

@@ -36,11 +36,20 @@ namespace MagicCardTracker.Pwa.Handlers
             }
 
             var collection = cardCollection.ToArray();
+            var collectionByRarity = collection.GroupBy(c => c.Rarity);
 
             return new CollectionStatistic
             {
                 NumberOfCardsCollected = collection.Sum(c => c.TotalCount),
                 NumberOfUniqueCardsCollected = collection.Length,
+                NumberOfCommonCards = collectionByRarity.FirstOrDefault(
+                    g => g.Key == CardRarity.Common)?.Count() ?? 0,
+                NumberOfUncommonCards = collectionByRarity.FirstOrDefault(
+                    g => g.Key == CardRarity.Uncommon)?.Count() ?? 0,
+                NumberOfRareCards = collectionByRarity.FirstOrDefault(
+                    g => g.Key == CardRarity.Rare)?.Count() ?? 0,
+                NumberOfMythicCards = collectionByRarity.FirstOrDefault(
+                    g => g.Key == CardRarity.Mythic)?.Count() ?? 0,
                 CollectionValueInEuros = collection.Sum(c => GetTotalCardValue(c, Currency.Euro)),
                 CollectionValueInDollars = collection.Sum(c => GetTotalCardValue(c, Currency.Dollar)),
                 FiveMostValuableCards = collection.OrderByDescending(c => GetSingleCardValueInDollar(c))

@@ -29,6 +29,8 @@ namespace MagicCardTracker.Contracts
             ManaCosts = card.ManaCosts;
             Colors = card.Colors;
             ScryfallId = card.ScryfallId;
+            ReleaseAt = card.ReleaseAt;
+            Rarity = card.Rarity;
         }
 
         public bool HasFoilVersion { get; set; }
