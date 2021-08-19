@@ -1,6 +1,7 @@
 @page "/profile"
 @using Commands
 @using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Contracts
 @using MediatR
 @using System.Threading
 @using Models
@@ -23,31 +24,33 @@
             </label>
             @if(_collectionStatistic != null)
             {
-                <img class="magic-card thumbnail mx-auto" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
-
-                <table class="mt-2 w-100 color-white-60">
-                        <thead>
-                            <tr>
-                                <th> Name </th>
-                                <th> EUR </th>
-                                <th> USD </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var card in _collectionStatistic.FiveMostValuableCards)
-                            {
-                                <tr>
-                                    <td> @card.Name </td>
-                                    <td> @(card.Prices?.StandardInEuros?.ToString() ?? "-") € </td>
-                                    <td> @(card.Prices?.StandardInDollars?.ToString() ?? "-") $ </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div class="mt-2 d-flex flex-wrap justify-content-center">
+                    <img class="magic-card thumbnail" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
+                    <ol class="mt-2 color-white-60">
+                        @foreach (var card in _collectionStatistic.FiveMostValuableCards)
+                        {
+                        <li class="selectable" @onclick="@(() => ShowCardAsync(card))">
+                            <div class="d-flex flex-column">                        
+                                <span> @card.Name</span>
+                                <small>
+                                    @if(card.Prices?.StandardInEuros != null) 
+                                    {
+                                        <span class="me-1">€@(card.Prices?.StandardInEuros?.ToString())</span>
+                                    }
+                                    @if(card.Prices?.StandardInDollars != null) 
+                                    {
+                                        <span>$@(card.Prices?.StandardInDollars?.ToString())</span>
+                                    }
+                                </small>
+                            </div>
+                        </li>
+                        }
+                    </ol>
+                </div>
             }
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-2 mt-md-0">
         <div class="content bg-elevated d-flex flex-column">
             <label class="lead">
                 Your collection
@@ -89,6 +92,8 @@
     </div>
 </div>
 
+<CardOverlay @ref="_cardOverlay"/>
+
 @code 
 {
     private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -98,6 +103,8 @@
     private string _loadingInformation;
 
     private CollectionStatistic _collectionStatistic;
+
+    private CardOverlay _cardOverlay;
 
     public void Dispose()
     {
@@ -153,5 +160,12 @@
         await _mediator.Send(new UpdateCollection(), _cts.Token);
         await LoadCollectionAsync();
         _isLoading = false;
+    }
+
+    private Task ShowCardAsync(Card card)
+    {
+        return card != null
+            ? _cardOverlay.OpenAsync(card)
+            : Task.CompletedTask;
     }
 }

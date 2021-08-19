@@ -100,14 +100,6 @@ namespace MagicCardTracker.Storage
                     matchedCard.Rarity = collectableCard.Rarity;
                     matchedCard.ReleaseAt = collectableCard.ReleaseAt;
                 }
-                else 
-                {
-                    collectedCard.Prices = collectableCard.Prices;
-
-                    // Also migrate fields added after initial release
-                    collectedCard.Rarity = collectableCard.Rarity;
-                    collectedCard.ReleaseAt = collectableCard.ReleaseAt;
-                }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
         }

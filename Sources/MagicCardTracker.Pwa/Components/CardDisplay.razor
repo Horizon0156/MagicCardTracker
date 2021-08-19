@@ -12,7 +12,7 @@
                     @collectableCard.TotalCount
                 </span>
             }
-            <img class="img-fluid" style="border-radius: 5%;" src="@(card.ImageUrl)"
+            <img class="magic-card" src="@(card.ImageUrl)"
         @onclick="@(async () => await OpenDetailsAsync(card))" />
         </div>
     }
