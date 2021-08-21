@@ -16,13 +16,14 @@
                   Text="@_loadingInformation"/>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="content bg-elevated d-flex flex-column">
-            <label class="lead">
-                Most valuable cards
-            </label>
-            @if(_collectionStatistic != null)
-            {
+    @if(_collectionStatistic?.NumberOfCardsCollected > 0)
+    {
+        <div class="col-md-6">
+            <div class="content bg-elevated d-flex flex-column">
+                <label class="lead">
+                    Most valuable cards
+                </label>
+                
                 <div class="mt-2 d-flex flex-wrap justify-content-center">
                     <img class="magic-card thumbnail" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
                     <ol class="mt-2 color-white-60">
@@ -46,20 +47,27 @@
                         }
                     </ol>
                 </div>
-            }
+                
+            </div>
+            <div class="mt-2 content bg-elevated d-flex flex-column">
+                <label class="lead">
+                    Mana Distribution
+                </label>
+                <div class="mt-2">
+                    @if(_chartConfig != null)
+                    {
+                        <Chart Config="_chartConfig"/>
+                    }
+                </div>   
+            </div>
         </div>
-        <div class="mt-2 content bg-elevated d-flex flex-column">
-            <label class="lead">
-                Mana Distribution
-            </label>
-            <div class="mt-2">
-                 @if(_chartConfig != null)
-                {
-                    <Chart Config="_chartConfig"/>
-                }
-            </div>   
+    }
+    else
+    {
+        <div class="col-md-6 d-flex align-items-center justify-content-center text-center lead">
+            Start collecting some cards to get more insights
         </div>
-    </div>
+    }
     <div class="col-md-6 mt-2 mt-md-0">
         <div class="content bg-elevated d-flex flex-column">
             <label class="lead">
