@@ -8,9 +8,18 @@
         <div class="col-md-3 col-sm-4 col-6 mt-2 position-relative">
             @if (ShowCountBadge && card is CollectedCard collectableCard)
             {
-                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger">
-                    @collectableCard.TotalCount
-                </span>
+                <div class="position-absolute top-0 start-50">
+
+                    <div class="translate-middle d-flex">
+                        <span class="badge rounded-pill bg-bad">
+                            @collectableCard.TotalCount
+                        </span>
+
+                        <span class="ms-2 badge rounded-pill bg-good">
+                            @collectableCard.Prices?.ToString(collectableCard.FoilCount > 0)
+                        </span>
+                    </div>
+                </div>
             }
             <img class="magic-card" src="@(card.ImageUrl)"
         @onclick="@(async () => await OpenDetailsAsync(card))" />

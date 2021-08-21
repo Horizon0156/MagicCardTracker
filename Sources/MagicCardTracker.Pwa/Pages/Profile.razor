@@ -31,16 +31,9 @@
                         {
                         <li class="selectable" @onclick="@(() => ShowCardAsync(card))">
                             <div class="d-flex flex-column">                        
-                                <span> @card.Name</span>
+                                <span class="@(card.FoilCount > 0 ? "rainbow-text" : null)" > @card.Name</span>
                                 <small>
-                                    @if(card.Prices?.StandardInEuros != null) 
-                                    {
-                                        <span class="me-1">€@(card.Prices?.StandardInEuros?.ToString())</span>
-                                    }
-                                    @if(card.Prices?.StandardInDollars != null) 
-                                    {
-                                        <span>$@(card.Prices?.StandardInDollars?.ToString())</span>
-                                    }
+                                    @card.Prices.ToString(card.FoilCount > 0)
                                 </small>
                             </div>
                         </li>
@@ -79,8 +72,8 @@
             <label class="ms-4 color-white-60"> Rare: <span class="float-end">@_collectionStatistic?.NumberOfRareCards</span></label>
             <label class="ms-4 color-white-60"> Mythic: <span class="float-end">@_collectionStatistic?.NumberOfMythicCards</span></label>
             <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
-            <label class="color-white-60"> Total collection value: <span class="float-end">€@_collectionStatistic?.CollectionValueInEuros</span></label>
-            <label class="color-white-60"><span class="float-end">$@_collectionStatistic?.CollectionValueInDollars</span></label>
+            <label class="color-white-60"> Total collection value: <span class="float-end">€@_collectionStatistic?.CollectionValueInEuros.ToString("F2")</span></label>
+            <label class="color-white-60"><span class="float-end">$@_collectionStatistic?.CollectionValueInDollars.ToString("F2")</span></label>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
