@@ -27,29 +27,15 @@
                 <div class="mt-2 color-white-60 row">
                     <div class="col-6 d-flex flex-column">
                         <label>Market Price:</label>
-                        <div>
-                            @if(_card.Prices?.StandardInEuros != null) 
-                            {
-                                <span class="me-1">€@(_card.Prices?.StandardInEuros?.ToString("F2"))</span>
-                            }
-                            @if(_card.Prices?.StandardInDollars != null) 
-                            {
-                                <span>$@(_card.Prices?.StandardInDollars?.ToString("F2"))</span>
-                            }
-                        </div>
+                        <label>
+                            @_card.Prices?.ToString(false)
+                        </label>
                     </div>
                      <div class="col-6 d-flex flex-column">
                         <label class="rainbow-text">Foil:</label>
-                        <div>
-                            @if(_card.Prices?.FoiledInEuros != null) 
-                            {
-                                <span class="me-1">€@(_card.Prices?.FoiledInEuros?.ToString("F2"))</span>
-                            }
-                            @if(_card.Prices?.FoiledInDollars != null) 
-                            {
-                                <span>$@(_card.Prices?.FoiledInDollars?.ToString("F2"))</span>
-                            }
-                        </div>
+                        <label>
+                            @_card.Prices?.ToString(true)
+                        </label>
                     </div>
                 </div>
                 
