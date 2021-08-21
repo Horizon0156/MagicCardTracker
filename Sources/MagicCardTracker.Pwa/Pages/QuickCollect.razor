@@ -8,6 +8,7 @@
 @using MagicCardTracker.Pwa.Notifications
 @using MediatR
 @using Models
+@using Queries
 @inject IMediator _mediator
 @inject INotificationService _notificationService
 @implements IDisposable
@@ -65,6 +66,21 @@
     {
         _cts.Cancel();
         _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        var collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
+        var recentCard = collection.LastOrDefault();
+
+        if (recentCard != null)
+        {
+            _cardId.SetCode = recentCard.SetCode;
+            _cardId.LanguageCode = recentCard.LanguageCode;
+        }
+
+        _isLoading = false;
     }
 
     private async Task AddCardToCollectionAsync()
