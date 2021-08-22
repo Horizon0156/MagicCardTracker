@@ -25,7 +25,7 @@
                 </label>
                 
                 <div class="mt-2 d-flex flex-wrap justify-content-center">
-                    <img class="magic-card thumbnail" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
+                    <img class="magic-card small" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
                     <ol class="mt-2 color-white-60">
                         @foreach (var card in _collectionStatistic.FiveMostValuableCards)
                         {
@@ -98,7 +98,7 @@
             <div class="lead">
                 About
             </div>
-            <label class="color-white-60">Version: <span class="float-end">1.0.4</span></label>
+            <label class="color-white-60">Version: <span class="float-end"> @_version </span></label>
         </div>
     </div>
 </div>
@@ -118,6 +118,8 @@
     private CardOverlay _cardOverlay;
 
     private PieConfig _chartConfig = new PieConfig(true);
+
+    private string _version => GetType().Assembly.GetName().Version.ToString(3);
 
     public void Dispose()
     {

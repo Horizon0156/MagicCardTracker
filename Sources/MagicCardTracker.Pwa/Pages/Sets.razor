@@ -28,7 +28,7 @@
                 ? _collectedSets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0) 
                 : _collectedSets.Where(s => s.NumberOfCollectedCards > 0))
     {
-        <div class="row mt-2 cursor-pointer" @onclick="@(() => BrowseSet(set))">
+        <div class="row mt-2 selectable" @onclick="@(() => BrowseSet(set))">
             <div class="col-12 d-flex bg-elevated content">
                 <img class="set-icon" src="@set.SetIconUrl" alt="@set.Code.ToUpper()"/>
                 <div class="ms-4 d-flex flex-column flex-grow-1">

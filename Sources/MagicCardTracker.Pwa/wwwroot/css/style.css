@@ -2,13 +2,15 @@
 
     --primaryColor: #F44336;
     --successColor: #649349;
+    --backgroundColor: #1B1C22;
+    --navbarHeight: 56px;
 }
 
 html, body {
 
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: rgba(255,255,255,0.87);
-    background-color: #1B1C22; 
+    background-color: var(--backgroundColor); 
 }
 
 body {
@@ -25,6 +27,11 @@ body {
     background-color: #25262c;
 }
 
+.bg-black80 {
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
 .bg-good {
     background-color: var(--successColor);
 }
@@ -36,15 +43,19 @@ body {
 .magic-card {
 
     height: auto;
-    max-height: 60vh;
+    max-height: 50vh;
     max-width: 100%;
     border-radius: 5%;
     cursor: pointer;
 }
 
-.magic-card.thumbnail {
+.magic-card.large {
+    max-height: 70vh;
+}
 
-    width: 200px;
+.magic-card.small {
+
+    max-height: 35vh;
 }
 
 .color-white-60
@@ -90,6 +101,18 @@ a, .btn-link, a:hover, .action-link {
     border-color: var(--primaryColor);
 }
 
+.backdrop {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    margin-top: var(--navbarHeight);
+    flex-direction: column;
+}
+
 .loader {
     position: absolute;
     top: 0;
@@ -101,11 +124,7 @@ a, .btn-link, a:hover, .action-link {
     user-select: none;
     justify-content: center;
     align-items: center;
-}
-
-.loader.fade-out-background {
-
-    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1010;
 }
 
 .loader img {
@@ -145,25 +164,6 @@ a, .btn-link, a:hover, .action-link {
 
 .content {
     padding: 1rem;
-}
-
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
 }
 
 .rainbow-text {

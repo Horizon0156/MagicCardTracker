@@ -100,6 +100,11 @@ namespace MagicCardTracker.Storage
                     matchedCard.Rarity = collectableCard.Rarity;
                     matchedCard.ReleaseAt = collectableCard.ReleaseAt;
                     matchedCard.Legalities = collectableCard.Legalities;
+
+                    // Temp: Migrate collection fields that have been messed up
+                    matchedCard.FlipsideImageUrl = matchedCard.FlipsideImageUrl != matchedCard.ImageUrl
+                        ? matchedCard.FlipsideImageUrl
+                        : null;
                 }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);

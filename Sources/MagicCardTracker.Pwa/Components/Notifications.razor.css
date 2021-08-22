@@ -2,7 +2,7 @@
 #notification-container {
 
     position: fixed;
-    top: 60px;
+    top: var(--navbarHeight);
     right: 0;
     display: flex;
     flex-direction: column;
@@ -24,6 +24,7 @@
 }
 
 @keyframes fadein {
+
     from {
         opacity:0;
     }

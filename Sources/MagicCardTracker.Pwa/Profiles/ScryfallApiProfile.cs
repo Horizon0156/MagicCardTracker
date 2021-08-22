@@ -104,7 +104,9 @@ namespace MagicCardTracker.Pwa.Profiles
                 ? useBackside 
                     ? cardFaces[1].Image_uris.Normal.ToString()
                     : cardFaces[0].Image_uris.Normal.ToString()
-                : card.Image_uris.Normal.ToString();
+                : useBackside 
+                    ? null
+                    : card.Image_uris.Normal.ToString();
         }
     }
 }

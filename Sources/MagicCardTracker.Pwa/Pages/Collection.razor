@@ -66,11 +66,14 @@
         _cts.Dispose();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         _configuration.GetSection(CollectionSettings.Key)
                       .Bind(_settings);
+    }
 
+    protected override async Task OnParametersSetAsync()
+    {
         _isLoading = true;
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
 

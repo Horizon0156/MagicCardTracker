@@ -23,7 +23,7 @@ namespace MagicCardTracker.Storage.Abstrations
         /// <summary>
         ///     Restores a persisted library asnychronous.
         /// </summary>
-        /// <param name="cancellationToken"> A cancellation toke. </param>
+        /// <param name="cancellationToken"> A cancellation token. </param>
         /// <returns> The restored library of collected cards. </returns>
         Task<IEnumerable<CollectedCard>> RestoreLibraryAsync(
             CancellationToken cancellationToken);

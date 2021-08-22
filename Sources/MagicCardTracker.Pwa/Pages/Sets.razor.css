@@ -9,13 +9,9 @@
 .progress {
 
     height: .5rem;
-    background-color: #191A1F;
+    background-color: var(--backgroundColor);
 }
 
 .progress-bar {
-    background-color: #F44336;
-}
-
-.cursor-pointer {
-    cursor: pointer;
+    background-color: var(--primaryColor);
 }
