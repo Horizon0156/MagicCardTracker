@@ -1,4 +1,4 @@
-name: 📦 Ship Docker DEV image
+name: 🐳 Docker (Dev)
 on:
   push:
     branches: [ main ]

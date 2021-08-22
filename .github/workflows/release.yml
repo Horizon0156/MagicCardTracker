@@ -1,4 +1,4 @@
-name: 📦 Ship Docker PROD image
+name: 🐳 Docker (Stable)
 on:
   push:
     tags: [ v* ]
