@@ -22,11 +22,11 @@
 
 <LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
 
-@if (!_isLoading && _collectedSets != null)
+@if (!_isLoading)
 {
     @foreach (var set in _showAll 
-                ? _collectedSets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0) 
-                : _collectedSets.Where(s => s.NumberOfCollectedCards > 0))
+                ? _majorSets
+                : _collectedSets)
     {
         <div class="row mt-2 selectable" @onclick="@(() => BrowseSet(set))">
             <div class="col-12 d-flex bg-elevated content">
@@ -53,6 +53,8 @@
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
+    private IEnumerable<Set> _majorSets;
+
     private IEnumerable<Set> _collectedSets;
 
 
@@ -70,9 +72,10 @@
     private async Task LoadSetsAsync()
     {
         _isLoading = true;
-        _collectedSets = await _mediator.Send(new GetCollectedSets(), _cts.Token);
-
-        _hasCards = _collectedSets.Any(s => s.NumberOfCollectedCards > 0);
+        var sets = await _mediator.Send(new GetSetsWithCollectionInfo(), _cts.Token);
+        _majorSets = sets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0);
+        _collectedSets = sets.Where(s => s.NumberOfCollectedCards > 0);
+        _hasCards = _collectedSets.Any();
         _showAll = !_hasCards;
 
         _isLoading = false;

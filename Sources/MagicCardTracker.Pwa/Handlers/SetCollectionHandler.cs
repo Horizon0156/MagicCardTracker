@@ -17,7 +17,7 @@ using Set = MagicCardTracker.Pwa.Models.Set;
 namespace MagicCardTracker.Pwa.Handlers
 {
     internal class SetCollectionHandler : 
-        IRequestHandler<GetCollectedSets, IEnumerable<Set>>,
+        IRequestHandler<GetSetsWithCollectionInfo, IEnumerable<Set>>,
         IRequestHandler<UpdateSets>
     {
         private readonly ICardLibrary _cardLibrary;
@@ -41,7 +41,7 @@ namespace MagicCardTracker.Pwa.Handlers
         }
 
         public async Task<IEnumerable<Set>> Handle(
-            GetCollectedSets request, 
+            GetSetsWithCollectionInfo request, 
             CancellationToken cancellationToken)
         {
             var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
@@ -85,9 +85,6 @@ namespace MagicCardTracker.Pwa.Handlers
         {
             var sets = await _scryfallClientFactory.Sets.GetAllAsync(cancellationToken);
             var filteredSets = sets.Data
-                                    .Where(s => s.Set_type == Set_type.Core 
-                                            || s.Set_type == Set_type.Expansion
-                                            || s.Set_type == Set_type.Commander)
                                     .Where(s => s.Released_at < DateTimeOffset.Now 
                                             && s.Card_count > 0)
                                     .Select(s => _mapper.Map<Set>(s))

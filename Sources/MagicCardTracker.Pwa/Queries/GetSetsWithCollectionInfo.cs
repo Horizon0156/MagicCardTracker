@@ -4,7 +4,7 @@ using MediatR;
 
 namespace MagicCardTracker.Pwa.Queries
 {
-    internal class GetCollectedSets : IRequest<IEnumerable<Set>>
+    internal class GetSetsWithCollectionInfo : IRequest<IEnumerable<Set>>
     {
     }
 }
