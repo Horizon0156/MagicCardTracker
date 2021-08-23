@@ -1,4 +1,4 @@
-name: 🐳 Docker (Dev)
+name: Docker (Dev)
 on:
   push:
     branches: [ main ]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: 📦 Ship Docker DEV image
+    name: 🐳 Build & push Docker dev image to ghcr.io
     runs-on: ubuntu-latest
     steps:
       - name: 🔧 Checkout repository
@@ -17,12 +17,12 @@ jobs:
       - name: 🔧 Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-      - name: 🔓 Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+      - name: 🔓 Docker Login
+        run: docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }}
       - name: 🛠️ Run Buildx
         run: |
           docker buildx build \
             --platform linux/arm,linux/amd64 \
             --push \
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:dev \
+            --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:dev \
             .

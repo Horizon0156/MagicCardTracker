@@ -1,15 +1,14 @@
-[![🚨 CI](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml)
-[![🐳 Docker (Stable)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml)
+<a href="https://www.buymeacoffee.com/horizon0156"><img src="https://user-images.githubusercontent.com/7062359/130448682-e0ba88ef-d0c0-4197-8fa4-ca3dfc10f356.png" alt="Buy me a coffee" height="50"></a>
 
-<p align="center">
- <img src="https://github.com/Horizon0156/MagicCardTracker/blob/main/Sources/MagicCardTracker.Pwa/wwwroot/MCT_Logo.png?raw=true" height="125px">
-  <br/>
-  <h1 align="center">Magic Card Tracker</h1>
-</p>
+[![🚨 CI](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml)
+[![Docker (Dev)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continious_delivery.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continious_delivery.yml)
+[![🐳 Docker (Release)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml)
+
+![Magic Card Tracker](https://raw.githubusercontent.com/Horizon0156/MagicCardTracker/main/Artwork/banner_small.jpg)
 
 Magic Card Tracker (MCT) is a Progressive Web Application to keep track of your MTG card collection. Card information and prices are loaded from [Scryfall](https://scryfall.com), MCT will enrich your collection information and store the data in your browser. Besides the hosting of the application itself, no additional backend services or databases are required. 
 
-_This application was implemented for personal use and is designed to be simple, extendable and lightweight. I didn't spend much time in developing this and basically build the features as I needed those to keep track of my cards. Feel free to run this application to track your collection as well, but appreciate that not everything might work as you would have expected it. Neither Wizards nor Scryfall endorsed this application. In case you host MCT and made it available to the public, please have look at the privacy policy and license information and adjust those to your needs. In addition, you are not allowed to drop the disclaimer about Wizards and the usage related to the Fan Content Policy._
+_This application was implemented for personal use and is designed to be simple, extendable and lightweight. Actually, I started this project to try out Blazor in spare time and built the features as I needed those to keep track of my cards while getting rid of Excel. Feel free to run this application to track your collection as well, but appreciate that not everything might work as you would have expected it. Neither Wizards nor Scryfall endorsed this application. In case you host MCT and made it available to the public, please have look at the privacy policy and license information and adjust those to your needs. In addition, you are not allowed to drop the disclaimer about Wizards and the usage related to the Fan Content Policy._
 
 ## Installation
 
@@ -29,10 +28,10 @@ dotnet run --project Sources/MagicCardTracker.Pwa/MagicCardTracker.Pwa.csproj
 In case you are planning to develop new features, you can also run the application in `watch` mode. 
 
 ### Docker 
-Build the image on your own or make use of a pre-build multi architecture image that is pushed to [Docker Hub](https://hub.docker.com/repository/docker/horizon0156/magic-card-tracker). The image will host the application on port `80`. You might wanna mount a local `appsettings.json` to `/usr/share/nginx/html/appsettings.json` in order to adjust parameter during runtime without building a custom image. 
+Build the image on your own or make use of a pre-build multi architecture image that is pushed to [ghcr.io](https://github.com/Horizon0156/MagicCardTracker/pkgs/container/magic-card-tracker). The image will host the application on port `80`. You might wanna mount a local `appsettings.json` to `/usr/share/nginx/html/appsettings.json` in order to adjust parameter during runtime without building a custom image. 
 
 ```bash
-docker run -d -p 8080:80 --name mct horizon0156/magic-card-tracker 
+docker run -d -p 8080:80 --name mct ghcr.io/horizon0156/magic-card-tracker
 ```
 
 ## Changelog

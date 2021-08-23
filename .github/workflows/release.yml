@@ -1,11 +1,11 @@
-name: 🐳 Docker (Stable)
+name: Docker (Release)
 on:
   push:
     tags: [ v* ]
 
 jobs:
   deploy:
-    name: 📦 Ship Docker PROD image
+    name: 🐳 Build & push Docker release image to ghcr.io
     runs-on: ubuntu-latest
     steps:
       - name: 🔧 Checkout repository
@@ -21,13 +21,13 @@ jobs:
       - name: 🔧 Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-      - name: 🔓 Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
+      - name: 🔓 Docker Login
+        run: docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }}
       - name: 🛠️ Run Buildx
         run: |
           docker buildx build \
             --platform linux/arm,linux/amd64 \
             --push \
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:latest \
-            --tag ${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:${{ steps.version.outputs.version }} \
+            --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:latest \
+            --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/magic-card-tracker:${{ steps.version.outputs.version }} \
             .

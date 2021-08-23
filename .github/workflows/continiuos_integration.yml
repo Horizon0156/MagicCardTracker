@@ -1,4 +1,4 @@
-name: 🚨 CI
+name: Continious Integration
 
 on:
   push:
