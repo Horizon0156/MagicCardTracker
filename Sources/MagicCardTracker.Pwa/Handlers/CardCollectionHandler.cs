@@ -108,42 +108,54 @@ namespace MagicCardTracker.Pwa.Handlers
         {
             var library = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
 
-            // Scryfall supports a maximum of 75 card references per collection request
-            // Therefore, we gracefully divide the card collection to chunks of 70 cards.
-            var chunks = library.Select((item, index) => new { index, item })
-                                .GroupBy(x => x.index / 70)
-                                .Select(g => g.Select(x => x.item));
-
-            var updatedCards = new List<Contracts.Card>();
-            foreach (var chunk in chunks)
+            switch (request.Mode)
             {
-                // In addition, we always update with the English version of the card to get latest price informations
-                var ids = chunk.Select(c => new Card_identifier { Set = c.SetCode, Collector_number = c.Number });
-                var cards = await _scryfallClientFactory.Cards
-                                                        .CollectionAsync(
-                                                            new Card_collection_request { Identifiers = ids.ToArray() },
-                                                            cancellationToken);
-                updatedCards.AddRange(cards.Data.Select(c => _mapper.Map<Contracts.Card>(c)));
+                case UpdateMode.Prices:
+                    await UpdateCollection(library, UpdateMode.Prices, cancellationToken);
+                    _notificationService.SendNotification( 
+                        new Notification($"Updated prices for {library.Count()} cards"));
+                    break;
+                case UpdateMode.AllMutableProperties:
+                    await UpdateCollection(
+                        library,
+                        UpdateMode.AllMutableProperties,
+                        cancellationToken);
+                    _notificationService.SendNotification( 
+                        new Notification($"Updated data for {library.Count()} cards"));
+
+                    // As pricing information is only valid on EN cards,
+                    // we have to take a second round for foreign cards.
+                    var foreignCards = library.Where(
+                                    c => c.LanguageCode != Contracts.Card.OriginalLanguageCode);
+                    await UpdateCollection(
+                        foreignCards,
+                        UpdateMode.Prices,
+                        cancellationToken
+                    );
+                    _notificationService.SendNotification( 
+                        new Notification($"Updated prices for {library.Count()} cards"));
+                    break;
+                default:
+                    return Unit.Value;
             }
-
-            await _cardLibrary.UpdatedPricesAsync(updatedCards, cancellationToken);
-            _notificationService.SendNotification(new Notification($"Updated information for {updatedCards.Count} cards"));
-
             return Unit.Value;
         }
 
-         public async Task<Unit> Handle(AddCard request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddCard request, CancellationToken cancellationToken)
         {
             await _cardLibrary.AddCardAsync(request.Card, cancellationToken);
             
             return Unit.Value;
         }
 
-        private async Task EnrichPricingInformationIfApplicableAsync(Contracts.Card card, CancellationToken cancellationToken)
+        private async Task EnrichPricingInformationIfApplicableAsync(
+            Contracts.Card card,
+            CancellationToken cancellationToken)
         {
             // With Scryfall foreign cards usually do not have pricing information,
             // so lets try to pick those from the original card (en)
-            if (card.Prices.HasPricingInformation || card.LanguageCode == "en")
+            if (card.Prices.HasPricingInformation 
+             || card.LanguageCode == Contracts.Card.OriginalLanguageCode)
             {
                 return;
             }
@@ -164,6 +176,39 @@ namespace MagicCardTracker.Pwa.Handlers
             {
                 card.Prices = _mapper.Map<PricingInformation>(originalCard.Prices);
             }
+        }
+
+        private async Task UpdateCollection(
+            IEnumerable<CollectedCard> cardsToUpdate,
+            UpdateMode updateMode,
+            CancellationToken cancellationToken)
+        {
+            // Scryfall supports a maximum of 75 card references per collection request
+            // Therefore, we gracefully divide the card collection to chunks of 70 cards.
+            var chunks = cardsToUpdate.Select((item, index) => new { index, item })
+                                .GroupBy(x => x.index / 70)
+                                .Select(g => g.Select(x => x.item));
+
+            var updatedCards = new List<Contracts.Card>();
+            foreach (var chunk in chunks)
+            {
+                // In case we just update prices, we are going to take the English version of the 
+                // card to get latest price informations as foreign cards don't include those.
+                var ids = chunk.Select(c => updateMode == UpdateMode.Prices
+                            ? new Card_identifier { Set = c.SetCode, Collector_number = c.Number }
+                            : new Card_identifier { Id = c.ScryfallId });
+
+                var cards = await _scryfallClientFactory.Cards
+                                                        .CollectionAsync(
+                                                            new Card_collection_request 
+                                                            { 
+                                                                Identifiers = ids.ToArray()
+                                                            },
+                                                            cancellationToken);
+                updatedCards.AddRange(cards.Data.Select(c => _mapper.Map<Contracts.Card>(c)));
+            }
+
+            await _cardLibrary.UpdatedCollectionAsync(updatedCards, updateMode, cancellationToken);
         }
     }
 }

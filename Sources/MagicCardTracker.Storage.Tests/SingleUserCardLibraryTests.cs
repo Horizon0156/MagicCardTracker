@@ -342,7 +342,7 @@ namespace MagicCardTracker.Storage.Tests
         }
 
         [Fact]
-        public async Task TestRestoreLibraryShouldTakeTheGivenLibrary()
+        public async Task TestSetCollectionAsyncShouldTakeTheGivenLibrary()
         {
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
@@ -365,7 +365,7 @@ namespace MagicCardTracker.Storage.Tests
                 Count = 2
             };
             var collection = new [] { collectedCard };
-            await sut.RestoreCollectionAsync(collection, CancellationToken.None);
+            await sut.SetCollectionAsync(collection, CancellationToken.None);
             var newCollection = await sut.GetCollectedCardsAsync(CancellationToken.None);
             Assert.Contains(collectedCard, newCollection);
             Assert.Single(newCollection);

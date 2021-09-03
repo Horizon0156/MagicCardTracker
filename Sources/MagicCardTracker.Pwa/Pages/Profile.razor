@@ -79,20 +79,39 @@
             <div class="lead">
                 Data management
             </div>
-            <button class="mt-2 btn btn-primary" @onclick="@ExportLibraryAsync">
-                Export Library
+            <label class="mt-2 color-white-60"> Library </label>
+            <div class="btn-group mt-2">
+            <button class="btn btn-primary" @onclick="@ExportLibraryAsync">
+                Export
             </button>
 
-            <label class="mt-2 btn btn-primary">
+            <label class="ms-1 btn btn-primary">
                 <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
-                Import Library
+                Import
             </label>
-            <button class="mt-2 btn btn-primary" @onclick="@UpdateSetsAsync">
-                Update Sets
-            </button>
-            <button class="mt-2 btn btn-primary" @onclick="@UpdateCollectionAsync">
-                Update Collection
-            </button>
+            </div>
+            <label class="small mt-2 color-white-60">
+                Please make sure to backup your library as you might clear your Browser storage 
+                accidentally. It's also recommended to backup your library before you 
+                update your library's metadata.
+            </label>
+            <label class="mt-2 color-white-60"> Update</label>
+            <div class="btn-group mt-2">
+                <button class="btn btn-primary" @onclick="@UpdateSetsAsync">
+                    Sets
+                </button>
+                <button class="btn ms-1 btn-primary" @onclick="@UpdateCollectionAsync">
+                    Metadata
+                </button>
+                <button class="btn ms-1 btn-primary" @onclick="@UpdatePricesAsync">
+                    Prices
+                </button>
+            </div>
+            <label class="small mt-2 color-white-60">
+                Update Sets to load new MTG Editions. Only update Metadata in case you are
+                missing card data. This will reload your entire collection. To keep market prices 
+                up to date, just refresh Prices (updates once per day).
+            </label>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -171,9 +190,20 @@
 
     private async Task UpdateCollectionAsync()
     {
-        _loadingInformation = "Updating collection...";
+        _loadingInformation = "Updating metadata. This might take some time...";
         _isLoading = true;
-        await _mediator.Send(new UpdateCollection(), _cts.Token);
+        await _mediator.Send(new UpdateCollection(
+            mode: UpdateMode.AllMutableProperties),
+            _cts.Token);
+        await LoadCollectionAsync();
+        _isLoading = false;
+    }
+
+    private async Task UpdatePricesAsync()
+    {
+        _loadingInformation = "Updating prices...";
+        _isLoading = true;
+        await _mediator.Send(new UpdateCollection(mode: UpdateMode.Prices), _cts.Token);
         await LoadCollectionAsync();
         _isLoading = false;
     }

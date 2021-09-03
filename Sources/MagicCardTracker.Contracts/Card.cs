@@ -26,6 +26,8 @@ namespace MagicCardTracker.Contracts
             UpdateMutualProperties(card);
         }
 
+        public static string OriginalLanguageCode => "en";
+
         public bool HasFoilVersion { get; set; }
 
         public PricingInformation Prices { get; set; }
@@ -56,7 +58,7 @@ namespace MagicCardTracker.Contracts
 
         public void UpdatePrices(PricingInformation prices)
         {
-            Prices = prices.HasPricingInformation
+            Prices = prices != null && prices.HasPricingInformation
                 ? prices
                 : Prices;
         }
