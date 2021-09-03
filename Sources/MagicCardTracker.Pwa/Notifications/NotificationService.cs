@@ -15,6 +15,5 @@ namespace MagicCardTracker.Pwa.Notifications
         {
             NotificationReceived?.Invoke(this, notification);
         }
-        
     }
 }

@@ -85,33 +85,39 @@ namespace MagicCardTracker.Storage
         }
 
         /// <inheritdoc />
-        public Task MergeCollectionAsync(IEnumerable<Card> cards, CancellationToken cancellationToken)
+        public Task UpdatedCollectionAsync(IEnumerable<Card> cards, UpdateMode updateMode, CancellationToken cancellationToken)
         {
             foreach (var card in cards)
             {
-                var collectableCard = new CollectedCard(card, 0, 0);
-                var matchedCard = _collectedCards.FirstOrDefault(c => c.SetCode == card.SetCode 
-                                                                   && c.Number == card.Number);
-                if (matchedCard != null)
+                // To update prices we don't care about the language as 
+                // for all other we take a unique identifier
+                var matchedCard = updateMode == UpdateMode.Prices
+                    ?   _collectedCards.FirstOrDefault(c => c.SetCode == card.SetCode 
+                                                         && c.Number == card.Number)
+                    :  _collectedCards.FirstOrDefault(c => c.ScryfallId == card.ScryfallId);
+
+                if (matchedCard == null)
                 {
-                    matchedCard.Prices = collectableCard.Prices;
+                    continue;
+                }
 
-                    // Also migrate fields added after initial release
-                    matchedCard.Rarity = collectableCard.Rarity;
-                    matchedCard.ReleaseAt = collectableCard.ReleaseAt;
-                    matchedCard.Legalities = collectableCard.Legalities;
-
-                    // Temp: Migrate collection fields that have been messed up
-                    matchedCard.FlipsideImageUrl = matchedCard.FlipsideImageUrl != matchedCard.ImageUrl
-                        ? matchedCard.FlipsideImageUrl
-                        : null;
+                switch (updateMode)
+                {
+                    case UpdateMode.Prices:
+                        matchedCard.UpdatePrices(card.Prices);
+                        break;
+                    case UpdateMode.AllMutableProperties:
+                        matchedCard.UpdateMutualProperties(card);
+                        break;
+                    default:
+                        continue;
                 }
             }
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);
         }
 
         /// <inheritdoc />
-        public Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken)
+        public Task SetCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken)
         {
             _collectedCards = new HashSet<CollectedCard>(collectedCards);
             return _libraryPersister.PersistLibraryAsync(_collectedCards, cancellationToken);

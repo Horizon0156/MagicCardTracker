@@ -31,7 +31,7 @@ namespace MagicCardTracker.Pwa.Handlers
                 request.LibraryBackupStream, 
                 cancellationToken: cancellationToken);
             
-            await _cardLibrary.RestoreCollectionAsync(collection, cancellationToken);
+            await _cardLibrary.SetCollectionAsync(collection, cancellationToken);
 
             return Unit.Value;
         }
