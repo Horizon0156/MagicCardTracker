@@ -21,8 +21,8 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForMember(c => c.LanguageCode, cfg => cfg.MapFrom(c => c.Lang))
                 .ForMember(c => c.HasFoilVersion, cfg => cfg.MapFrom(c => c.Foil))
                 .ForMember(c => c.ScryfallId, cfg => cfg.MapFrom(c => c.Id))
-                .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, false)))
-                .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => NormalizeImageUrl(c, true)))
+                .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => ExtractImageUrls(c, false)))
+                .ForMember(c => c.FlipsideImageUrl, cfg => cfg.MapFrom(c => ExtractImageUrls(c, true)))
                 .ForMember(c => c.ReleaseAt, cfg => cfg.MapFrom(c => c.Released_at))
                 .ForMember(c => c.Rarity, cfg => cfg.MapFrom(c => c.Rarity))
                 .ForMember(c => c.Legalities, cfg => cfg.MapFrom(c => FlattenLegality(c.Legalities)))
@@ -91,22 +91,42 @@ namespace MagicCardTracker.Pwa.Profiles
         private static string NormalizeName(ScryfallClient.Card card)
         {
             var cardFaces = card.Card_faces?.ToArray();
-            return card.Layout == ScryfallClient.CardLayout.Transform    
-                ? $"{cardFaces[0].Printed_name ?? cardFaces[0].Name} " + 
-                  $"// {cardFaces[1].Printed_name ?? cardFaces[1].Name}"
-                : card.Printed_name ?? card.Name;
+
+            switch (card.Layout)
+            {
+                case ScryfallClient.CardLayout.Transform:
+                case ScryfallClient.CardLayout.Split:
+                case ScryfallClient.CardLayout.Flip:
+                case ScryfallClient.CardLayout.Double_faced_token:
+                case ScryfallClient.CardLayout.Double_sided:
+                case ScryfallClient.CardLayout.Modal_dfc:
+                    return $"{cardFaces[0].Printed_name ?? cardFaces[0].Name} " + 
+                           $"// {cardFaces[1].Printed_name ?? cardFaces[1].Name}";
+                default:
+                    return card.Printed_name ?? card.Name;
+            }
         }
 
-        private static string NormalizeImageUrl(ScryfallClient.Card card, bool useBackside)
+        private static string ExtractImageUrls(ScryfallClient.Card card, bool useFlipsideImage)
         {
             var cardFaces = card.Card_faces?.ToArray();
-            return card.Layout == ScryfallClient.CardLayout.Transform  
-                ? useBackside 
-                    ? cardFaces[1].Image_uris.Normal.ToString()
-                    : cardFaces[0].Image_uris.Normal.ToString()
-                : useBackside 
-                    ? null
-                    : card.Image_uris.Normal.ToString();
+
+            switch (card.Layout)
+            {
+                case ScryfallClient.CardLayout.Transform:
+                case ScryfallClient.CardLayout.Split:
+                case ScryfallClient.CardLayout.Flip:
+                case ScryfallClient.CardLayout.Double_faced_token:
+                case ScryfallClient.CardLayout.Double_sided:
+                case ScryfallClient.CardLayout.Modal_dfc:
+                    return useFlipsideImage 
+                        ? cardFaces[1].Image_uris.Normal.ToString()
+                        : cardFaces[0].Image_uris.Normal.ToString();
+                default:
+                    return useFlipsideImage
+                        ? null
+                        : card.Image_uris.Normal.ToString();
+            }
         }
     }
 }
