@@ -126,7 +126,7 @@ namespace MagicCardTracker.Pwa.Handlers
                 updatedCards.AddRange(cards.Data.Select(c => _mapper.Map<Contracts.Card>(c)));
             }
 
-            await _cardLibrary.MergeCollectionAsync(updatedCards, cancellationToken);
+            await _cardLibrary.UpdatedPricesAsync(updatedCards, cancellationToken);
             _notificationService.SendNotification(new Notification($"Updated information for {updatedCards.Count} cards"));
 
             return Unit.Value;

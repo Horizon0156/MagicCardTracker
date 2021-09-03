@@ -42,20 +42,24 @@ namespace MagicCardTracker.Storage
         Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Merges the collection by information of the given cards that might change over time (Prices, etc.).
+        ///     Updates the collection by the properties of the given cards.
         /// </summary>
-        /// <param name="collectedCards"> The collection to merge </param>
+        /// <param name="cards"> The collection to merge </param>
+        /// <param name="updateMode"> The mode of the collection update. </param>
         /// <param name="cancellationToken"> A cancellation token. </param>
         /// <returns> Operational task. </returns>
-        Task MergeCollectionAsync(IEnumerable<Card> cards, CancellationToken cancellationToken);
+        Task UpdatedCollectionAsync(
+            IEnumerable<Card> cards,
+            UpdateMode updateMode,
+            CancellationToken cancellationToken);
 
         /// <summary>
-        ///     Restores the collection to the set of given cards.
+        ///     Sets the collection to the set of given cards.
         /// </summary>
         /// <param name="collectedCards"> The new collection </param>
         /// <param name="cancellationToken"> A cancellation token. </param>
         /// <returns> Operational task. </returns>
-        Task RestoreCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken);
+        Task SetCollectionAsync(IEnumerable<CollectedCard> collectedCards, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Clears the collection. 

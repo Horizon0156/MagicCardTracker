@@ -20,18 +20,10 @@ namespace MagicCardTracker.Contracts
         {
             SetCode = card.SetCode;
             Number = card.Number;
-            Name = card.Name;
             LanguageCode = card.LanguageCode;
-            HasFoilVersion = card.HasFoilVersion;
-            ImageUrl = card.ImageUrl;
-            FlipsideImageUrl = card.FlipsideImageUrl;
-            Prices = card.Prices;
-            ManaCosts = card.ManaCosts;
-            Colors = card.Colors;
             ScryfallId = card.ScryfallId;
-            ReleaseAt = card.ReleaseAt;
-            Rarity = card.Rarity;
-            Legalities = card.Legalities;
+            
+            UpdateMutualProperties(card);
         }
 
         public bool HasFoilVersion { get; set; }
@@ -61,5 +53,27 @@ namespace MagicCardTracker.Contracts
         public CardRarity Rarity { get; set; }
 
         public DateTimeOffset ReleaseAt { get; set; }
+
+        public void UpdatePrices(PricingInformation prices)
+        {
+            Prices = prices.HasPricingInformation
+                ? prices
+                : Prices;
+        }
+
+        public void UpdateMutualProperties(Card card)
+        {
+            UpdatePrices(card.Prices);
+
+            Name = card.Name;
+            HasFoilVersion = card.HasFoilVersion;
+            ImageUrl = card.ImageUrl;
+            FlipsideImageUrl = card.FlipsideImageUrl;
+            ManaCosts = card.ManaCosts;
+            Colors = card.Colors;
+            ReleaseAt = card.ReleaseAt;
+            Rarity = card.Rarity;
+            Legalities = card.Legalities;
+        }
     }
 }
