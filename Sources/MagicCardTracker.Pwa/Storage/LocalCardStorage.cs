@@ -8,7 +8,7 @@ using MagicCardTracker.Storage.Abstrations;
 
 namespace MagicCardTracker.Pwa.Storage
 {
-    public class LocalStorageCardLibrary : ICardLibraryPersister
+    internal class LocalStorageCardLibrary : ICardLibraryPersister
     {
         private readonly ILocalStorageService _localStorage;
 
@@ -16,6 +16,7 @@ namespace MagicCardTracker.Pwa.Storage
         {
             _localStorage = localStorage;
         }
+        
         public async Task PersistLibraryAsync(IEnumerable<CollectedCard> collection, CancellationToken cancellationToken)
         {
             await _localStorage.SetItemAsync("cards", collection.ToArray(), cancellationToken);

@@ -81,8 +81,10 @@
                         </div>
 
                         <div class="mt-4 d-flex justify-content-end">
-                            <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
-                            <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @onclick="@UpdateCollection"> Save </button>
+                                <button class="btn btn-outline-primary ms-1" @onclick="@Close">Close </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -111,8 +113,8 @@
         StateHasChanged();
 
         _card = card is CollectedCard
-        ? (CollectedCard)card
-        : await Mediator.Send(new GetCollectableCard(card));
+            ? (CollectedCard)card
+            : await Mediator.Send(new GetCollectableCard(card));
         _isBusy = false;
         StateHasChanged();
     }
