@@ -1,4 +1,3 @@
-using System;
 
 namespace MagicCardTracker.Pwa.Settings
 {

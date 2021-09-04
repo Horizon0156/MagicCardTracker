@@ -1,7 +1,7 @@
 
 namespace MagicCardTracker.Pwa.Models
 {
-    public static class LanguageCodes
+    internal static class LanguageCodes
     {
         public static string German = "de";
         

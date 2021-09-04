@@ -89,7 +89,7 @@
         var searchIndex = e.Location.IndexOf("/search/");
 
         _queryString = searchIndex > 0
-            ? e.Location.Substring(searchIndex + 8)
+            ? Uri.UnescapeDataString(e.Location.Substring(searchIndex + 8))
             : null;
         StateHasChanged();
     }

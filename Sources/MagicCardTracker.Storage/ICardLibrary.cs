@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicCardTracker.Contracts;
@@ -39,7 +41,7 @@ namespace MagicCardTracker.Storage
         /// <param name="languageCode"> The language code. </param>
         /// <param name="cancellationToken"> A cancellation token. </param>
         /// <returns> The card if collected or <c>null</c> if the card was not found. </returns>
-        Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken);
+        Task<CollectedCard?> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Updates the collection by the properties of the given cards.

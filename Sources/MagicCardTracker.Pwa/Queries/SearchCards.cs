@@ -4,7 +4,7 @@ using MediatR;
 
 namespace MagicCardTracker.Pwa.Queries
 {
-    public class SearchCards : IRequest<CardSearchResult>
+    internal class SearchCards : IRequest<CardSearchResult>
     {
         public SearchCards(string query, int? page = null)
         {

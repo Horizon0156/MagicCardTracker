@@ -1,5 +1,8 @@
 namespace MagicCardTracker.Contracts
 {
+    /// <summary>
+    ///     Enumeration for card rarities.
+    /// </summary>
     public enum CardRarity
     {
         Common = 0,

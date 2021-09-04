@@ -2,6 +2,9 @@ using System;
 
 namespace MagicCardTracker.Contracts
 {
+    /// <summary>
+    ///     Enumeration for card legalities.
+    /// </summary>
     [Flags]
     public enum Legality
     {

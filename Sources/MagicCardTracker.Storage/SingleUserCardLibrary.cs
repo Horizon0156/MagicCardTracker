@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -64,7 +66,7 @@ namespace MagicCardTracker.Storage
         }
 
         /// <inheritdoc />
-        public async Task<CollectedCard> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken)
+        public async Task<CollectedCard?> SearchInCollectionByIdAsync(string setCode, string cardNumber, string languageCode, CancellationToken cancellationToken)
         {
             await RecoverCardLibraryIfNeeded(cancellationToken);
 

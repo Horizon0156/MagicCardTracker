@@ -2,14 +2,16 @@
 
 namespace MagicCardTracker.Contracts
 {
+    /// <summary>
+    ///     Represents a Magic card
+    /// </summary>
     public class Card
     {
         /// <summary>
         ///     Creates a new instance of a card.
         /// </summary>
         public Card()
-        {
-            
+        {   
         }
         
         /// <summary>
@@ -26,36 +28,85 @@ namespace MagicCardTracker.Contracts
             UpdateMutualProperties(card);
         }
 
+        /// <summary>
+        ///     Language code for cards printed in original language.
+        /// </summary>
         public static string OriginalLanguageCode => "en";
 
+        /// <summary>
+        ///     Gets or sets a flag indicating whether this card has a foil version.
+        /// </summary>
         public bool HasFoilVersion { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the market prices of this card.
+        /// </summary>
         public PricingInformation Prices { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the printed name of this card.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the language code of this card.
+        /// </summary>
         public string LanguageCode { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the image url of this card.
+        /// </summary>
         public string ImageUrl { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the image url of the back of this card.
+        /// </summary>
         public string FlipsideImageUrl { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the set code.
+        /// </summary>
         public string SetCode { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the collector number.
+        /// </summary>
         public string Number { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the mana costs
+        /// </summary>
         public string ManaCosts { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the legalities of this card.
+        /// </summary>
         public Legality Legalities { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the colors (mana) of this card.
+        /// </summary>
         public string[] Colors { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the Scryfall identifier.
+        /// </summary>
         public string ScryfallId { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the rarity.
+        /// </summary>
         public CardRarity Rarity { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the release date of this card.
+        /// </summary>
         public DateTimeOffset ReleaseAt { get; set; }
 
+        /// <summary>
+        ///     Updates the pricing information of this card.
+        /// </summary>
+        /// <param name="prices"> Recent market prices. </param>
         public void UpdatePrices(PricingInformation prices)
         {
             Prices = prices != null && prices.HasPricingInformation
@@ -63,6 +114,10 @@ namespace MagicCardTracker.Contracts
                 : Prices ?? new PricingInformation();
         }
 
+        /// <summary>
+        ///     Updates all mutable fields of this card.
+        /// </summary>
+        /// <param name="card"> A card holding the recent values to update. </param>
         public void UpdateMutualProperties(Card card)
         {
             UpdatePrices(card.Prices);
