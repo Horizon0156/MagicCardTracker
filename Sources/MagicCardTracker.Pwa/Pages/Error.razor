@@ -1,0 +1,26 @@
+@page "/yikes"
+@inject NavigationManager _navigationManager;
+
+<div class="h-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="lead text-center"> 
+        <p>
+            Well played, you broke the system. Honestly, that shouldn't happened...
+        </p>
+        <p>
+            You can now gracefully reload the application. In case this error persist, 
+            feel free to create an issue on 
+            <a href="https://github.com/Horizon0156/MagicCardTracker/issues" target="blank">
+                GitHub
+            </a>.
+        </p>
+    </div>
+    <button class="btn btn-primary" @onclick="@Reload"> Reload</button>
+</div>
+
+@code 
+{
+    public void Reload()
+    {
+        _navigationManager.NavigateTo(_navigationManager.BaseUri, forceLoad: true);
+    }
+}

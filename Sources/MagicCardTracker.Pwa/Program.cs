@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Blazored.LocalStorage;
 using MagicCardTracker.Pwa.Cache;
+using MagicCardTracker.Pwa.Exceptions;
 using MagicCardTracker.Pwa.Helpers;
 using MagicCardTracker.Pwa.Notifications;
 using MagicCardTracker.Pwa.Profiles;
@@ -12,6 +13,7 @@ using MagicCardTracker.Storage.Abstrations;
 using MediatR;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace MagicCardTracker.Pwa
 {
@@ -26,6 +28,8 @@ namespace MagicCardTracker.Pwa
             builder.Services.AddMediatR(typeof(Program));
             builder.Services.AddAutoMapper(SetupMappings);
             builder.Services.AddHttpClient();
+
+            builder.Services.AddSingleton<ILoggerProvider, CriticalExceptionLoggerProvider>();
 
             builder.Services.AddTransient<IBrowserTools, JSBrowserTools>();
 
