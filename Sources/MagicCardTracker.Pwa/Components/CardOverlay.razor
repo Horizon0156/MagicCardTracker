@@ -8,81 +8,88 @@
 
 @if (_isVisible)
 {
-<div class="backdrop bg-black80 overflow-auto">
-    <div class="container d-flex flex-grow-1">
-        <div class="row flex-grow-1 mb-4 align-items-center">
-            <div class="col-md-6 d-flex justify-content-center">
-                <div class="content d-flex flex-column">
-                    <img class="magic-card large" @onclick="@Close" src="@(_isTransformed ? _card.FlipsideImageUrl : _card.ImageUrl)" />
-                    @if (!string.IsNullOrEmpty(_card.FlipsideImageUrl))
-                    {
-                        <label class="action-link text-center mt-2" @onclick="@ToggleTransform">
-                            <i class="bi bi-arrow-repeat"></i> Transform
-                        </label>
-                    }
+    <div class="backdrop bg-black80 overflow-auto">
+    <div class="container d-flex flex-grow-1 position-relative">
+        <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
+        @if (_card != null)
+        {
+            <div class="row flex-grow-1 mb-4 align-items-center">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <div class="content d-flex flex-column">
+                        <img class="magic-card large" @onclick="@Close"
+                    src="@(_isTransformed ? _card.FlipsideImageUrl : _card.ImageUrl)" />
+                        @if (!string.IsNullOrEmpty(_card.FlipsideImageUrl))
+                        {
+                            <label class="action-link text-center mt-2" @onclick="@ToggleTransform">
+                                <i class="bi bi-arrow-repeat"></i> Transform
+                            </label>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bg-elevated content">
+
+
+                        <div class="lead">
+                            @_card.Name
+                        </div>
+                        <div class="mt-2 color-white-60 row">
+                            <div class="col-6 d-flex flex-column">
+                                <label>Market Price:</label>
+                                <label>
+                                    @_card.Prices?.ToString(false)
+                                </label>
+                            </div>
+                            <div class="col-6 d-flex flex-column">
+                                <label class="rainbow-text">Foil:</label>
+                                <label>
+                                    @_card.Prices?.ToString(true)
+                                </label>
+                            </div>
+                        </div>
+
+                        <label class="mt-4">Collected</label>
+                        <div class="mt-2 color-white-60 row">
+                            <div class="col-6 d-flex flex-column">
+                                <input id="standardCount" class="form-control" type="number" min=0
+                                       @bind="@_card.Count"></input>
+                                <label for="standardCount" class="ms-1 color-white-60">Standard</label>
+                            </div>
+                            <div class="col-6 d-flex flex-column">
+                                <input id="foilCount" class="form-control" type="number" min=0
+                                        @bind="@_card.FoilCount"></input>
+                                <label for="foilCount" class="ms-1 rainbow-text">Foil</label>
+                            </div>
+                        </div>
+
+                        <label class="mt-4">Legalities</label>
+                        <div class="mt-2 d-flex text-center small">
+                            <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Standard)">Standard</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pioneer)">Pioneer</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Modern)">Modern</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Legacy)">Legacy</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Vintage)">Vintage</span>
+                        </div>
+                        <div class="mt-1 d-flex text-center small">
+                            <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Brawl)">Brawl</span>
+                            <span
+                        class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Historic)">Historic</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pauper)">Pauper</span>
+                            <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Penny)">Penny</span>
+                            <span
+                        class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Commander)">Commander</span>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
+                            <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="bg-elevated content position-relative">
-                <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
-                @if (_card != null)
-                {
-                <div class="lead">
-                    @_card.Name
-                </div>
-                <div class="mt-2 color-white-60 row">
-                    <div class="col-6 d-flex flex-column">
-                        <label>Market Price:</label>
-                        <label>
-                            @_card.Prices?.ToString(false)
-                        </label>
-                    </div>
-                     <div class="col-6 d-flex flex-column">
-                        <label class="rainbow-text">Foil:</label>
-                        <label>
-                            @_card.Prices?.ToString(true)
-                        </label>
-                    </div>
-                </div>
-                
-                <label class="mt-4">Collected</label>
-                <div class="mt-2 color-white-60 row">
-                    <div class="col-6 d-flex flex-column">
-                        <input id="standardCount" class="form-control" type="number" min=0 @bind="@_card.Count"></input>
-                        <label for="standardCount" class="ms-1 color-white-60">Standard</label>
-                    </div>
-                    <div class="col-6 d-flex flex-column">
-                        <input id="foilCount" class="form-control" type="number" min=0 @bind="@_card.FoilCount"></input>
-                        <label for="foilCount" class="ms-1 rainbow-text">Foil</label>
-                    </div>
-                </div>
-
-                <label class="mt-4">Legalities</label>
-                <div class="mt-2 d-flex text-center small">
-                    <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Standard)">Standard</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pioneer)">Pioneer</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Modern)">Modern</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Legacy)">Legacy</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Vintage)">Vintage</span>
-                </div>
-                <div class="mt-1 d-flex text-center small">
-                    <span class="p-1 col text-truncate @GetLegalClass(_card, Legality.Brawl)">Brawl</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Historic)">Historic</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Pauper)">Pauper</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Penny)">Penny</span>
-                    <span class="p-1 ms-1 col text-truncate @GetLegalClass(_card, Legality.Commander)">Commander</span>
-                </div>
-
-                <div class="mt-4 d-flex justify-content-end">
-                    <button class="btn btn-primary me-2" @onclick="@UpdateCollection"> Save </button>
-                    <button class="btn btn-outline-primary" @onclick="@Close">Close </button>
-                </div>
-                }
-                </div>
-            </div>
+        }
         </div>
     </div>
-</div>
 
 }
 
@@ -104,8 +111,8 @@
         StateHasChanged();
 
         _card = card is CollectedCard
-            ? (CollectedCard)card
-            : await Mediator.Send(new GetCollectableCard(card));
+        ? (CollectedCard)card
+        : await Mediator.Send(new GetCollectableCard(card));
         _isBusy = false;
         StateHasChanged();
     }
@@ -132,7 +139,7 @@
     private static string GetLegalClass(Card card, Legality legality)
     {
         return card.Legalities.HasFlag(legality)
-            ? "bg-good"
-            : "bg-bad";
+        ? "bg-good"
+        : "bg-bad";
     }
 }
