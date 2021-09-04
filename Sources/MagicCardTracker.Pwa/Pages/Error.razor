@@ -1,5 +1,6 @@
 @page "/yikes"
 @inject NavigationManager _navigationManager;
+@inject InfoSettings _infoSettings;
 
 <div class="h-100 d-flex flex-column justify-content-center align-items-center">
     <div class="lead text-center"> 
@@ -9,7 +10,7 @@
         <p>
             You can now gracefully reload the application. In case this error persist, 
             feel free to create an issue on 
-            <a href="https://github.com/Horizon0156/MagicCardTracker/issues" target="blank">
+            <a href="@(_infoSettings.GitHubUrl)/issues" target="blank">
                 GitHub
             </a>.
         </p>

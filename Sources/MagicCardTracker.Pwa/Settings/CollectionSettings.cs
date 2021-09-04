@@ -1,9 +1,7 @@
-namespace MagicCardTracker.Pwa.Models
+namespace MagicCardTracker.Pwa.Settings
 {
-    internal class CollectionSettings
-    {
-        public static string Key => "Collection";
-        
+    internal class CollectionSettings : SettingsBase
+    {   
         public int DisplayBatchSize { get; set; }
 
         public CollectionSettings()
