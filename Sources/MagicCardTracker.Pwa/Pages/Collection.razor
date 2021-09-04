@@ -1,15 +1,12 @@
 @page "/"
 @page "/collection"
 @page "/collection/{SetCode}"
-@using MagicCardTracker.Contracts
 @using System.Threading
-@using Microsoft.Extensions.Configuration
-@using MagicCardTracker.Pwa.Components
 @using MediatR
-@using Models
 @using Queries
+@using MagicCardTracker.Contracts
 @inject IMediator _mediator
-@inject IConfiguration _configuration
+@inject CollectionSettings _settings
 @implements IDisposable
 
 <div class="row">
@@ -58,18 +55,10 @@
 
     private IEnumerable<CollectedCard> _loadedCards;
 
-    private CollectionSettings _settings = new CollectionSettings();
-
     public void Dispose()
     {
         _cts.Cancel();
         _cts.Dispose();
-    }
-
-    protected override void OnInitialized()
-    {
-        _configuration.GetSection(CollectionSettings.Key)
-                      .Bind(_settings);
     }
 
     protected override async Task OnParametersSetAsync()

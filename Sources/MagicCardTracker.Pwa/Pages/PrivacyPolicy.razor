@@ -1,7 +1,5 @@
 @page "/privacy-policy"
-@using Microsoft.Extensions.Configuration
-@using Models
-@inject IConfiguration _configuration
+@inject PrivacyPolicySettings _settings
 
 <div class="lead">
     Magic Card Tracker Privacy Policy
@@ -89,16 +87,3 @@ Hoster of this service: @_settings.HosterName<br>
 Email: <a href="mailto:@_settings.HosterMailAdress">@_settings.HosterMailAdress</a>
 </p>
 
-@code
-{
-    private PrivacyPolicySettings _settings = new PrivacyPolicySettings();
-
-    protected override Task OnInitializedAsync()
-    {
-        _configuration.GetSection(PrivacyPolicySettings.Key)
-                      .Bind(_settings);
-
-        return Task.CompletedTask;
-    }
-    
-}

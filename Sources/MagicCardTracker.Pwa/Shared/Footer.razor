@@ -1,3 +1,5 @@
+@inject InfoSettings _infoSettings;
+
 <div class="row">
     <div class="col-12 col-md-8 offset-md-2">
         <div class="text-center color-white-60 small content">
@@ -11,7 +13,7 @@
 <div class="row">
     <div class="col-12">
         <div class="content pt-0 small d-flex justify-content-between">
-            <a href="https://github.com/Horizon0156/MagicCardTracker"><i class="bi bi-github me-1"></i> Open Source </a>
+            <a href="@_infoSettings.GitHubUrl" target="blank"><i class="bi bi-github me-1"></i> Open Source </a>
             <a href="/privacy-policy">Privacy Policy</a>
         </div>
     </div>

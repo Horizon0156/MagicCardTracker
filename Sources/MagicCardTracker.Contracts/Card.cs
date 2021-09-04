@@ -60,7 +60,7 @@ namespace MagicCardTracker.Contracts
         {
             Prices = prices != null && prices.HasPricingInformation
                 ? prices
-                : Prices;
+                : Prices ?? new PricingInformation();
         }
 
         public void UpdateMutualProperties(Card card)
