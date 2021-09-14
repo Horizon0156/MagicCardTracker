@@ -41,16 +41,31 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Prints a human readable string.
         /// </summary>
-        /// <param name="printFoilValue"> 
+        /// <param name="isFoilCard"> 
         ///     Flag indicating whether foil value should be printed.
         /// </param>
         /// <returns> Pricing information as string. </returns>
-        public string ToString(bool printFoilValue)
+        public string ToString(bool isFoilCard)
         {
             
-            return printFoilValue
+            return isFoilCard
                 ? FoilValueToString()
                 : StandardValueToString();
+        }
+
+        /// <summary>
+        ///     Calculate value for this pricing information.
+        /// </summary>
+        /// <param name="currency"> The target currency. </param>
+        /// <param name="isFoilCard"> Flag indicating whether foil value shall be used. </param>
+        /// <returns> Value </returns>
+        public decimal CalculateValue(Currency currency, bool isFoilCard)
+        {
+            var value = isFoilCard
+                ? currency == Currency.Dollar ? FoiledInDollars : FoiledInEuros
+                : currency == Currency.Dollar ? StandardInDollars : StandardInEuros;
+            
+            return value ?? 0;
         }
 
         private string StandardValueToString()

@@ -1,4 +1,4 @@
-using MagicCardTracker.Pwa.Models;
+using MagicCardTracker.Contracts;
 
 namespace MagicCardTracker.Pwa.Extensions
 {

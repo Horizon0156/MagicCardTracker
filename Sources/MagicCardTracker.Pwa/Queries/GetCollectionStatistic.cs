@@ -1,4 +1,5 @@
 
+using MagicCardTracker.Contracts;
 using MagicCardTracker.Pwa.Models;
 using MediatR;
 

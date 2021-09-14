@@ -106,11 +106,11 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Updates the pricing information of this card.
         /// </summary>
-        /// <param name="prices"> Recent market prices. </param>
-        public void UpdatePrices(PricingInformation prices)
+        /// <param name="updatedPrices"> Recent market prices. </param>
+        public void UpdatePrices(PricingInformation updatedPrices)
         {
-            Prices = prices != null && prices.HasPricingInformation
-                ? prices
+            Prices = updatedPrices != null && updatedPrices.HasPricingInformation
+                ? updatedPrices
                 : Prices ?? new PricingInformation();
         }
 

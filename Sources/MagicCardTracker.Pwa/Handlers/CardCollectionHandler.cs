@@ -123,7 +123,7 @@ namespace MagicCardTracker.Pwa.Handlers
                     _notificationService.SendNotification( 
                         new Notification($"Updated data for {library.Count()} cards"));
 
-                    // As pricing information is only valid on EN cards,
+                    // As pricing information is valid on EN cards,
                     // we have to take a second round for foreign cards.
                     var foreignCards = library.Where(
                                     c => c.LanguageCode != Contracts.Card.OriginalLanguageCode);
