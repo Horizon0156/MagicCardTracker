@@ -6,6 +6,11 @@ namespace MagicCardTracker.Pwa.Queries
 {
     internal class GetCollectionStatistic : IRequest<CollectionStatistic>
     {
+        public GetCollectionStatistic(Currency dominatingCurrency = Currency.Dollar)
+        {
+            DominatingCurrency = dominatingCurrency;
+        }
 
+        public Currency DominatingCurrency { get; }
     }
 }

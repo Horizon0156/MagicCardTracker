@@ -1,4 +1,5 @@
 @page "/profile"
+@using Blazored.LocalStorage
 @using ChartJs.Blazor.PieChart
 @using Commands
 @using MagicCardTracker.Pwa.Components
@@ -10,18 +11,21 @@
 @using Queries
 @implements IDisposable
 @inject IMediator _mediator
+@inject ILocalStorageService _localStorage
 
 <LoadingIndicator IsBusy="@_isLoading" 
                   FadeOutBackground="true" 
                   Text="@_loadingInformation"/>
-
 <div class="row">
     @if(_collectionStatistic?.NumberOfCardsCollected > 0)
     {
         <div class="col-md-6">
             <div class="content bg-elevated d-flex flex-column">
                 <label class="lead">
-                    Most valuable cards
+                    Most valuable cards 
+                    <span class="action-link float-end" @onclick="@ToggleCurrencyAsync"> 
+                        @_dominatingCurrency.ToCurrencySymbol() <i class="bi bi-sort-numeric-down-alt"></i>
+                    </span>
                 </label>
                 
                 <div class="mt-2 d-flex flex-wrap justify-content-center">
@@ -132,6 +136,8 @@
 
     private string _loadingInformation;
 
+    private Currency _dominatingCurrency;
+
     private CollectionStatistic _collectionStatistic;
 
     private CardOverlay _cardOverlay;
@@ -146,18 +152,31 @@
         _cts.Dispose();
     }
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return LoadCollectionAsync();
+        _dominatingCurrency = await _localStorage.GetItemAsync<Currency>("currency", _cts.Token);
+        await LoadCollectionAsync();
     }
 
     private async Task LoadCollectionAsync()
     {
         _loadingInformation = null;
         _isLoading = true;
-        _collectionStatistic = await _mediator.Send(new GetCollectionStatistic(), _cts.Token);
+        _collectionStatistic = await _mediator.Send(
+            new GetCollectionStatistic(_dominatingCurrency),
+            _cts.Token);
         _chartConfig.AddManaDistribution(_collectionStatistic);
         _isLoading = false;
+    }
+
+    private async Task ToggleCurrencyAsync()
+    {
+        _dominatingCurrency = _dominatingCurrency == Currency.Dollar
+            ? Currency.Euro
+            : Currency.Dollar;
+
+        await _localStorage.SetItemAsync("currency", _dominatingCurrency, _cts.Token);
+        await LoadCollectionAsync();
     }
 
     private async Task ImportLibraryAsync(InputFileChangeEventArgs e)
