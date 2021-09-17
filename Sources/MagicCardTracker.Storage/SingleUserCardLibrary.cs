@@ -93,23 +93,20 @@ namespace MagicCardTracker.Storage
             {
                 // To update prices we don't care about the language as 
                 // for all other we take a unique identifier
-                var matchedCard = updateMode == UpdateMode.Prices
-                    ?   _collectedCards.FirstOrDefault(c => c.SetCode == card.SetCode 
-                                                         && c.Number == card.Number)
-                    :  _collectedCards.FirstOrDefault(c => c.ScryfallId == card.ScryfallId);
-
-                if (matchedCard == null)
-                {
-                    continue;
-                }
-
+                var matchedCards = updateMode == UpdateMode.Prices
+                    ?  _collectedCards.Where(c => c.SetCode == card.SetCode 
+                                                && c.Number == card.Number)
+                                      .ToList()
+                    :  _collectedCards.Where(c => c.ScryfallId == card.ScryfallId)
+                                      .ToList();
+                                      
                 switch (updateMode)
                 {
                     case UpdateMode.Prices:
-                        matchedCard.UpdatePrices(card.Prices);
+                        matchedCards.ForEach(c => c.UpdatePrices(card.Prices));
                         break;
                     case UpdateMode.AllMutableProperties:
-                        matchedCard.UpdateMutualProperties(card);
+                        matchedCards.ForEach(c => c.UpdateMutualProperties(card));
                         break;
                     default:
                         continue;
