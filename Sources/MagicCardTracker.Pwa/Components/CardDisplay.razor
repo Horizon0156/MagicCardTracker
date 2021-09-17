@@ -1,4 +1,5 @@
 @using Contracts
+@inject IUserSettings _settings
 
 @if (Cards != null && Cards.Any())
 {
@@ -16,7 +17,7 @@
                         </span>
 
                         <span class="ms-2 badge rounded-pill bg-good">
-                            @collectableCard.Prices?.ToString(collectableCard.FoilCount > 0)
+                            @collectableCard.Prices?.ToString(_settings.Currency, collectableCard.FoilCount > 0)
                         </span>
                     </div>
                 </div>

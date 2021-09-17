@@ -1,9 +1,9 @@
 @page "/profile"
-@using Blazored.LocalStorage
 @using ChartJs.Blazor.PieChart
 @using Commands
 @using MagicCardTracker.Pwa.Components
 @using MagicCardTracker.Pwa.Extensions
+@using MagicCardTracker.Pwa.Settings
 @using MagicCardTracker.Contracts
 @using MediatR
 @using System.Threading
@@ -11,7 +11,7 @@
 @using Queries
 @implements IDisposable
 @inject IMediator _mediator
-@inject ILocalStorageService _localStorage
+@inject IUserSettings _settings
 
 <LoadingIndicator IsBusy="@_isLoading" 
                   FadeOutBackground="true" 
@@ -22,24 +22,24 @@
         <div class="col-md-6">
             <div class="content bg-elevated d-flex flex-column">
                 <label class="lead">
-                    Most valuable cards 
-                    <span class="action-link float-end" @onclick="@ToggleCurrencyAsync"> 
-                        @_dominatingCurrency.ToCurrencySymbol() <i class="bi bi-sort-numeric-down-alt"></i>
-                    </span>
+                    Most valuable cards
                 </label>
                 
-                <div class="mt-2 d-flex flex-wrap justify-content-center">
+                <div class="mt-2 d-flex flex-wrap justify-content-center align-items-center">
                     <img class="magic-card small" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
                     <ol class="mt-2 color-white-60">
                         @foreach (var card in _collectionStatistic.FiveMostValuableCards)
                         {
                         <li class="selectable" @onclick="@(() => ShowCardAsync(card))">
-                            <div class="d-flex flex-column">                        
-                                <span class="@(card.FoilCount > 0 ? "rainbow-text" : null)" > @card.Name</span>
-                                <small>
-                                    @card.Prices.ToString(card.FoilCount > 0)
-                                </small>
+                            <div class="d-flex">
+                                <span class="text-wrap flex-grow-1 @(card.FoilCount > 0 ? "rainbow-text" : null)" > 
+                                    @card.Name
+                                </span>
+                                <span class="ms-2">
+                                    @card.Prices.ToString(_settings.Currency, card.FoilCount > 0)
+                                </span>
                             </div>
+
                         </li>
                         }
                     </ol>
@@ -78,8 +78,23 @@
             <label class="ms-4 color-white-60"> Rare: <span class="float-end">@_collectionStatistic?.NumberOfRareCards</span></label>
             <label class="ms-4 color-white-60"> Mythic: <span class="float-end">@_collectionStatistic?.NumberOfMythicCards</span></label>
             <label class="color-white-60"> Number of unique cards in collection: <span class="float-end">@_collectionStatistic?.NumberOfUniqueCardsCollected</span></label>
-            <label class="color-white-60"> Total collection value: <span class="float-end">€@_collectionStatistic?.CollectionValueInEuros.ToString("F2")</span></label>
-            <label class="color-white-60"><span class="float-end">$@_collectionStatistic?.CollectionValueInDollars.ToString("F2")</span></label>
+            <label class="color-white-60"> Total collection value: <span class="float-end">@_settings.Currency.ToCurrencySymbol()@_collectionStatistic?.CollectionValue.ToString("F2")</span></label>
+        </div>
+        <div class="mt-2 content bg-elevated d-flex flex-column">
+            <div class="lead">
+                Settings
+            </div>
+            <label class="mt-2 color-white-60"> Show prices in </label>
+            <div class="btn-group mt-2">
+                <button class="btn btn-outline-primary @(_settings.Currency == Currency.Dollar ? "active" : null)" 
+                        @onclick="async () => await SetDesiredCurrency(Currency.Dollar)">
+                    $
+                </button>
+                <button class="btn ms-1 btn-outline-primary @(_settings.Currency == Currency.Euro ? "active" : null)" 
+                        @onclick="async () => await SetDesiredCurrency(Currency.Euro)">
+                    €
+                </button>
+            </div>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
             <div class="lead">
@@ -97,8 +112,8 @@
             </label>
             </div>
             <label class="small mt-2 color-white-60">
-                Please make sure to backup your library as you might clear your Browser storage 
-                accidentally. It's also recommended to backup your library before you 
+                You might wanna backup your library in case you accidentally clear your 
+                Browser storage. It's also recommended to create a backup before you 
                 update your library's metadata.
             </label>
             <label class="mt-2 color-white-60"> Update</label>
@@ -114,9 +129,9 @@
                 </button>
             </div>
             <label class="small mt-2 color-white-60">
-                Update Sets to load new MTG Editions. Only update Metadata in case you are
-                missing card data. This will reload your entire collection. To keep market prices 
-                up to date, just refresh Prices (updates once per day).
+                Update Sets to load new MTG Editions. Update Metadata only in case you are
+                missing card data, as this will reload your entire collection. Refresh Prices to 
+                keep market prices up to date.
             </label>
         </div>
         <div class="mt-2 content bg-elevated d-flex flex-column">
@@ -138,8 +153,6 @@
 
     private string _loadingInformation;
 
-    private Currency _dominatingCurrency;
-
     private CollectionStatistic _collectionStatistic;
 
     private CardOverlay _cardOverlay;
@@ -156,7 +169,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _dominatingCurrency = await _localStorage.GetItemAsync<Currency>("currency", _cts.Token);
+        //_currentCurrency = await _currencyService.GetCurrency(_cts.Token);
         await LoadCollectionAsync();
     }
 
@@ -165,19 +178,16 @@
         _loadingInformation = null;
         _isLoading = true;
         _collectionStatistic = await _mediator.Send(
-            new GetCollectionStatistic(_dominatingCurrency),
+            new GetCollectionStatistic(_settings.Currency),
             _cts.Token);
         _chartConfig.AddManaDistribution(_collectionStatistic);
         _isLoading = false;
     }
 
-    private async Task ToggleCurrencyAsync()
+    private async Task SetDesiredCurrency(Currency currency)
     {
-        _dominatingCurrency = _dominatingCurrency == Currency.Dollar
-            ? Currency.Euro
-            : Currency.Dollar;
-
-        await _localStorage.SetItemAsync("currency", _dominatingCurrency, _cts.Token);
+        _settings.Currency = currency;
+        await _settings.SaveSettingsAsync(_cts.Token);
         await LoadCollectionAsync();
     }
 

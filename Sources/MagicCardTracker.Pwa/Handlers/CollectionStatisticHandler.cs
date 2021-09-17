@@ -57,8 +57,7 @@ namespace MagicCardTracker.Pwa.Handlers
                 NumberOfBlackCards = collection.Where(c => c.Colors.Contains("B")).Count(),
                 NumberOfRedCards = collection.Where(c => c.Colors.Contains("R")).Count(),
                 NumberOfGreenCards = collection.Where(c => c.Colors.Contains("G")).Count(),
-                CollectionValueInEuros = collection.Sum(c => c.GetCollectionValue(Currency.Euro)),
-                CollectionValueInDollars = collection.Sum(c => c.GetCollectionValue(Currency.Dollar)),
+                CollectionValue = collection.Sum(c => c.GetCollectionValue(dominatingCurrency)),
                 FiveMostValuableCards = collection.OrderByDescending(c => c.GetSingleCardValue(dominatingCurrency))
                                                   .Take(5)
             };

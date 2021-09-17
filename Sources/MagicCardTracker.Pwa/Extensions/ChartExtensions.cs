@@ -33,7 +33,7 @@ namespace MagicCardTracker.Pwa.Extensions
                 cardsBySet.Select(c => Math.Round(c.Sum(c => c.GetCollectionValue(dominatingCurrency)), 2)))
             {
                 Label = dominatingCurrency.ToCurrencySymbol(),
-                BackgroundColor = "#C14219"
+                BackgroundColor = "#F44336"
             };
 
             foreach (var set in cardsBySet)

@@ -35,9 +35,7 @@ namespace MagicCardTracker.Pwa.Models
 
         public int NumberOfGreenCards { get; set; }
 
-        public decimal CollectionValueInEuros { get; set; }
-
-        public decimal CollectionValueInDollars { get; set; }
+        public decimal CollectionValue { get; set; }
 
         public IEnumerable<CollectedCard> FiveMostValuableCards { get; set; }
     }
