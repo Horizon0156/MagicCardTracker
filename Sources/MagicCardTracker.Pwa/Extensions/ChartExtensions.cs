@@ -1,12 +1,50 @@
 #nullable enable
+
 using ChartJs.Blazor.Common;
 using ChartJs.Blazor.PieChart;
+using ChartJs.Blazor.BarChart;
 using MagicCardTracker.Pwa.Models;
+using System.Collections.Generic;
+using MagicCardTracker.Contracts;
+using System.Linq;
+using System;
 
 namespace MagicCardTracker.Pwa.Extensions
 {
     internal static class ChartExtensions
     {
+        public static BarConfig AddCollectionValueBySet(
+            this BarConfig chartConfig,
+            IEnumerable<CollectedCard> cards,
+            Currency dominatingCurrency)
+        {
+            chartConfig.Data.Labels.Clear();
+            chartConfig.Data.Datasets.Clear();
+            chartConfig.Options = new BarOptions
+            {
+                Responsive = true,
+                MaintainAspectRatio = false,
+                Legend = new Legend { Display = false }
+            };
+
+            var cardsBySet = cards.GroupBy(c => c.SetCode);
+            
+            var dataset = new BarDataset<decimal>(
+                cardsBySet.Select(c => Math.Round(c.Sum(c => c.GetCollectionValue(dominatingCurrency)), 2)))
+            {
+                Label = dominatingCurrency.ToCurrencySymbol(),
+                BackgroundColor = "#C14219"
+            };
+
+            foreach (var set in cardsBySet)
+            {
+                chartConfig.Data.Labels.Add(set.Key.ToUpper());
+            }
+            chartConfig.Data.Datasets.Add(dataset);
+
+            return chartConfig;
+        }
+
         public static PieConfig AddManaDistribution(
             this PieConfig chartConfig,
             CollectionStatistic statistic)

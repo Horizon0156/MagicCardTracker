@@ -22,6 +22,10 @@ body {
     overflow-y: auto;
 }
 
+.vh-25 {
+    height: 25vh;
+}
+
 .bg-elevated {
 
     background-color: #25262c;
