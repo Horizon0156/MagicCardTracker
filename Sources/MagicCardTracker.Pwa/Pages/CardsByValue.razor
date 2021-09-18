@@ -1,0 +1,115 @@
+@page "/profile/cards-by-value"
+@using ChartJs.Blazor.BarChart
+@using MagicCardTracker.Pwa.Components
+@using MagicCardTracker.Pwa.Extensions
+@using MagicCardTracker.Contracts
+@using MediatR
+@using System.Threading
+@using Queries
+@implements IDisposable
+@inject IMediator _mediator
+@inject IUserSettings _userSettings
+@inject CollectionSettings _collectionSettings
+
+<div class="row">
+    <div class="col-12 lead">
+        <a href="profile">&lt; Profile</a> | Cards by value
+    </div>
+</div>
+<LoadingIndicator IsBusy="@_isLoading" 
+                  FadeOutBackground="true" 
+                  Text="Loading collection..."/>
+<div class="row mt-2 vh-25">
+    <Chart Config="_chartConfig" />
+</div>
+<div class="row mt-2">
+    <div class="col-12">
+        <table class="table table-sm color-white-60">
+            <thead>
+                <tr>
+                    <th scope="col" class="d-none d-md-table-cell">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">@_userSettings.Currency.ToCurrencySymbol() <i class="bi bi-sort-numeric-down-alt"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var card in _loadedCards)
+                {
+                    <tr class="selectable" @onclick="@(() => ShowCardAsync(card))">
+                        <th scope="row" class="d-none d-md-table-cell">@card.SetCode.ToUpper() @card.Number</th>
+                        <td> <span class="@(card.FoilCount > 0 ? "rainbow-text" : null)">@card.Name</span></td>
+                        <td>@card.GetSingleCardValue(_userSettings.Currency).ToString("F2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (_hasMore)
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="content text-center">
+                <span class="action-link" @onclick="@ShowMore"> Show more... </span>
+            </div>
+        </div>
+    </div>
+}
+
+<CardOverlay @ref="_cardOverlay"/>
+
+@code 
+{
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private bool _isLoading;
+
+    private CardOverlay _cardOverlay;
+
+    private int _take;
+
+    private bool _hasMore;
+
+    private IEnumerable<CollectedCard> _collection;
+
+    private IEnumerable<CollectedCard> _loadedCards = Enumerable.Empty<CollectedCard>();
+
+    private BarConfig _chartConfig = new BarConfig();
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCollectionAsync();
+    }
+
+    private async Task LoadCollectionAsync()
+    {
+        _isLoading = true;
+        _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
+        _collection = _collection.OrderByDescending(
+                                    c => c.GetSingleCardValue(_userSettings.Currency));
+        _chartConfig.AddCollectionValueBySet(_collection, _userSettings.Currency);
+        ShowMore();
+        _isLoading = false;
+    }
+
+    private void ShowMore()
+    {
+        _take += _collectionSettings.DisplayBatchSize;
+        _hasMore = _take < _collection.Count();
+        _loadedCards = _collection.Take(_take);
+    }
+
+    private Task ShowCardAsync(Card card)
+    {
+        return card != null
+            ? _cardOverlay.OpenAsync(card)
+            : Task.CompletedTask;
+    }
+}

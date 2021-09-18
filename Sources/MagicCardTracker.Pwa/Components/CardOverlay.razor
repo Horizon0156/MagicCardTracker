@@ -5,6 +5,7 @@
 @using Queries
 
 @inject IMediator Mediator;
+@inject IUserSettings _settings;
 
 @if (_isVisible)
 {
@@ -17,11 +18,11 @@
                 <div class="col-md-6 d-flex justify-content-center">
                     <div class="content d-flex flex-column">
                         <img class="magic-card large" @onclick="@Close"
-                    src="@(_isTransformed ? _card.FlipsideImageUrl : _card.ImageUrl)" />
+                    src="@(_isFlipped ? _card.FlipsideImageUrl : _card.ImageUrl)" />
                         @if (!string.IsNullOrEmpty(_card.FlipsideImageUrl))
                         {
-                            <label class="action-link text-center mt-2" @onclick="@ToggleTransform">
-                                <i class="bi bi-arrow-repeat"></i> Transform
+                            <label class="action-link text-center mt-2" @onclick="@FlipCard">
+                                <i class="bi bi-arrow-repeat"></i> Flip
                             </label>
                         }
                     </div>
@@ -35,17 +36,22 @@
                         </div>
                         <div class="mt-2 color-white-60 row">
                             <div class="col-6 d-flex flex-column">
-                                <label>Market Price:</label>
-                                <label>
-                                    @_card.Prices?.ToString(false)
+                                <label class="lead">
+                                    @_card.Prices?.ToString(_settings.Currency, false)
                                 </label>
+                                <label>Market Price</label>
                             </div>
                             <div class="col-6 d-flex flex-column">
-                                <label class="rainbow-text">Foil:</label>
-                                <label>
-                                    @_card.Prices?.ToString(true)
+                                <label class="lead">
+                                    @_card.Prices?.ToString(_settings.Currency, true)
                                 </label>
+                                <label class="rainbow-text">Foil</label>
                             </div>
+                        </div>
+                        <div class="mt-2">
+                            <a href="https://www.cardmarket.com/Magic/Products/Search?searchString=@_card.Name" target="_blank"> 
+                                <i class="bi bi-cart4"></i> Browse on Cardmarket 
+                            </a>
                         </div>
 
                         <label class="mt-4">Collected</label>
@@ -97,17 +103,17 @@
 
 @code
 {
-    private CollectedCard _card { get; set; }
+    private CollectedCard _card;
 
     private bool _isVisible;
 
     private bool _isBusy;
 
-    private bool _isTransformed;
+    private bool _isFlipped;
 
     public async Task OpenAsync(Card card)
     {
-        _isTransformed = false;
+        _isFlipped = false;
         _isVisible = true;
         _isBusy = true;
         StateHasChanged();
@@ -133,9 +139,9 @@
         Close();
     }
 
-    private void ToggleTransform()
+    private void FlipCard()
     {
-        _isTransformed = !_isTransformed;
+        _isFlipped = !_isFlipped;
     }
 
     private static string GetLegalClass(Card card, Legality legality)

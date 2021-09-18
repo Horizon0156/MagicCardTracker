@@ -1,7 +1,5 @@
 #nullable enable
 
-using System.Text;
-
 namespace MagicCardTracker.Contracts
 {
     /// <summary>
@@ -41,50 +39,32 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Prints a human readable string.
         /// </summary>
-        /// <param name="printFoilValue"> 
+        /// <param name="currency">
+        ///     The currency that should be printed.
+        /// </param>
+        /// <param name="isFoilCard"> 
         ///     Flag indicating whether foil value should be printed.
         /// </param>
         /// <returns> Pricing information as string. </returns>
-        public string ToString(bool printFoilValue)
+        public string ToString(Currency currency, bool isFoilCard)
         {
-            
-            return printFoilValue
-                ? FoilValueToString()
-                : StandardValueToString();
+            return $"{currency.ToCurrencySymbol()}" +
+                   $"{CalculateValue(currency, isFoilCard).ToString("F2")}";
         }
 
-        private string StandardValueToString()
+        /// <summary>
+        ///     Calculate value for this pricing information.
+        /// </summary>
+        /// <param name="currency"> The target currency. </param>
+        /// <param name="isFoilCard"> Flag indicating whether foil value shall be used. </param>
+        /// <returns> Value </returns>
+        public decimal CalculateValue(Currency currency, bool isFoilCard)
         {
-            var stringBuilder = new StringBuilder();
+            var value = isFoilCard
+                ? currency == Currency.Dollar ? FoiledInDollars : FoiledInEuros
+                : currency == Currency.Dollar ? StandardInDollars : StandardInEuros;
             
-            if (StandardInEuros.HasValue) 
-            {
-                stringBuilder.Append($"€{StandardInEuros.Value.ToString("F2")} ");
-            }
-
-            if (StandardInDollars.HasValue) 
-            {
-                stringBuilder.Append($"${StandardInDollars.Value.ToString("F2")} ");
-            }
-
-            return stringBuilder.ToString();
-        }
-
-        private string FoilValueToString()
-        {
-            var stringBuilder = new StringBuilder();
-            
-            if (FoiledInEuros.HasValue) 
-            {
-                stringBuilder.Append($"€{FoiledInEuros.Value.ToString("F2")} ");
-            }
-
-            if (FoiledInDollars.HasValue) 
-            {
-                stringBuilder.Append($"${FoiledInDollars.Value.ToString("F2")} ");
-            }
-
-            return stringBuilder.ToString();
+            return value ?? 0;
         }
     }
 }

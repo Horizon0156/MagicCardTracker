@@ -25,10 +25,12 @@ namespace MagicCardTracker.Pwa.Handlers
         {
             var cardCollection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
 
-            return BuildStatistics(cardCollection);
+            return BuildStatistics(cardCollection, request.DominatingCurrency);
         }
 
-        private CollectionStatistic BuildStatistics(IEnumerable<CollectedCard>? cardCollection)
+        private CollectionStatistic BuildStatistics(
+            IEnumerable<CollectedCard>? cardCollection,
+            Currency dominatingCurrency)
         {
             if (cardCollection == null)
             {
@@ -55,49 +57,10 @@ namespace MagicCardTracker.Pwa.Handlers
                 NumberOfBlackCards = collection.Where(c => c.Colors.Contains("B")).Count(),
                 NumberOfRedCards = collection.Where(c => c.Colors.Contains("R")).Count(),
                 NumberOfGreenCards = collection.Where(c => c.Colors.Contains("G")).Count(),
-                CollectionValueInEuros = collection.Sum(c => GetTotalCardValue(c, Currency.Euro)),
-                CollectionValueInDollars = collection.Sum(c => GetTotalCardValue(c, Currency.Dollar)),
-                FiveMostValuableCards = collection.OrderByDescending(c => GetSingleCardValueInDollar(c))
+                CollectionValue = collection.Sum(c => c.GetCollectionValue(dominatingCurrency)),
+                FiveMostValuableCards = collection.OrderByDescending(c => c.GetSingleCardValue(dominatingCurrency))
                                                   .Take(5)
             };
-        }
-
-        private decimal GetTotalCardValue(CollectedCard card, Currency currency)
-        {
-            if (!card.Prices.HasPricingInformation)
-            {
-                return 0;
-            }
-
-            return currency == Currency.Euro
-                ? card.Count * card.Prices.StandardInEuros ?? 0
-                    + card.FoilCount * card.Prices.FoiledInEuros ?? 0
-                : card.Count * card.Prices.StandardInDollars ?? 0
-                    + card.FoilCount * card.Prices.FoiledInDollars ?? 0;
-        }
-
-        private decimal GetSingleCardValueInDollar(CollectedCard card)
-        {
-            if (!card.Prices.HasPricingInformation)
-            {
-                return 0;
-            }
-
-            var standardValue = card.Count > 0
-                ? card.Prices.StandardInDollars ?? 0
-                : 0;
-
-            var foilValue = card.FoilCount > 0
-                ? card.Prices.FoiledInDollars ?? 0
-                : 0;
-
-            return Math.Max(standardValue, foilValue);
-        }
-
-        private enum Currency
-        {
-            Dollar, 
-            Euro
         }
     }
 }

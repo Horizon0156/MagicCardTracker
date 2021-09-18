@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Blazored.LocalStorage;
@@ -34,6 +35,7 @@ namespace MagicCardTracker.Pwa
             builder.Services.AddSettings<InfoSettings>();
             builder.Services.AddSettings<CollectionSettings>();
             builder.Services.AddSettings<PrivacyPolicySettings>();
+            builder.Services.AddScoped<IUserSettings, LocalStorageUserSettings>();
 
             builder.Services.AddSingleton<ILoggerProvider, CriticalExceptionLoggerProvider>();
             builder.Services.AddTransient<IBrowserTools, JSBrowserTools>();
@@ -44,7 +46,16 @@ namespace MagicCardTracker.Pwa
             builder.Services.AddScoped<IObjectCache, LocalStorageCache>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            await InitializeApplication(host);
+            await host.RunAsync();
+        }
+
+        private static async Task InitializeApplication(WebAssemblyHost host)
+        {
+            await host.Services
+                      .GetService<IUserSettings>()
+                      .LoadSettingsAsync(CancellationToken.None);
         }
 
         private static void SetupMappings(IMapperConfigurationExpression config)

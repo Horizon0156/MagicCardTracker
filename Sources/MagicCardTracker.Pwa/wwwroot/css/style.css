@@ -22,6 +22,10 @@ body {
     overflow-y: auto;
 }
 
+.vh-25 {
+    height: 25vh;
+}
+
 .bg-elevated {
 
     background-color: #25262c;
@@ -78,16 +82,8 @@ a, .btn-link, a:hover, .action-link {
     color: var(--primaryColor);
 }
 
-.btn-primary {
-    color: white;
-    background-color: var(--primaryColor);
-    border-color: var(--primaryColor);
-}
-
-.btn-primary:hover {
-
-    background-color: var(--primaryColor);
-    border-color: var(--primaryColor);
+.btn {
+    box-shadow: none !important;
 }
 
 .btn-outline-primary {
@@ -95,9 +91,24 @@ a, .btn-link, a:hover, .action-link {
     border-color: var(--primaryColor);
 }
 
-.btn-outline-primary:hover {
-    color: var(--primaryColor);
-    background-color: transparent;
+.btn-outline-primary:hover,
+.btn-outline-primary:active {
+    color: var(--primaryColor) !important;
+    background-color: transparent !important;
+    border-color: var(--primaryColor) !important;
+}
+
+.btn-primary,
+.btn-outline-primary.active {
+    color: white !important;
+    background-color: var(--primaryColor) !important;
+    border-color: var(--primaryColor) !important;
+    z-index: 0 !important;
+}
+
+.btn-primary:hover {
+
+    background-color: var(--primaryColor);
     border-color: var(--primaryColor);
 }
 

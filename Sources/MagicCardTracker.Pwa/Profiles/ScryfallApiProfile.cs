@@ -7,13 +7,16 @@ namespace MagicCardTracker.Pwa.Profiles
 {
     internal class ScryfallApiProfile : Profile
     {
+        private const decimal EURO_DOLLAR_EXCHANGE_RATE = 1.18M;
+
         public ScryfallApiProfile()
         {
             CreateMap<ScryfallClient.Prices, Contracts.PricingInformation>()
                 .ForMember(p => p.StandardInEuros, cfg => cfg.MapFrom(p => p.Eur))
                 .ForMember(p => p.StandardInDollars, cfg => cfg.MapFrom(p => p.Usd))
                 .ForMember(p => p.FoiledInEuros, cfg => cfg.MapFrom(p => p.Eur_foil))
-                .ForMember(p => p.FoiledInDollars, cfg => cfg.MapFrom(p => p.Usd_foil));
+                .ForMember(p => p.FoiledInDollars, cfg => cfg.MapFrom(p => p.Usd_foil))
+                .AfterMap(EnrichMissingPricingInformation);
 
             CreateMap<ScryfallClient.Card, Contracts.Card>()
                 .ForMember(c => c.SetCode, cfg => cfg.MapFrom(c => c.Set))
@@ -38,6 +41,34 @@ namespace MagicCardTracker.Pwa.Profiles
                     s => s.Set_type == ScryfallClient.Set_type.Core 
                       || s.Set_type == ScryfallClient.Set_type.Expansion))
                 .ForMember(s => s.NumberOfCollectedCards, cfg => cfg.Ignore());
+        }
+
+        private void EnrichMissingPricingInformation(
+            ScryfallClient.Prices scryfallPrices,
+            PricingInformation mappedPrices)
+        {
+            if (!mappedPrices.HasPricingInformation)
+            {
+                return;
+            }
+
+            if (!mappedPrices.StandardInEuros.HasValue && mappedPrices.StandardInDollars.HasValue)
+            {
+                mappedPrices.StandardInEuros = mappedPrices.StandardInDollars / EURO_DOLLAR_EXCHANGE_RATE;
+            }
+            else if (!mappedPrices.StandardInDollars.HasValue && mappedPrices.StandardInEuros.HasValue)
+            {
+                mappedPrices.StandardInDollars = mappedPrices.StandardInEuros * EURO_DOLLAR_EXCHANGE_RATE;
+            }
+
+            if (!mappedPrices.FoiledInEuros.HasValue && mappedPrices.FoiledInDollars.HasValue)
+            {
+                mappedPrices.FoiledInEuros = mappedPrices.FoiledInDollars / EURO_DOLLAR_EXCHANGE_RATE;
+            }
+            else if (!mappedPrices.FoiledInDollars.HasValue && mappedPrices.FoiledInEuros.HasValue)
+            {
+                mappedPrices.FoiledInDollars = mappedPrices.FoiledInEuros * EURO_DOLLAR_EXCHANGE_RATE;
+            }
         }
 
         private Legality FlattenLegality(ScryfallClient.Legality scryfallLegality)

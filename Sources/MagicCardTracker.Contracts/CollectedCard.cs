@@ -70,5 +70,36 @@ namespace MagicCardTracker.Contracts
                 && Number.Equals(other.Number, StringComparison.OrdinalIgnoreCase)
                 && LanguageCode.Equals(other.LanguageCode, StringComparison.OrdinalIgnoreCase);
         }
+
+        /// <summary>
+        ///     Calculates the value for a single card. 
+        ///     In case you have both collected (Standard and Foil), 
+        ///     the higher value is returned.
+        /// </summary>
+        /// <param name="currency"> The currency that should be used. </param>
+        /// <returns> The value for this card. </returns>
+        public decimal GetSingleCardValue(Currency currency)
+        {
+            var standardValue = Count > 0
+                ? Prices.CalculateValue(currency, isFoilCard: false)
+                : 0;
+            
+            var foilValue = FoilCount > 0
+                ? Prices.CalculateValue(currency, isFoilCard: true)
+                : 0;
+
+            return Math.Max(standardValue, foilValue);
+        }
+
+        /// <summary>
+        ///     Calculates the collection value for this this card.
+        /// </summary>
+        /// <param name="currency"> The currency that should be used. </param>
+        /// <returns> The total collection value for this card. </returns>
+        public decimal GetCollectionValue(Currency currency)
+        {
+            return Prices.CalculateValue(currency, isFoilCard: false) * Count + 
+                   Prices.CalculateValue(currency, isFoilCard: true) * FoilCount;
+        }
     }
 }

@@ -1,5 +1,5 @@
 
-namespace MagicCardTracker.Pwa.Models
+namespace MagicCardTracker.Pwa.Constants
 {
     internal static class LanguageCodes
     {
