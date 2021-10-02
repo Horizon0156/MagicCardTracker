@@ -14,8 +14,11 @@ _This application was implemented for personal use and is designed to be simple,
 
 Magic Card Tracker is a web application developed on top of ASP.NET Core Blazor (Webassembly). The application is also containerized and ships as a lightwight NGINX image that will host the assemblies. Therefore, you have two options to run this application
 
-### .NET CLI / Local developement
-Use the [.NET CLI](https://dotnet.microsoft.com/download) to build and serve the application.
+### .NET CLI / Dev. Container
+
+If you are using Visual Studio Code, [Dev Containers](https://code.visualstudio.com/docs/remote/containers) will provide you a preconfigred development environment without messing up your host machine. Simply clone the repository into a volume or your computer and open the folder in a container.
+
+Alternatively you can use the [.NET CLI](https://dotnet.microsoft.com/download) to build and serve the application.
 
 1. Download or clone the repository
 
@@ -35,7 +38,7 @@ docker run -d -p 8080:80 --name mct ghcr.io/horizon0156/magic-card-tracker
 ```
 
 ## Changelog
-The [Releases](https://github.com/Horizon0156/MagicCardTracker/releases) page will provice an overview about recent releases and their included features.
+The [Releases](https://github.com/Horizon0156/MagicCardTracker/releases) page will provide an overview about recent releases and their included features.
 
 ## Roadmap
 Check out the [open issues](https://github.com/Horizon0156/MagicCardTracker/issues) for a list of proposed features (and known issues). If you have ideas for new features that you don't feel comfortable to contribute on your own, feel free to create a ticket as well, maybe someone will find the time.

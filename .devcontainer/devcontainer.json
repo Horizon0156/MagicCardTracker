@@ -1,0 +1,17 @@
+// For format details, see https://aka.ms/devcontainer.json. 
+// For config options, see the README at: 
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/dotnet
+{
+	"name": "C# (.NET)",
+	"image": "mcr.microsoft.com/vscode/devcontainers/dotnet:5.0",
+	"settings": {},
+	"extensions": [
+		"ms-dotnettools.csharp",
+		"ms-dotnettools.blazorwasm-companion",
+		"fernandoescolar.vscode-solution-explorer",
+		"formulahendry.dotnet-test-explorer"
+	],
+	"forwardPorts": [5000, 5001],
+	"postCreateCommand": "dotnet restore; dotnet dev-certs https",
+	"remoteUser": "vscode"
+}
