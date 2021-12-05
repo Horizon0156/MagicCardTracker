@@ -103,7 +103,9 @@
                 _cardId.LanguageCode,
                 _collectAsFoil),
             _cts.Token);
-        _quickCollectionStack.Add(card);
+            
+            _quickCollectionStack.Add(card);
+            _cardId.CardNumber = null;
         }
         catch (CardNotFoundException)
         {

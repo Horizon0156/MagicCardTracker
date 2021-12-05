@@ -1,0 +1,11 @@
+@page "/"
+
+@inject NavigationManager _navigationManager;
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        _navigationManager.NavigateTo($"/collection");
+    }
+}
