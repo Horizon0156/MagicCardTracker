@@ -2,8 +2,8 @@
 // For config options, see the README at: 
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/dotnet
 {
-	"name": "C# (.NET)",
-	"image": "mcr.microsoft.com/vscode/devcontainers/dotnet:5.0",
+	"name": "Magic Card Tracker (.NET 6)",
+	"image": "mcr.microsoft.com/vscode/devcontainers/dotnet:6.0",
 	"settings": {},
 	"extensions": [
 		"ms-dotnettools.csharp",
