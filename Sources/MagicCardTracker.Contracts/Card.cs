@@ -10,21 +10,26 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Creates a new instance of a card.
         /// </summary>
-        public Card()
+        /// <param name="setCode"> The set code. </param>
+        /// <param name="number"> The card number. </param>
+        /// <param name="languageCode"> The language code. </param>
+        public Card(string setCode, string number, string languageCode)
         {   
+            SetCode = setCode;
+            Number = number;
+            LanguageCode = languageCode;
+
+            Prices = new PricingInformation();
+            Colors = new string[0];
         }
         
         /// <summary>
         ///     Creates a copy of the given card.
         /// </summary>
         /// <param name="card"> The card that should be copied into a new instance. </param>
-        public Card(Card card)
+        public Card(Card card) : this(card.SetCode, card.Number, card.LanguageCode)
         {
-            SetCode = card.SetCode;
-            Number = card.Number;
-            LanguageCode = card.LanguageCode;
-            ScryfallId = card.ScryfallId;
-            
+            ScryfallId = card.ScryfallId;   
             UpdateMutualProperties(card);
         }
 
@@ -46,37 +51,37 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Gets or sets the printed name of this card.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         ///     Gets or sets the language code of this card.
         /// </summary>
-        public string LanguageCode { get; set; }
+        public string LanguageCode { get; }
 
         /// <summary>
         ///     Gets or sets the image url of this card.
         /// </summary>
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         /// <summary>
         ///     Gets or sets the image url of the back of this card.
         /// </summary>
-        public string FlipsideImageUrl { get; set; }
+        public string? FlipsideImageUrl { get; set; }
 
         /// <summary>
         ///     Gets or sets the set code.
         /// </summary>
-        public string SetCode { get; set; }
+        public string SetCode { get; }
 
         /// <summary>
         ///     Gets or sets the collector number.
         /// </summary>
-        public string Number { get; set; }
+        public string Number { get; }
 
         /// <summary>
         ///     Gets or sets the mana costs
         /// </summary>
-        public string ManaCosts { get; set; }
+        public string? ManaCosts { get; set; }
 
         /// <summary>
         ///     Gets or sets the legalities of this card.
@@ -91,7 +96,7 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Gets or sets the Scryfall identifier.
         /// </summary>
-        public string ScryfallId { get; set; }
+        public string? ScryfallId { get; set; }
 
         /// <summary>
         ///     Gets or sets the rarity.
@@ -109,9 +114,9 @@ namespace MagicCardTracker.Contracts
         /// <param name="updatedPrices"> Recent market prices. </param>
         public void UpdatePrices(PricingInformation updatedPrices)
         {
-            Prices = updatedPrices != null && updatedPrices.HasPricingInformation
+            Prices = updatedPrices.HasPricingInformation
                 ? updatedPrices
-                : Prices ?? new PricingInformation();
+                : new PricingInformation();
         }
 
         /// <summary>

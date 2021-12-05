@@ -42,12 +42,12 @@
 
     private bool _isLoading;
 
-    private IEnumerable<Card> _cachedCards;
+    private IEnumerable<Card>? _cachedCards;
 
-    private CardSearchResult _searchResult;
+    private CardSearchResult? _searchResult;
 
     [Parameter]
-    public string Query { get; set; }
+    public string? Query { get; set; }
 
     public void Dispose()
     {
@@ -77,9 +77,19 @@
 
     private async Task LoadMoreAsync()
     {
+        if (string.IsNullOrEmpty(Query) || _searchResult == null) 
+        {
+            return;
+        }
+
         _isLoading = true;
         _searchResult = await _mediator.Send(new SearchCards(Query, _searchResult.Page + 1));
-        _cachedCards = _cachedCards.Concat(_searchResult.Cards);
+
+        if (_searchResult.Cards != null)
+        {
+            _cachedCards = _cachedCards?.Concat(_searchResult.Cards);
+        }
+        
         _isLoading = false;
     }
 }

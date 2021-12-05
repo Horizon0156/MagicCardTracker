@@ -38,18 +38,23 @@ else
 @code
 {
     [Parameter]
-    public IEnumerable<Card> Cards { get; set; }
+    public IEnumerable<Card>? Cards { get; set; }
 
     [Parameter]
     public bool ShowCountBadge { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
-    private CardOverlay _cardOverlay;
+    private CardOverlay? _cardOverlay;
 
     private Task OpenDetailsAsync(Card card)
     {
+        if (_cardOverlay == null)
+        {
+            return Task.CompletedTask;
+        }
+        
         return _cardOverlay.OpenAsync(card);
     }
 }

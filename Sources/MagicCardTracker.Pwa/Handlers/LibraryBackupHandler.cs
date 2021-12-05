@@ -29,9 +29,12 @@ namespace MagicCardTracker.Pwa.Handlers
             var collection = await JsonSerializer.DeserializeAsync<CollectedCard[]>(
                 request.LibraryBackupStream, 
                 cancellationToken: cancellationToken);
-            
-            await _cardLibrary.SetCollectionAsync(collection, cancellationToken);
 
+            if (collection != null)
+            {
+                await _cardLibrary.SetCollectionAsync(collection, cancellationToken);    
+            }
+            
             return Unit.Value;
         }
 

@@ -17,7 +17,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            await sut.AddCardAsync(new CollectedCard(), CancellationToken.None);
+            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
             await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
         }
 
@@ -27,8 +27,8 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            await sut.AddCardAsync(new CollectedCard(), CancellationToken.None);
-            await sut.AddCardAsync(new CollectedCard(), CancellationToken.None);
+            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
+            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
             await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
         }
 
@@ -38,13 +38,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 0
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 0, 0);
             await sut.AddCardAsync(card, CancellationToken.None);
             var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
             Assert.Empty(cards);
@@ -56,13 +50,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
             await sut.AddCardAsync(card, CancellationToken.None);
             var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
             Assert.Single(cards);
@@ -74,26 +62,14 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card1 = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
-
-            var card2 = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 2
-            };
+            var card1 = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+            var card2 = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+            
             await sut.AddCardAsync(card1, CancellationToken.None);
             await sut.AddCardAsync(card2, CancellationToken.None);
             var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
             Assert.Single(cards);
-            Assert.Equal(2, cards.FirstOrDefault().Count);
+            Assert.Equal(2, cards.FirstOrDefault()?.Count);
         }
 
         [Fact]
@@ -102,13 +78,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.AddCardAsync(card, CancellationToken.None);
             var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
@@ -122,13 +92,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.AddCardAsync(card, CancellationToken.None);
             var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
@@ -175,13 +139,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.SearchInCollectionAsync(card, CancellationToken.None);
             await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
@@ -193,13 +151,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.SearchInCollectionAsync(card, CancellationToken.None);
             await sut.SearchInCollectionAsync(card, CancellationToken.None);
@@ -212,13 +164,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.SearchInCollectionAsync(card, CancellationToken.None);
             await persister.DidNotReceive()
@@ -233,12 +179,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new Card
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en"
-            };
+            var card = new Card("soi", "97", "en");
 
             var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
             Assert.Equal(0, result.Count);
@@ -250,21 +191,10 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 2
-            };
+            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
             await sut.AddCardAsync(collectedCard, CancellationToken.None);
 
-            var card = new Card
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en"
-            };
+            var card = new Card("soi", "97", "en");
 
             var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
             Assert.Equal(collectedCard.Count, result.Count);
@@ -297,13 +227,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
             await persister.DidNotReceive()
@@ -328,17 +252,11 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 2
-            };
+            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
             await sut.AddCardAsync(collectedCard, CancellationToken.None);
 
             var result = await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            Assert.Equal(collectedCard.Count, result.Count);
+            Assert.Equal(collectedCard.Count, result?.Count);
         }
 
         [Fact]
@@ -347,23 +265,12 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var oldCard = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "98",
-                LanguageCode = "en",
-                Count = 1
-            };
+            var oldCard = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
             await sut.AddCardAsync(oldCard, CancellationToken.None);
 
-            var collectedCard = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 2
-            };
+            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+
             var collection = new [] { collectedCard };
             await sut.SetCollectionAsync(collection, CancellationToken.None);
             var newCollection = await sut.GetCollectedCardsAsync(CancellationToken.None);
@@ -377,13 +284,7 @@ namespace MagicCardTracker.Storage.Tests
             var persister = Substitute.For<ICardLibraryPersister>();
             var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard
-            {
-                SetCode = "soi",
-                Number = "97",
-                LanguageCode = "en",
-                Count = 2
-            };
+            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
             
             await sut.AddCardAsync(collectedCard, CancellationToken.None);
             await sut.ClearCollectionAsync(CancellationToken.None);

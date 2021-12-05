@@ -160,7 +160,7 @@ namespace MagicCardTracker.Pwa.Handlers
                 return;
             }
 
-            ScryfallClient.Card originalCard;
+            ScryfallClient.Card? originalCard;
             try
             {
                 originalCard = await _scryfallClientFactory

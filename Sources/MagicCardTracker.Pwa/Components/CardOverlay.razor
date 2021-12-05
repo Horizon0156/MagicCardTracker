@@ -3,6 +3,7 @@
 @using MediatR;
 @using System.Threading
 @using Queries
+@using System.Diagnostics
 
 @inject IMediator Mediator;
 @inject IUserSettings _settings;
@@ -103,7 +104,7 @@
 
 @code
 {
-    private CollectedCard _card;
+    private CollectedCard? _card;
 
     private bool _isVisible;
 
@@ -134,6 +135,8 @@
 
     private async Task UpdateCollection()
     {
+        Debug.Assert(_card != null);
+        
         var command = new AddCard(_card);
         await Mediator.Send(command, CancellationToken.None);
         Close();

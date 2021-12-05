@@ -65,13 +65,13 @@
 
     private bool _isLoading;
 
-    private CardOverlay _cardOverlay;
+    private CardOverlay? _cardOverlay;
 
     private int _take;
 
     private bool _hasMore;
 
-    private IEnumerable<CollectedCard> _collection;
+    private IEnumerable<CollectedCard>? _collection;
 
     private IEnumerable<CollectedCard> _loadedCards = Enumerable.Empty<CollectedCard>();
 
@@ -101,6 +101,11 @@
 
     private void ShowMore()
     {
+        if (_collection == null)
+        {
+            return;
+        }
+
         _take += _collectionSettings.DisplayBatchSize;
         _hasMore = _take < _collection.Count();
         _loadedCards = _collection.Take(_take);
@@ -108,7 +113,7 @@
 
     private Task ShowCardAsync(Card card)
     {
-        return card != null
+        return card != null && _cardOverlay != null
             ? _cardOverlay.OpenAsync(card)
             : Task.CompletedTask;
     }

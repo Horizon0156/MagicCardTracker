@@ -53,9 +53,12 @@ namespace MagicCardTracker.Pwa
 
         private static async Task InitializeApplication(WebAssemblyHost host)
         {
-            await host.Services
-                      .GetService<IUserSettings>()
-                      .LoadSettingsAsync(CancellationToken.None);
+            var settings = host.Services.GetService<IUserSettings>();
+
+            if (settings != null)
+            {
+                await settings.LoadSettingsAsync(CancellationToken.None);
+            }
         }
 
         private static void SetupMappings(IMapperConfigurationExpression config)

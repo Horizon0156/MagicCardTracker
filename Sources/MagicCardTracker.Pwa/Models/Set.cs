@@ -4,6 +4,12 @@ namespace MagicCardTracker.Pwa.Models
 {
     internal class Set
     {
+        public Set(string code, string name)
+        {
+            Code = code;
+            Name = name;
+        }
+        
         public string Code { get; set; }
 
         public string Name { get; set; }
@@ -14,7 +20,7 @@ namespace MagicCardTracker.Pwa.Models
 
         public DateTime ReleaseDate { get; set; }
 
-        public string SetIconUrl { get; set; }
+        public string? SetIconUrl { get; set; }
 
         public bool IsCoreOrExpansionSet { get; set; }
 

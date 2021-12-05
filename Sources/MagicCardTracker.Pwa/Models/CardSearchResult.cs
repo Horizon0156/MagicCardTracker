@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using MagicCardTracker.Contracts;
 
 namespace MagicCardTracker.Pwa.Models
@@ -10,7 +11,7 @@ namespace MagicCardTracker.Pwa.Models
 
         public int NumberOfMatchedCards { get; set; }
 
-        public IEnumerable<Card> Cards { get; set; }
+        public IEnumerable<Card>? Cards { get; set; }
 
         public int Page { get; set; }
     }

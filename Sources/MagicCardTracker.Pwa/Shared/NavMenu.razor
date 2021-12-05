@@ -52,9 +52,9 @@
 {
     private bool _collapseNavMenu = true;
 
-    private string _queryString;
+    private string? _queryString;
 
-    private string _navbarClass => _collapseNavMenu ? "collapse" : null;
+    private string? _navbarClass => _collapseNavMenu ? "collapse" : null;
 
     public void Dispose()
     {
@@ -79,18 +79,24 @@
         CloseNavMenu();
     }
 
-    private void ScrollToTop(object sender, LocationChangedEventArgs e)
+    private void ScrollToTop(object? sender, LocationChangedEventArgs? e)
     {
         _browserTools.ScrollToTopAsync(CancellationToken.None);
     }
 
-    private void SetQueryOnSearch(object sender, LocationChangedEventArgs e)
+    private void SetQueryOnSearch(object? sender, LocationChangedEventArgs? e)
     {
+        if (e == null)
+        {
+            return;
+        }
+        
         var searchIndex = e.Location.IndexOf("/search/");
 
         _queryString = searchIndex > 0
             ? Uri.UnescapeDataString(e.Location.Substring(searchIndex + 8))
             : null;
+
         StateHasChanged();
     }
 

@@ -19,9 +19,9 @@ namespace MagicCardTracker.Pwa.Profiles
                 .AfterMap(EnrichMissingPricingInformation);
 
             CreateMap<ScryfallClient.Card, Contracts.Card>()
-                .ForMember(c => c.SetCode, cfg => cfg.MapFrom(c => c.Set))
-                .ForMember(c => c.Number, cfg => cfg.MapFrom(c => c.Collector_number))
-                .ForMember(c => c.LanguageCode, cfg => cfg.MapFrom(c => c.Lang))
+                .ForCtorParam("setCode", cfg => cfg.MapFrom(c => c.Set))
+                .ForCtorParam("number", cfg => cfg.MapFrom(c => c.Collector_number))
+                .ForCtorParam("languageCode", cfg => cfg.MapFrom(c => c.Lang))
                 .ForMember(c => c.HasFoilVersion, cfg => cfg.MapFrom(c => c.Foil))
                 .ForMember(c => c.ScryfallId, cfg => cfg.MapFrom(c => c.Id))
                 .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => ExtractImageUrls(c, false)))
@@ -32,8 +32,8 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
 
             CreateMap<ScryfallClient.Set, Set>()
-                .ForMember(s => s.Code, cfg => cfg.MapFrom(s => s.Code))
-                .ForMember(s => s.Name, cfg => cfg.MapFrom(s => s.Name))
+                .ForCtorParam("code", cfg => cfg.MapFrom(s => s.Code))
+                .ForCtorParam("name", cfg => cfg.MapFrom(s => s.Name))
                 .ForMember(s => s.ReleaseDate, cfg => cfg.MapFrom(s => s.Released_at.DateTime))
                 .ForMember(s => s.SetIconUrl, cfg => cfg.MapFrom(s => s.Icon_svg_uri))
                 .ForMember(s => s.NumberOfCards, cfg => cfg.MapFrom(s => s.Card_count))
@@ -131,14 +131,14 @@ namespace MagicCardTracker.Pwa.Profiles
                 case ScryfallClient.CardLayout.Double_faced_token:
                 case ScryfallClient.CardLayout.Double_sided:
                 case ScryfallClient.CardLayout.Modal_dfc:
-                    return $"{cardFaces[0].Printed_name ?? cardFaces[0].Name} " + 
-                           $"// {cardFaces[1].Printed_name ?? cardFaces[1].Name}";
+                    return $"{cardFaces?.ElementAt(0)?.Printed_name ?? cardFaces?.ElementAt(0)?.Name} " + 
+                           $"// {cardFaces?.ElementAt(1)?.Printed_name ?? cardFaces?.ElementAt(1)?.Name}";
                 default:
                     return card.Printed_name ?? card.Name;
             }
         }
 
-        private static string ExtractImageUrls(ScryfallClient.Card card, bool useFlipsideImage)
+        private static string? ExtractImageUrls(ScryfallClient.Card card, bool useFlipsideImage)
         {
             var cardFaces = card.Card_faces?.ToArray();
 
@@ -151,8 +151,8 @@ namespace MagicCardTracker.Pwa.Profiles
                 case ScryfallClient.CardLayout.Double_sided:
                 case ScryfallClient.CardLayout.Modal_dfc:
                     return useFlipsideImage 
-                        ? cardFaces[1].Image_uris.Normal.ToString()
-                        : cardFaces[0].Image_uris.Normal.ToString();
+                        ? cardFaces?.ElementAt(1)?.Image_uris.Normal?.ToString()
+                        : cardFaces?.ElementAt(0)?.Image_uris.Normal?.ToString();
                 default:
                     return useFlipsideImage
                         ? null

@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -25,7 +23,7 @@ namespace MagicCardTracker.Pwa.Exceptions
             return logLevel == LogLevel.Critical;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {

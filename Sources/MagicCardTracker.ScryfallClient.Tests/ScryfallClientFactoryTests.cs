@@ -8,8 +8,6 @@ namespace MagicCardTracker.ScryfallClient.Tests
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        private readonly HttpClient _knownHttpClient;
-
         public ScryfallClientFactoryTests()
         {
             _httpClientFactory = Substitute.For<IHttpClientFactory>();

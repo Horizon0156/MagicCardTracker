@@ -21,10 +21,16 @@ namespace MagicCardTracker.ScryfallClient.Tests
             var methodInfo = typeof(CardsClient).GetMethod(
                 "PrepareRequest", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            object[] parameters = { null, null, urlBuilder };
-            methodInfo.Invoke(sut, parameters);
+            
+            object?[] parameters = 
+            {
+                 null, 
+                 null,
+                 urlBuilder 
+            };
+            methodInfo?.Invoke(sut, parameters);
 
-            Assert.Equal(urlBuilder.ToString(), "set%3Aafr+lang%3Ade");
+            Assert.Equal("set%3Aafr+lang%3Ade", urlBuilder.ToString());
         }
     }
 }

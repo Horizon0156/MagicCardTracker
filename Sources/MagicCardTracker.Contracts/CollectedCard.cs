@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace MagicCardTracker.Contracts
 {
@@ -10,7 +11,12 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Creates a new instance of a collected card.
         /// </summary>
-        public CollectedCard()
+        /// <param name="setCode"> The set code. </param>
+        /// <param name="number"> The card number. </param>
+        /// <param name="languageCode"> The language code. </param>
+        [JsonConstructorAttribute]
+        public CollectedCard(string setCode, string number, string languageCode) 
+            : base(setCode, number, languageCode)
         {
         }
 
@@ -55,7 +61,7 @@ namespace MagicCardTracker.Contracts
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
             return other is CollectedCard card
                 ? Equals(card)
@@ -63,7 +69,7 @@ namespace MagicCardTracker.Contracts
         }
 
         /// <inheritdoc/>
-        public bool Equals(CollectedCard other)
+        public bool Equals(CollectedCard? other)
         {
             return other != null
                 && SetCode.Equals(other.SetCode, StringComparison.OrdinalIgnoreCase)

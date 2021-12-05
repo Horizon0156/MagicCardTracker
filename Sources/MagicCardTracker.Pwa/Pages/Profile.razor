@@ -26,7 +26,7 @@
                 </label>
                 
                 <div class="mt-2 d-flex flex-wrap justify-content-center align-items-center">
-                    <img class="magic-card small" @onclick="@(() => ShowCardAsync(@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
+                    <img class="magic-card small" @onclick="@(() => ShowCardAsync(@_collectionStatistic?.FiveMostValuableCards.FirstOrDefault()))" src="@_collectionStatistic.FiveMostValuableCards.FirstOrDefault()?.ImageUrl">
                     <ol class="mt-2 color-white-60">
                         @foreach (var card in _collectionStatistic.FiveMostValuableCards)
                         {
@@ -151,15 +151,15 @@
 
     private bool _isLoading;
 
-    private string _loadingInformation;
+    private string? _loadingInformation;
 
-    private CollectionStatistic _collectionStatistic;
+    private CollectionStatistic? _collectionStatistic;
 
-    private CardOverlay _cardOverlay;
+    private CardOverlay? _cardOverlay;
 
     private PieConfig _chartConfig = new PieConfig(true);
 
-    private string _version => GetType().Assembly.GetName().Version.ToString(3);
+    private string? _version => GetType().Assembly.GetName()?.Version?.ToString(3);
 
     public void Dispose()
     {
@@ -239,9 +239,9 @@
         _isLoading = false;
     }
 
-    private Task ShowCardAsync(Card card)
+    private Task ShowCardAsync(Card? card)
     {
-        return card != null
+        return card != null && _cardOverlay != null
             ? _cardOverlay.OpenAsync(card)
             : Task.CompletedTask;
     }

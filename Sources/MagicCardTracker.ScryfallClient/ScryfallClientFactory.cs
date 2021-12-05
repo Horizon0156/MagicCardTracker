@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Net.Http;
 
 namespace MagicCardTracker.ScryfallClient

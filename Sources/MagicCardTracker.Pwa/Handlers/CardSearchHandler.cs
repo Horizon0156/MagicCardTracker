@@ -49,13 +49,7 @@ namespace MagicCardTracker.Pwa.Handlers
             }
             catch (ApiException)
             {
-                return new CardSearchResult
-                {
-                    HasMoreResults = false,
-                    NumberOfMatchedCards = 0,
-                    Cards = null,
-                    Page = 1
-                };
+                return new CardSearchResult();
             }
         }
     }

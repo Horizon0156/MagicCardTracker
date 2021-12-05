@@ -85,7 +85,9 @@
 
     private async Task AddCardToCollectionAsync()
     {
-        if (!_cardId.IsValid)
+        if (string.IsNullOrWhiteSpace(_cardId.SetCode)
+            || string.IsNullOrWhiteSpace(_cardId.CardNumber)
+            || string.IsNullOrWhiteSpace(_cardId.LanguageCode))
         {
             return;
         }
@@ -115,14 +117,10 @@
 
     private class CardIdentity
     {
-        public string SetCode { get; set; }
+        public string? SetCode { get; set; }
 
-        public string CardNumber { get; set; }
+        public string? CardNumber { get; set; }
 
-        public string LanguageCode { get; set; }
-
-        public bool IsValid => !string.IsNullOrWhiteSpace(SetCode)
-                            && !string.IsNullOrWhiteSpace(CardNumber)
-                            && !string.IsNullOrWhiteSpace(LanguageCode);
+        public string? LanguageCode { get; set; }
     }
 }

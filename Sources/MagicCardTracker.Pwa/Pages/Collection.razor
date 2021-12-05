@@ -41,7 +41,7 @@
 @code {
 
     [Parameter]
-    public string SetCode { get; set; }
+    public string? SetCode { get; set; }
     
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -51,9 +51,9 @@
 
     private bool _hasMore;
 
-    private IEnumerable<CollectedCard> _collection;
+    private IEnumerable<CollectedCard>? _collection;
 
-    private IEnumerable<CollectedCard> _loadedCards;
+    private IEnumerable<CollectedCard>? _loadedCards;
 
     public void Dispose()
     {
@@ -79,6 +79,11 @@
 
     private void ShowMore()
     {
+        if (_collection == null)
+        {
+            return;
+        }
+        
         _take += _settings.DisplayBatchSize;
         _hasMore = _take < _collection.Count();
         _loadedCards = _collection.Take(_take);
