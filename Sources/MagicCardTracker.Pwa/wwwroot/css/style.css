@@ -44,6 +44,43 @@ body {
     background-color: var(--primaryColor);
 }
 
+.text-white {
+    color: wheat;
+}
+
+.text-red {
+    color: red;
+}
+
+.text-green {
+
+    color:green;
+}
+
+.text-blue {
+
+    color: royalblue;
+}
+
+.text-common,
+.text-black {
+    
+    color: black;
+
+}
+.text-uncommon {
+
+    color: silver;
+}
+.text-rare {
+
+    color: goldenrod;
+}
+.text-mythic {
+
+    color: brown;
+}
+
 .magic-card {
 
     height: auto;
@@ -54,6 +91,33 @@ body {
     animation: fadein 0.5s ease forwards;
     opacity: 0;
     transform: scale(0.9);
+}
+
+.side-panel {
+
+    display: none;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    min-width: 25vw;
+    transform: translateX(100%);
+
+}
+
+@keyframes slide-in {
+
+    to { 
+        transform: translateX(0);
+    }
+}
+
+.side-panel.show {
+
+    display: block;
+    position: absolute;
+    animation: slide-in 0.5s ease forwards;;
 }
 
 .magic-card.large {
