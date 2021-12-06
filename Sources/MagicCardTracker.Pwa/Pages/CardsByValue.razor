@@ -29,6 +29,7 @@
                 <tr>
                     <th scope="col" class="d-none d-md-table-cell">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Rarity</th>
                     <th scope="col">@_userSettings.Currency.ToCurrencySymbol() <i class="bi bi-sort-numeric-down-alt"></i></th>
                 </tr>
             </thead>
@@ -38,6 +39,7 @@
                     <tr class="selectable" @onclick="@(() => ShowCardAsync(card))">
                         <th scope="row" class="d-none d-md-table-cell">@card.SetCode.ToUpper() @card.Number</th>
                         <td> <span class="@(card.FoilCount > 0 ? "rainbow-text" : null)">@card.Name</span></td>
+                        <td> <span class="text-@(card.Rarity.ToString().ToLower())"><i class="bi bi-circle-fill"></i></span></td>
                         <td>@card.GetSingleCardValue(_userSettings.Currency).ToString("F2")</td>
                     </tr>
                 }
