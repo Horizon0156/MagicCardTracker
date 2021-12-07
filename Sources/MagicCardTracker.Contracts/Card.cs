@@ -104,6 +104,11 @@ namespace MagicCardTracker.Contracts
         public CardRarity Rarity { get; set; }
 
         /// <summary>
+        ///     Gets or sets the rarity.
+        /// </summary>
+        public CardType CardType { get; set; }
+
+        /// <summary>
         ///     Gets or sets the release date of this card.
         /// </summary>
         public DateTimeOffset ReleaseAt { get; set; }
@@ -136,6 +141,7 @@ namespace MagicCardTracker.Contracts
             ReleaseAt = card.ReleaseAt;
             Rarity = card.Rarity;
             Legalities = card.Legalities;
+            CardType = card.CardType;
         }
     }
 }

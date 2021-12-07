@@ -23,84 +23,112 @@
         <span class="lead">Filter</span>
         <div class="mt-4">
             <label> Set </label>
-            <input class="form-control w-100" @bind="SetCode" />
+            <input class="form-control w-100" maxlength="4" @bind="SetCode" />
         </div>
         <div class="mt-4">
             <label> Color </label>
             <div class="d-flex justify-content-evenly">
-                <span class="text-black"><i class="bi bi-circle-fill"></i></span>
-                <span class="text-white ms-2"><i class="bi bi-circle-fill"></i></span>
-                <span class="text-green ms-2"><i class="bi bi-circle-fill"></i></span>
-                <span class="text-blue ms-2"><i class="bi bi-circle-fill"></i></span>
-                <span class="text-red ms-2"><i class="bi bi-circle-fill"></i></span>
+                <span class="text-black color-indicator selectable lead @(_filteredColors.Contains("B") ? "selected" : null)" @onclick="@(() => SetColorFilter("B"))">
+                    <i class="bi bi-circle-fill"></i>
+                </span>
+                <span class="text-white ms-2 color-indicator selectable lead @(_filteredColors.Contains("W") ? "selected" : null)" @onclick="@(() => SetColorFilter("W"))">
+                    <i class="bi bi-circle-fill"></i>
+                    </span>
+                <span class="text-green ms-2 color-indicator selectable lead @(_filteredColors.Contains("G") ? "selected" : null)" @onclick="@(() => SetColorFilter("G"))">
+                    <i class="bi bi-circle-fill"></i>
+                    </span>
+                <span class="text-blue ms-2 color-indicator selectable lead @(_filteredColors.Contains("U") ? "selected" : null)" @onclick="@(() => SetColorFilter("U"))">
+                    <i class="bi bi-circle-fill"></i>
+                    </span>
+                <span class="text-red ms-2 color-indicator selectable lead @(_filteredColors.Contains("R") ? "selected" : null)" @onclick="@(() => SetColorFilter("R"))">
+                    <i class="bi bi-circle-fill"></i>
+                    </span>
             </div>
         </div>
         <div class="mt-4">
             <label> Type </label>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="creature">
-                <label class="form-check-label" for="creature">
-                    Creature
-                </label>
+            <div class="mt-2 d-flex text-center small">
+                <span class="p-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Creature) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Creature))">
+                      Creature
+                </span>
+                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Planeswalker) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Planeswalker))">
+                      Planeswalker
+                </span>
+                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Enchantment) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Enchantment))">
+                      Enchantment
+                </span>
+                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Instant) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Instant))">
+                      Instant
+                </span>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="creature">
-                <label class="form-check-label" for="creature">
-                    Planeswalker
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="enchantment">
-                <label class="form-check-label" for="enchantment">
-                    Enchantment
-                </label>
-            </div>
-            
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="enchantment">
-                <label class="form-check-label" for="enchantment">
-                    Instant
-                </label>
-            </div>
-        
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="enchantment">
-                <label class="form-check-label" for="enchantment">
-                    Sorcery
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="enchantment">
-                <label class="form-check-label" for="enchantment">
-                    Artifact
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="enchantment">
-                <label class="form-check-label" for="enchantment">
-                    Land
-                </label>
+            <div class="mt-1 d-flex text-center small">
+                <span class="p-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Sorcery) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Sorcery))">
+                      Sorcery
+                </span>
+                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Artifact) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Artifact))">
+                      Artifact
+                </span>
+                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Land) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetCardType(CardType.Land))">
+                      Land
+                </span>
             </div>
         </div>
         <div class=" mt-4">
             <label>Legalities</label>
             <div class="mt-2 d-flex text-center small">
-                <span class="p-1 col text-truncate bg-bad">Standard</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Pioneer</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Modern</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Legacy</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Vintage</span>
+                <span class="p-1 col text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Standard) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Standard))">
+                      Standard
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Pioneer) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Pioneer))">
+                      Pioneer
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Modern) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Modern))">
+                      Modern
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Legacy) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Legacy))">
+                      Legacy
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Vintage) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Vintage))">
+                      Vintage
+                </span>
             </div>
             <div class="mt-1 d-flex text-center small">
-                <span class="p-1 col text-truncate bg-bad">Brawl</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Historic</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Pauper</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Penny</span>
-                <span class="p-1 ms-1 col text-truncate bg-bad">Commander</span>
+                <span class="p-1 col text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Brawl) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Brawl))">
+                      Brawl
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Historic) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Historic))">
+                      Historic
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Pauper) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Pauper))">
+                      Pauper
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Penny) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Penny))">
+                      Penny
+                </span>
+                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Commander) ? "bg-good" : "bg-bad")" 
+                      @onclick="@(() => SetLegalityFilter(Legality.Commander))">
+                      Commander
+                </span>
             </div>
         </div>
         <button class="btn btn-primary mt-4" @onclick="@Filter"> Filter </button>
-        <button class="btn btn-outline-primary mt-2" @onclick="@CloseFilter"> Cancel </button>
+        <button class="btn btn-outline-primary mt-2" @onclick="@CancelFilter"> Cancel </button>
     </div>
 </div>
 <LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
@@ -130,14 +158,17 @@
     [Parameter]
     public string? SetCode { get; set; }
 
-    private bool[] _dropdownStates = new[] { false, false, false, false };
     private CancellationTokenSource _cts = new CancellationTokenSource();
     private bool _isLoading;
     private int _take;
     private bool _hasMore;
     private IEnumerable<CollectedCard> _collection = Enumerable.Empty<CollectedCard>();
+    private IEnumerable<CollectedCard> _filteredCollection = Enumerable.Empty<CollectedCard>();
     private IEnumerable<CollectedCard> _loadedCards = Enumerable.Empty<CollectedCard>();
     private bool _showFilter;
+    private HashSet<string> _filteredColors = new HashSet<string>();
+    private Legality _filteredLegalities = 0;
+    private HashSet<CardType> _filteredCardTypes = new HashSet<CardType>();
 
     public void Dispose()
     {
@@ -153,22 +184,67 @@
         _isLoading = false;
     }
 
-    private void CloseFilter()
+    private void CancelFilter()
     {
         _showFilter = false;
     }
 
     private void Filter()
     {
-        if (!string.IsNullOrWhiteSpace(SetCode))
+        _filteredCollection = !string.IsNullOrWhiteSpace(SetCode)
+            ? _collection.Where(c => string.Equals(c.SetCode, SetCode, StringComparison.InvariantCultureIgnoreCase))
+            : _collection;
+
+        if (_filteredColors.Any())
         {
-            _collection = _collection.Where(c => c.SetCode == SetCode);
+            _filteredCollection = _filteredCollection.Where(c => c.Colors.Any(c => _filteredColors.Contains(c)));
         }
-        _collection = _collection.OrderByDescending(c => c.ReleaseAt)
-                                 .ThenByDescending(c => c.Rarity);
+
+         if (_filteredCardTypes.Any())
+        {
+            _filteredCollection = _filteredCollection.Where(c => _filteredCardTypes.Contains(c.CardType));
+        }
+
+        _filteredCollection = _filteredCollection.Where(c => c.Legalities.HasFlag(_filteredLegalities));
+
+        _filteredCollection = _filteredCollection.OrderByDescending(c => c.ReleaseAt)
+                                                 .ThenByDescending(c => c.Rarity)
+                                                 .ToList(); // Create a copy to prevent enumerables from filtering 
+
         ShowMore();
 
         _showFilter = false;
+    }
+
+    private void SetLegalityFilter(Legality legality)
+    {
+        _filteredLegalities = _filteredLegalities.HasFlag(legality)
+            ? _filteredLegalities & ~legality
+            : _filteredLegalities | legality;
+    }
+
+    private void SetCardType(CardType cardType)
+    {
+        if (_filteredCardTypes.Contains(cardType)) 
+        {
+            _filteredCardTypes.Remove(cardType);
+        }
+        else 
+        {
+            _filteredCardTypes.Add(cardType);
+        }
+    }
+
+    private void SetColorFilter(string color)
+    {
+        if (_filteredColors.Contains(color)) 
+        {
+            _filteredColors.Remove(color);
+        }
+        else 
+        {
+            _filteredColors.Add(color);
+        }
     }
 
     private void ShowFilter()
@@ -178,18 +254,8 @@
 
     private void ShowMore()
     {
-        if (_collection == null)
-        {
-            return;
-        }
-
         _take += _settings.DisplayBatchSize;
-        _hasMore = _take < _collection.Count();
-        _loadedCards = _collection.Take(_take);
-    }
-
-    private void ToggleDropdown(int id)
-    {
-        _dropdownStates[id] = !_dropdownStates[id];
+        _hasMore = _take < _filteredCollection.Count();
+        _loadedCards = _filteredCollection.Take(_take);
     }
 }

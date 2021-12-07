@@ -22,10 +22,10 @@
 <EditForm Model="_cardId" OnValidSubmit="@AddCardToCollectionAsync">
     <div class="row mt-2 mb-4">
         <div class="col-md-3 content bg-elevated">
-            <input class="form-control w-100" @bind="_cardId.SetCode" placeholder="Set Code" />
+            <input class="form-control w-100" @bind="_cardId.SetCode" maxlength="4" placeholder="Set Code" />
         </div>
         <div class="col-md-3 content bg-elevated">
-            <input class="form-control w-100" @bind="_cardId.CardNumber" placeholder="Card number" />
+            <input class="form-control w-100" @bind="_cardId.CardNumber" maxlength="4" placeholder="Card number" />
         </div>
         <div class="col-md-6 content bg-elevated d-flex align-items-center">
             <InputRadioGroup @bind-Value="_cardId.LanguageCode">

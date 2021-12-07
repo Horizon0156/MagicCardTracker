@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using AutoMapper;
 using MagicCardTracker.Contracts;
@@ -22,6 +23,8 @@ namespace MagicCardTracker.Pwa.Profiles
                 .ForCtorParam("setCode", cfg => cfg.MapFrom(c => c.Set))
                 .ForCtorParam("number", cfg => cfg.MapFrom(c => c.Collector_number))
                 .ForCtorParam("languageCode", cfg => cfg.MapFrom(c => c.Lang))
+                .ForMember(c => c.CardType, cfg => cfg.MapFrom(c => FlattenCardType(c)))
+                .ForMember(c => c.Colors, cfg => cfg.MapFrom(c => c.Color_identity))
                 .ForMember(c => c.HasFoilVersion, cfg => cfg.MapFrom(c => c.Foil))
                 .ForMember(c => c.ScryfallId, cfg => cfg.MapFrom(c => c.Id))
                 .ForMember(c => c.ImageUrl, cfg => cfg.MapFrom(c => ExtractImageUrls(c, false)))
@@ -69,6 +72,33 @@ namespace MagicCardTracker.Pwa.Profiles
             {
                 mappedPrices.FoiledInDollars = mappedPrices.FoiledInEuros * EURO_DOLLAR_EXCHANGE_RATE;
             }
+        }
+
+        private CardType FlattenCardType(ScryfallClient.Card card)
+        {
+            if (card.Type_line.Contains("Creature", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Creature;
+            }
+            if (card.Type_line.Contains("Planeswalker", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Planeswalker;
+            }
+            if (card.Type_line.Contains("Enchantment", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Enchantment;
+            }
+            if (card.Type_line.Contains("Instant", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Instant;
+            }
+            if (card.Type_line.Contains("Land", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Land;
+            }
+            if (card.Type_line.Contains("Artifact", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Artifact;
+            }
+            if (card.Type_line.Contains("Sorcery", StringComparison.InvariantCultureIgnoreCase)) {
+                return CardType.Sorcery;
+            }
+
+            return CardType.Other;
         }
 
         private Legality FlattenLegality(ScryfallClient.Legality scryfallLegality)

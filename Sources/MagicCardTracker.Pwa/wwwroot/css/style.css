@@ -44,6 +44,15 @@ body {
     background-color: var(--primaryColor);
 }
 
+.color-indicator {
+    padding: .25rem;
+    border-bottom: 2px solid transparent;
+}
+
+.color-indicator.selected {
+    border-bottom: 2px solid var(--primaryColor);
+}
+
 .text-white {
     color: wheat;
 }
@@ -142,6 +151,7 @@ a, .btn-link, a:hover, .action-link {
 .action-link,
 .selectable {
     cursor: pointer;
+    user-select: none;
 }
 
 .color-primary {
