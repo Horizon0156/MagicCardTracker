@@ -1131,7 +1131,9 @@ components:
           - core
           - expansion
           - masters
+          - alchemy
           - masterpiece
+          - arsenal
           - from_the_vault
           - spellbook
           - premium_deck

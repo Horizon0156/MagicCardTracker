@@ -1,0 +1,23 @@
+{
+  "ignoreInsignificantCommits ": true,
+  "changelog": {
+    "header": "# Magic Card Tracker\nAll notable changes to this project will be documented in this file.\n",
+    "sections": [
+      {
+        "type": "feat",
+        "section": "🎉 Features",
+        "hidden": false
+      },
+      {
+        "type": "fix",
+        "section": "🐛 Bug Fixes",
+        "hidden": false
+      },
+      {
+        "type": "perf",
+        "section": "🚀 Performance",
+        "hidden": false
+      }
+    ]
+  }
+}
