@@ -159,7 +159,7 @@ namespace MagicCardTracker.Pwa.Profiles
                 case ScryfallClient.CardLayout.Split:
                 case ScryfallClient.CardLayout.Flip:
                 case ScryfallClient.CardLayout.Double_faced_token:
-                case ScryfallClient.CardLayout.Double_sided:
+                case ScryfallClient.CardLayout.Reversible_card:
                 case ScryfallClient.CardLayout.Modal_dfc:
                     return $"{cardFaces?.ElementAt(0)?.Printed_name ?? cardFaces?.ElementAt(0)?.Name} " + 
                            $"// {cardFaces?.ElementAt(1)?.Printed_name ?? cardFaces?.ElementAt(1)?.Name}";
@@ -178,7 +178,7 @@ namespace MagicCardTracker.Pwa.Profiles
                 case ScryfallClient.CardLayout.Split:
                 case ScryfallClient.CardLayout.Flip:
                 case ScryfallClient.CardLayout.Double_faced_token:
-                case ScryfallClient.CardLayout.Double_sided:
+                case ScryfallClient.CardLayout.Reversible_card:
                 case ScryfallClient.CardLayout.Modal_dfc:
                     return useFlipsideImage 
                         ? cardFaces?.ElementAt(1)?.Image_uris.Normal?.ToString()

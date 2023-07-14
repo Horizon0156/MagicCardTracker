@@ -856,6 +856,9 @@ components:
           - class
           - saga
           - adventure
+          - mutate
+          - prototype
+          - battle
           - planar
           - scheme
           - vanguard
@@ -865,7 +868,7 @@ components:
           - augment
           - host
           - art_series
-          - double_sided
+          - reversible_card
           x-ms-enum:
             name: layouts
             modelAsString: false
@@ -1150,6 +1153,7 @@ components:
           - promo
           - token
           - memorabilia
+          - minigame
           x-ms-enum:
             name: set_types
             modelAsString: false
