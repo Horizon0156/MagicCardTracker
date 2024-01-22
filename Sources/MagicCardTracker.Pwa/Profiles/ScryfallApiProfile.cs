@@ -30,7 +30,7 @@ internal class ScryfallApiProfile : Profile
             .ForMember(c => c.ReleaseAt, cfg => cfg.MapFrom(c => c.Released_at))
             .ForMember(c => c.Rarity, cfg => cfg.MapFrom(c => c.Rarity))
             .ForMember(c => c.Legalities, cfg => cfg.MapFrom(c => FlattenLegality(c.Legalities)))
-            .ForMember(c => c.Name, cfg => cfg.MapFrom(c => NormalizeName(c)));
+            .ForMember(c => c.Name, cfg => cfg.MapFrom(c => c.Name));
 
         CreateMap<ScryfallClient.Set, Set>()
             .ForCtorParam("code", cfg => cfg.MapFrom(s => s.Code))
@@ -136,34 +136,6 @@ internal class ScryfallApiProfile : Profile
 
 
         return legalities;
-    }
-
-    private decimal? ParsePrice(string price)
-    {
-        
-        var result = decimal.TryParse(price, out var parsedPrice)
-            ? parsedPrice
-            : (decimal?) null;
-        return result;
-    }
-
-    private static string NormalizeName(ScryfallClient.Card card)
-    {
-        var cardFaces = card.Card_faces?.ToArray();
-
-        switch (card.Layout)
-        {
-            case ScryfallClient.CardLayout.Transform:
-            case ScryfallClient.CardLayout.Split:
-            case ScryfallClient.CardLayout.Flip:
-            case ScryfallClient.CardLayout.Double_faced_token:
-            case ScryfallClient.CardLayout.Reversible_card:
-            case ScryfallClient.CardLayout.Modal_dfc:
-                return $"{cardFaces?.ElementAt(0)?.Printed_name ?? cardFaces?.ElementAt(0)?.Name} " + 
-                       $"// {cardFaces?.ElementAt(1)?.Printed_name ?? cardFaces?.ElementAt(1)?.Name}";
-            default:
-                return card.Printed_name ?? card.Name;
-        }
     }
 
     private static string? ExtractImageUrls(ScryfallClient.Card card, bool useFlipsideImage)
