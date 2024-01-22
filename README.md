@@ -1,5 +1,3 @@
-<a href="https://www.buymeacoffee.com/horizon0156"><img src="https://user-images.githubusercontent.com/7062359/130448682-e0ba88ef-d0c0-4197-8fa4-ca3dfc10f356.png" alt="Buy me a coffee" height="50"></a>
-
 [![🚨 CI](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continiuos_integration.yml)
 [![Docker (Dev)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continious_delivery.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/continious_delivery.yml)
 [![🐳 Docker (Release)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml/badge.svg)](https://github.com/Horizon0156/MagicCardTracker/actions/workflows/release.yml)
@@ -51,7 +49,7 @@ Please make sure to update tests as appropriate.
 ## Acknowledgements
 The application is build on top of the following frameworks / libraries. Without this great work, I wouldn't be apple to build this app in that short amount of time.
 
-* [.NET 5 / ASP.NET Core Blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/?view=aspnetcore-5.0) 
+* [.NET8 / ASP.NET Core Blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor) 
 * [Blazored/LocalStorage](https://github.com/Blazored/LocalStorage) for accessing the local storage
 * [ChartJs.Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) for the charts
 * [Bootstrap 5](https://getbootstrap.com/docs/5.0/getting-started/introduction/) for the grid layout and CSS helper classes
