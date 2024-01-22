@@ -16,9 +16,6 @@
         <a href="profile">&lt; Profile</a> | Cards by value
     </div>
 </div>
-<LoadingIndicator IsBusy="@_isLoading" 
-                  FadeOutBackground="true" 
-                  Text="Loading collection..."/>
 <div class="row mt-2 vh-25">
     <Chart Config="_chartConfig" />
 </div>
@@ -65,8 +62,6 @@
 {
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
-    private bool _isLoading;
-
     private CardOverlay? _cardOverlay;
 
     private int _take;
@@ -92,13 +87,11 @@
 
     private async Task LoadCollectionAsync()
     {
-        _isLoading = true;
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
         _collection = _collection.OrderByDescending(
                                     c => c.GetSingleCardValue(_userSettings.Currency));
         _chartConfig.AddCollectionValueBySet(_collection, _userSettings.Currency);
         ShowMore();
-        _isLoading = false;
     }
 
     private void ShowMore()

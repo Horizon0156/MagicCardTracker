@@ -2,18 +2,17 @@
 using MagicCardTracker.Pwa.Models;
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Queries
+namespace MagicCardTracker.Pwa.Queries;
+
+internal class SearchCards : IRequest<CardSearchResult>
 {
-    internal class SearchCards : IRequest<CardSearchResult>
+    public SearchCards(string query, int? page = null)
     {
-        public SearchCards(string query, int? page = null)
-        {
-            Query = query;
-            Page = page;
-        }
-
-        public string Query { get; }
-
-        public int? Page { get; set; }
+        Query = query;
+        Page = page;
     }
+
+    public string Query { get; }
+
+    public int? Page { get; set; }
 }

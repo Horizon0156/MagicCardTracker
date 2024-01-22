@@ -1,7 +1,8 @@
+
 using MediatR;
 
 namespace MagicCardTracker.Pwa.Commands;
 
-internal class UpdateSets : IRequest
+internal class ExportCsv : IRequest
 {
 }

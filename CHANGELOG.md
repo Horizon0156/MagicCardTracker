@@ -1,6 +1,16 @@
 # Magic Card Tracker
 All notable changes to this project will be documented in this file.
 
+<a name="1.3.0"></a>
+## [1.3.0](https://www.github.com/Horizon0156/MagicCardTracker/releases/tag/v1.3.0) (2024-1-22)
+
+### 🎉 Features
+* Implemented Moxfield CSV exporter
+
+### 🐛 Bug Fixes
+* Dropped custom names to be compliant with other formats
+* Updated Scryfall API client to support bad 'promos' set type
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://www.github.com/Horizon0156/MagicCardTracker/releases/tag/v1.2.1) (2022-8-1)
 

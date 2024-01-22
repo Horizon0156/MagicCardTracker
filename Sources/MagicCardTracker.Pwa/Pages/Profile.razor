@@ -102,19 +102,22 @@
             </div>
             <label class="mt-2 color-white-60"> Library </label>
             <div class="btn-group mt-2">
-            <button class="btn btn-primary" @onclick="@ExportLibraryAsync">
-                Export
+            <button class="btn btn-primary" @onclick="@ExportCsvAsync">
+                Export CSV
             </button>
-
+            <button class="ms-1 btn btn-primary" @onclick="@ExportLibraryAsync">
+                Export lib.
+            </button>
             <label class="ms-1 btn btn-primary">
                 <InputFile OnChange="@ImportLibraryAsync" accept=".json" hidden></InputFile>
-                Import
+                Import lib.
             </label>
             </div>
             <label class="small mt-2 color-white-60">
                 You might wanna backup your library in case you accidentally clear your 
                 Browser storage. It's also recommended to create a backup before you 
-                update your library's metadata.
+                update your library's metadata. The CSV export is compatible with 
+                <a href="https://www.moxfield.com">Moxfield</a>.
             </label>
             <label class="mt-2 color-white-60"> Update</label>
             <div class="btn-group mt-2">
@@ -201,6 +204,14 @@
             await LoadCollectionAsync();
             _isLoading = false;
         }
+    }
+
+    private async Task ExportCsvAsync()
+    {
+        _loadingInformation = "Exporting CSV...";
+        _isLoading = true;
+        await _mediator.Send(new ExportCsv(), _cts.Token);
+        _isLoading = false;
     }
 
     private async Task ExportLibraryAsync()

@@ -1,54 +1,81 @@
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicCardTracker.Contracts;
 using MagicCardTracker.Pwa.Commands;
 using MagicCardTracker.Pwa.Helpers;
 using MagicCardTracker.Storage;
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Handlers
+namespace MagicCardTracker.Pwa.Handlers;
+
+internal class LibraryBackupHandler : 
+    IRequestHandler<ExportLibrary>,
+    IRequestHandler<ExportCsv>,
+    IRequestHandler<ImportLibrary>
 {
-    internal class LibraryBackupHandler : 
-        IRequestHandler<ExportLibrary>,
-        IRequestHandler<ImportLibrary>
+    private readonly IBrowserTools _browserTools;
+    private readonly ICardLibrary _cardLibrary;
+
+    public LibraryBackupHandler(
+        IBrowserTools browserTools,
+        ICardLibrary cardLibrary)
     {
-        private readonly IBrowserTools _browserTools;
-        private readonly ICardLibrary _cardLibrary;
+        _browserTools = browserTools;
+        _cardLibrary = cardLibrary;
+    }
 
-        public LibraryBackupHandler(
-            IBrowserTools browserTools,
-            ICardLibrary cardLibrary)
+    public async Task Handle(ImportLibrary request, CancellationToken cancellationToken)
+    {
+        var collection = await JsonSerializer.DeserializeAsync<CollectedCard[]>(
+            request.LibraryBackupStream, 
+            cancellationToken: cancellationToken);
+
+        if (collection != null)
         {
-            _browserTools = browserTools;
-            _cardLibrary = cardLibrary;
+            await _cardLibrary.SetCollectionAsync(collection, cancellationToken);    
         }
+    }
 
-        public async Task<Unit> Handle(ImportLibrary request, CancellationToken cancellationToken)
+    public async Task Handle(ExportLibrary request, CancellationToken cancellationToken)
+    {
+        var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
+        var serializedCollection = JsonSerializer.Serialize(collection);
+
+        await _browserTools.SaveAsFileAsync(
+            "MCTLibrary.json",
+            serializedCollection,
+            cancellationToken);
+    }
+
+    public async Task Handle(ExportCsv request, CancellationToken cancellationToken)
+    {
+        var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
+
+        var csvFile = "\"Count\",\"Tradelist Count\",\"Name\",\"Edition\",\"Condition\",\"Language\"," + 
+             "\"Foil\",\"Tags\",\"Last Modified\",\"Collector Number\",\"Alter\",\"Proxy\",\"Purchase Price\"";
+
+        foreach(var card in collection)
         {
-            var collection = await JsonSerializer.DeserializeAsync<CollectedCard[]>(
-                request.LibraryBackupStream, 
-                cancellationToken: cancellationToken);
+            var language = string.Equals(card.LanguageCode, "en", StringComparison.OrdinalIgnoreCase)
+                ? "English"
+                : "German";
 
-            if (collection != null)
+            if (card.Count > 0)
             {
-                await _cardLibrary.SetCollectionAsync(collection, cancellationToken);    
+                csvFile += Environment.NewLine;
+                csvFile += $"\"{card.Count}\",\"{card.Count}\",\"{card.Name}\",\"{card.SetCode}\",\"Near Mint\",\"{language}\"," + 
+                    $"\"\",\"\",\"\",\"{card.Number}\",\"False\",\"False\",\"\"";
             }
-            
-            return Unit.Value;
+            if (card.FoilCount > 0)
+            {
+                csvFile += Environment.NewLine;
+                csvFile += $"\"{card.FoilCount}\",\"{card.Count}\",\"{card.Name}\",\"{card.SetCode}\",\"Near Mint\",\"{language}\"," + 
+                    $"\"foil\",\"\",\"\",\"{card.Number}\",\"False\",\"False\",\"\"";
+            }
         }
-
-        public async Task<Unit> Handle(ExportLibrary request, CancellationToken cancellationToken)
-        {
-            var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
-            var serializedCollection = JsonSerializer.Serialize(collection);
-
-            await _browserTools.SaveAsFileAsync(
-                "MCTLibrary.json",
-                serializedCollection,
-                cancellationToken);
-
-            return Unit.Value;
-        }
+        
+        await _browserTools.SaveAsFileAsync(
+            "MCTExport.csv",
+            csvFile,
+            cancellationToken);
     }
 }

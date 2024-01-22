@@ -131,26 +131,22 @@
         <button class="btn btn-outline-primary mt-2" @onclick="@CancelFilter"> Cancel </button>
     </div>
 </div>
-<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
 
-@if (!_isLoading)
+<CardDisplay Cards="@_loadedCards">
+    <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
+        Hell, no... Looks like you don't have any cards in your collection
+    </div>
+</CardDisplay>
+
+@if (_hasMore)
 {
-    <CardDisplay Cards="@_loadedCards">
-        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
-            Hell, no... Looks like you don't have any cards in your collection
-        </div>
-    </CardDisplay>
-
-    @if (_hasMore)
-    {
-        <div class="row">
-            <div class="col-12">
-                <div class="content text-center">
-                    <span class="action-link" @onclick="@ShowMore"> Show more... </span>
-                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="content text-center">
+                <span class="action-link" @onclick="@ShowMore"> Show more... </span>
             </div>
         </div>
-    }
+    </div>
 }
 
 @code {
@@ -159,7 +155,6 @@
     public string? SetCode { get; set; }
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
-    private bool _isLoading;
     private int _take;
     private bool _hasMore;
     private IEnumerable<CollectedCard> _collection = Enumerable.Empty<CollectedCard>();
@@ -178,10 +173,9 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _isLoading = true;
+        
         _collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
         Filter();
-        _isLoading = false;
     }
 
     private void CancelFilter()

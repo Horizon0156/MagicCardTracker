@@ -1,8 +1,7 @@
 
-namespace MagicCardTracker.Pwa.Cache
+namespace MagicCardTracker.Pwa.Cache;
+
+internal static class KnownCacheKeys
 {
-    internal static class KnownCacheKeys
-    {
-        public static string Sets => "sets";
-    }
+    public static string Sets => "sets";
 }

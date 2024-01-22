@@ -1,11 +1,8 @@
-using System;
+namespace MagicCardTracker.Pwa.Notifications;
 
-namespace MagicCardTracker.Pwa.Notifications
+internal interface INotificationService
 {
-    internal interface INotificationService
-    {
-        event EventHandler<Notification> NotificationReceived;
-        
-        void SendNotification(Notification notification);
-    }
+    event EventHandler<Notification> NotificationReceived;
+    
+    void SendNotification(Notification notification);
 }

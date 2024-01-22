@@ -1,15 +1,13 @@
-using System.IO;
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Commands
-{
-    internal class ImportLibrary : IRequest
-    {
-        public ImportLibrary(Stream libraryBackupStream)
-        {
-            LibraryBackupStream = libraryBackupStream;
-        }
+namespace MagicCardTracker.Pwa.Commands;
 
-        public Stream LibraryBackupStream { get; }
+internal class ImportLibrary : IRequest
+{
+    public ImportLibrary(Stream libraryBackupStream)
+    {
+        LibraryBackupStream = libraryBackupStream;
     }
+
+    public Stream LibraryBackupStream { get; }
 }

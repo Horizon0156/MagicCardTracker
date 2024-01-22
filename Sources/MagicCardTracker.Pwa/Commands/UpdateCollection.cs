@@ -1,15 +1,14 @@
 using MagicCardTracker.Contracts;
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Commands
-{
-    internal class UpdateCollection : IRequest
-    {
-        public UpdateMode Mode { get; }
+namespace MagicCardTracker.Pwa.Commands;
 
-        public UpdateCollection(UpdateMode mode = UpdateMode.Prices)
-        {
-            Mode = mode;
-        }
+internal class UpdateCollection : IRequest
+{
+    public UpdateMode Mode { get; }
+
+    public UpdateCollection(UpdateMode mode = UpdateMode.Prices)
+    {
+        Mode = mode;
     }
 }

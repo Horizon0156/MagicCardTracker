@@ -12,7 +12,6 @@
 {
     <div class="backdrop bg-black80 overflow-auto">
     <div class="container d-flex flex-grow-1 position-relative">
-        <LoadingIndicator IsBusy="@_isBusy"></LoadingIndicator>
         @if (_card != null)
         {
             <div class="row flex-grow-1 mb-4 align-items-center">
@@ -104,21 +103,17 @@
 
     private bool _isVisible;
 
-    private bool _isBusy;
-
     private bool _isFlipped;
 
     public async Task OpenAsync(Card card)
     {
         _isFlipped = false;
         _isVisible = true;
-        _isBusy = true;
         StateHasChanged();
 
         _card = card is CollectedCard
             ? (CollectedCard)card
             : await Mediator.Send(new GetCollectableCard(card));
-        _isBusy = false;
         StateHasChanged();
     }
 

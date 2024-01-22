@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-bullseye-slim-amd64 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim-amd64 AS build
 WORKDIR /src
 COPY Sources .
 RUN dotnet publish MagicCardTracker.Pwa -c Release /p:UseAppHost=false -o /publish

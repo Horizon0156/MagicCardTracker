@@ -1,4 +1,7 @@
 
+using System.Net.Http;
+using System.Text;
+
 namespace MagicCardTracker.ScryfallClient
 {
     /// <inheritdoc />
@@ -6,9 +9,9 @@ namespace MagicCardTracker.ScryfallClient
     {
         /// <inheritdoc />
         partial void PrepareRequest(
-            System.Net.Http.HttpClient client,
-            System.Net.Http.HttpRequestMessage request,
-            System.Text.StringBuilder urlBuilder)
+            HttpClient client,
+            HttpRequestMessage request,
+            StringBuilder urlBuilder)
         {
             //  We need to restore escaped '+' characters as this is a special command
             // character in the Scryfall Search Syntax

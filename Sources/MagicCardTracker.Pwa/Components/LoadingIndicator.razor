@@ -1,11 +1,9 @@
 @if (IsBusy) 
 {
     <div class="loader @(FadeOutBackground ? "bg-black80" : null)">
-        <img src="Loader.svg">
-        
         @if (!string.IsNullOrWhiteSpace(Text))
         {
-            <label>@Text</label>
+            <label>@Text ...</label>
         }
     </div>
 }
