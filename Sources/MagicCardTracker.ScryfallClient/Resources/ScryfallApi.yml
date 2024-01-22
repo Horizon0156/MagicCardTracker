@@ -1151,6 +1151,7 @@ components:
           - starter
           - box
           - promo
+          - promos
           - token
           - memorabilia
           - minigame
