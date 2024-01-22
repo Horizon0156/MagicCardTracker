@@ -14,7 +14,7 @@
     </div>
 </div>
 
-@if (!_isLoading || _cachedCards != null)
+@if (_cachedCards != null)
 {
     <CardDisplay Cards="@_cachedCards">
         <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
@@ -34,13 +34,9 @@
     }
 }
 
-<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="_cachedCards != null"></LoadingIndicator>
-
 @code {
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
-
-    private bool _isLoading;
 
     private IEnumerable<Card>? _cachedCards;
 
@@ -69,10 +65,8 @@
             return;
         }
 
-        _isLoading = true;
         _searchResult = await _mediator.Send(new SearchCards(Query));
         _cachedCards = _searchResult.Cards;
-        _isLoading = false;
     }
 
     private async Task LoadMoreAsync()
@@ -81,15 +75,11 @@
         {
             return;
         }
-
-        _isLoading = true;
         _searchResult = await _mediator.Send(new SearchCards(Query, _searchResult.Page + 1));
 
         if (_searchResult.Cards != null)
         {
             _cachedCards = _cachedCards?.Concat(_searchResult.Cards);
         }
-        
-        _isLoading = false;
     }
 }

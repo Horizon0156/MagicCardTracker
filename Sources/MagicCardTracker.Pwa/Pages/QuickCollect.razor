@@ -55,15 +55,11 @@
     </div>
 </CardDisplay>
 
-<LoadingIndicator IsBusy=@_isLoading FadeOutBackground="true" Text="Loading card information..."></LoadingIndicator>
-
-
 @code {
 
     private CardIdentity _cardId = new CardIdentity { LanguageCode = LanguageCodes.German };
     private bool _collectAsFoil;
     private CancellationTokenSource _cts = new CancellationTokenSource();
-    private bool _isLoading;
     private HashSet<CollectedCard> _quickCollectionStack = new HashSet<CollectedCard>();
 
     public void Dispose()
@@ -74,7 +70,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _isLoading = true;
         var collection = await _mediator.Send(new GetCollectedCards(), _cts.Token);
         var recentCard = collection.LastOrDefault();
 
@@ -83,8 +78,6 @@
             _cardId.SetCode = recentCard.SetCode;
             _cardId.LanguageCode = recentCard.LanguageCode;
         }
-
-        _isLoading = false;
     }
 
     private async Task AddCardToCollectionAsync()
@@ -95,8 +88,6 @@
         {
             return;
         }
-
-        _isLoading = true;
 
         try
         {
@@ -114,10 +105,6 @@
         catch (CardNotFoundException)
         {
             _notificationService.SendNotification(new Notification($"The card #{_cardId.CardNumber} ({_cardId.SetCode}) could not be found", NotificationType.Error));
-        }
-        finally
-        {
-            _isLoading = false;
         }
     }
 

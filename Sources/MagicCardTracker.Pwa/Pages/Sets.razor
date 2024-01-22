@@ -20,9 +20,7 @@
     </div>
 </div>
 
-<LoadingIndicator IsBusy=@_isLoading></LoadingIndicator>
-
-@if (!_isLoading && _majorSets != null && _collectedSets != null)
+@if (_majorSets != null && _collectedSets != null)
 {
     @foreach (var set in _showAll 
                 ? _majorSets
@@ -45,8 +43,6 @@
 
 @code 
 {
-    private bool _isLoading;
-
     private bool _showAll;
 
     private bool _hasCards;
@@ -71,14 +67,11 @@
 
     private async Task LoadSetsAsync()
     {
-        _isLoading = true;
         var sets = await _mediator.Send(new GetSetsWithCollectionInfo(), _cts.Token);
         _majorSets = sets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0);
         _collectedSets = sets.Where(s => s.NumberOfCollectedCards > 0);
         _hasCards = _collectedSets.Any();
         _showAll = !_hasCards;
-
-        _isLoading = false;
     }
 
     private void ToggleShowAll()

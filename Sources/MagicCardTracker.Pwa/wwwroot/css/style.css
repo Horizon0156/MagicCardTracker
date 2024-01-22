@@ -215,18 +215,6 @@ a, .btn-link, a:hover, .action-link {
     z-index: 1010;
 }
 
-.loader img {
-
-    width: 5vh;
-    filter: invert(1);
-    animation: turner 4s linear infinite;
-}
-
-@keyframes turner {
-    from{  transform: rotateY(360deg)   }
-    to  {  transform: rotateY(0deg) }
-}
-
 .form-control {
 
     background-color: transparent !important;
