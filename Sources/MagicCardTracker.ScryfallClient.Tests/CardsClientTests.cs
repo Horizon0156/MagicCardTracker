@@ -4,33 +4,32 @@ using System.Text;
 using NSubstitute;
 using Xunit;
 
-namespace MagicCardTracker.ScryfallClient.Tests
+namespace MagicCardTracker.ScryfallClient.Tests;
+
+public class CardsClientTests
 {
-    public class CardsClientTests
+    [Fact]
+    public void TestPrepareRequestShouldReplaceEncodedPlusCharacters()
     {
-        [Fact]
-        public void TestPrepareRequestShouldReplaceEncodedPlusCharacters()
+        var httpClient = Substitute.For<HttpClient>();
+                                 
+        var sut = new CardsClient(httpClient);
+        var urlBuilder = new StringBuilder();
+        urlBuilder.Append("set%3Aafr%2Blang%3Ade");
+
+        // Extract private partial as this, unfortunately, forced by generated code.
+        var methodInfo = typeof(CardsClient).GetMethod(
+            "PrepareRequest", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        
+        object?[] parameters = 
         {
-            var httpClient = Substitute.For<HttpClient>();
-                                     
-            var sut = new CardsClient(httpClient);
-            var urlBuilder = new StringBuilder();
-            urlBuilder.Append("set%3Aafr%2Blang%3Ade");
+             null, 
+             null,
+             urlBuilder 
+        };
+        methodInfo?.Invoke(sut, parameters);
 
-            // Extract private partial as this, unfortunately, forced by generated code.
-            var methodInfo = typeof(CardsClient).GetMethod(
-                "PrepareRequest", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            object?[] parameters = 
-            {
-                 null, 
-                 null,
-                 urlBuilder 
-            };
-            methodInfo?.Invoke(sut, parameters);
-
-            Assert.Equal("set%3Aafr+lang%3Ade", urlBuilder.ToString());
-        }
+        Assert.Equal("set%3Aafr+lang%3Ade", urlBuilder.ToString());
     }
 }

@@ -1,9 +1,7 @@
+namespace MagicCardTracker.Pwa.Settings;
 
-namespace MagicCardTracker.Pwa.Settings
+internal abstract class SettingsBase
 {
-    internal abstract class SettingsBase
-    {
-        public string Key => GetType().Name
-                                      .Replace("Settings", string.Empty);
-    }
+    public string Key => GetType().Name
+                                  .Replace("Settings", string.Empty);
 }

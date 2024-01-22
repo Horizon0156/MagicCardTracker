@@ -1,9 +1,8 @@
 
-namespace MagicCardTracker.Pwa.Notifications
+namespace MagicCardTracker.Pwa.Notifications;
+
+internal enum NotificationType
 {
-    internal enum NotificationType
-    {
-        Info, 
-        Error
-    }
+    Info, 
+    Error
 }

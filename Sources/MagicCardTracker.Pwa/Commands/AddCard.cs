@@ -1,15 +1,14 @@
 using MagicCardTracker.Contracts;
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Commands
-{
-    internal class AddCard : IRequest
-    {
-        public AddCard(CollectedCard card)
-        {
-            Card = card;
-        }
+namespace MagicCardTracker.Pwa.Commands;
 
-        public CollectedCard Card { get; }
+internal class AddCard : IRequest
+{
+    public AddCard(CollectedCard card)
+    {
+        Card = card;
     }
+
+    public CollectedCard Card { get; }
 }

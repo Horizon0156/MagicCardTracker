@@ -1,16 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.14.8"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="14.0.2"/>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <OpenApiReference Include="Resources/ScryfallApi.yml">
+      <CodeGenerator>NSwagCSharp</CodeGenerator>
       <ClassName>{controller}Client</ClassName>
+      <NSwagGenerateExceptionClasses>true</NSwagGenerateExceptionClasses>
       <Options>/GenerateClientInterfaces:true</Options>
     </OpenApiReference>
   </ItemGroup>

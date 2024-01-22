@@ -1,9 +1,8 @@
 
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Commands
+namespace MagicCardTracker.Pwa.Commands;
+
+internal class ExportLibrary : IRequest
 {
-    internal class ExportLibrary : IRequest
-    {
-    }
 }

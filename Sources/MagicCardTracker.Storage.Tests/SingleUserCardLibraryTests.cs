@@ -7,290 +7,289 @@ using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace MagicCardTracker.Storage.Tests
+namespace MagicCardTracker.Storage.Tests;
+
+public class SingleUserCardLibraryTests
 {
-    public class SingleUserCardLibraryTests
+    [Fact]
+    public async Task TestAddCardShouldRecoverLibraryIfCalledForTheFirstTime()
     {
-        [Fact]
-        public async Task TestAddCardShouldRecoverLibraryIfCalledForTheFirstTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
-            await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
+        await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestAddCardShouldNotRecoverLibraryIfCalledForTheSecondTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestAddCardShouldNotRecoverLibraryIfCalledForTheSecondTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
-            await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
-            await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
+        await sut.AddCardAsync(new CollectedCard(new Card("soi", "97", "en"), 1, 0), CancellationToken.None);
+        await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestAddCardShouldNotAddCardWithCountZero()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestAddCardShouldNotAddCardWithCountZero()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 0, 0);
-            await sut.AddCardAsync(card, CancellationToken.None);
-            var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Empty(cards);
-        }
+        var card = new CollectedCard(new Card("soi", "97", "en"), 0, 0);
+        await sut.AddCardAsync(card, CancellationToken.None);
+        var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Empty(cards);
+    }
 
-        [Fact]
-        public async Task TestAddCardShouldAddCardWithCountGreaterZero()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestAddCardShouldAddCardWithCountGreaterZero()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
-            await sut.AddCardAsync(card, CancellationToken.None);
-            var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Single(cards);
-        }
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        await sut.AddCardAsync(card, CancellationToken.None);
+        var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Single(cards);
+    }
 
-        [Fact]
-        public async Task TestAddSameCardShouldNotAddDuplicate()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestAddSameCardShouldNotAddDuplicate()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card1 = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
-            var card2 = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
-            
-            await sut.AddCardAsync(card1, CancellationToken.None);
-            await sut.AddCardAsync(card2, CancellationToken.None);
-            var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Single(cards);
-            Assert.Equal(2, cards.FirstOrDefault()?.Count);
-        }
+        var card1 = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card2 = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+        
+        await sut.AddCardAsync(card1, CancellationToken.None);
+        await sut.AddCardAsync(card2, CancellationToken.None);
+        var cards = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Single(cards);
+        Assert.Equal(2, cards.FirstOrDefault()?.Count);
+    }
 
-        [Fact]
-        public async Task TestAddCardShouldPersistCollection()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestAddCardShouldPersistCollection()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.AddCardAsync(card, CancellationToken.None);
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            await persister.Received()
-                           .PersistLibraryAsync(collection, Arg.Any<CancellationToken>());
-        }
+        await sut.AddCardAsync(card, CancellationToken.None);
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        await persister.Received()
+                        .PersistLibraryAsync(collection, Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestGetCollectionShouldReturnCollectedCards()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestGetCollectionShouldReturnCollectedCards()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.AddCardAsync(card, CancellationToken.None);
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Contains(card, collection);
-        }
+        await sut.AddCardAsync(card, CancellationToken.None);
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Contains(card, collection);
+    }
 
-        [Fact]
-        public async Task TestGetCollectionShouldRecoverCollectionIfCalledForTheFirstTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestGetCollectionShouldRecoverCollectionIfCalledForTheFirstTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestGetCollectionNotShouldRecoverCollectionIfCalledForTheSecondTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestGetCollectionNotShouldRecoverCollectionIfCalledForTheSecondTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            var collection2 = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        var collection2 = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestGetCollectionNotPersistCollection()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestGetCollectionNotPersistCollection()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            await persister.DidNotReceive()
-                           .PersistLibraryAsync(
-                               Arg.Any<IEnumerable<CollectedCard>>(),
-                               Arg.Any<CancellationToken>());
-        }
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        await persister.DidNotReceive()
+                        .PersistLibraryAsync(
+                            Arg.Any<IEnumerable<CollectedCard>>(),
+                            Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionShouldRecoverCollectionIfCalledForTheFirstTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionShouldRecoverCollectionIfCalledForTheFirstTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionShouldNotRecoverCollectionIfCalledForTheSecondTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionShouldNotRecoverCollectionIfCalledForTheSecondTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionShouldNotPersistCollection()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionShouldNotPersistCollection()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            await persister.DidNotReceive()
-                           .PersistLibraryAsync(
-                               Arg.Any<IEnumerable<CollectedCard>>(),
-                               Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        await persister.DidNotReceive()
+                        .PersistLibraryAsync(
+                            Arg.Any<IEnumerable<CollectedCard>>(),
+                            Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionShouldReturnCountZeroIfCardIsNotCollected()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionShouldReturnCountZeroIfCardIsNotCollected()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new Card("soi", "97", "en");
+        var card = new Card("soi", "97", "en");
 
-            var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            Assert.Equal(0, result.Count);
-        }
+        var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        Assert.Equal(0, result.Count);
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionShouldReturnActualCountIfCardIsCollected()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionShouldReturnActualCountIfCardIsCollected()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
-            await sut.AddCardAsync(collectedCard, CancellationToken.None);
+        var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+        await sut.AddCardAsync(collectedCard, CancellationToken.None);
 
-            var card = new Card("soi", "97", "en");
+        var card = new Card("soi", "97", "en");
 
-            var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
-            Assert.Equal(collectedCard.Count, result.Count);
-        }
+        var result = await sut.SearchInCollectionAsync(card, CancellationToken.None);
+        Assert.Equal(collectedCard.Count, result.Count);
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionByIdShouldRecoverCollectionIfCalledForTheFirstTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionByIdShouldRecoverCollectionIfCalledForTheFirstTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        await persister.Received().RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionByIdShouldNotRecoverCollectionIfCalledForTheSecondTime()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionByIdShouldNotRecoverCollectionIfCalledForTheSecondTime()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        await persister.Received(1).RestoreLibraryAsync(Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionByIdShouldNotPersistCollection()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionByIdShouldNotPersistCollection()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var card = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            await persister.DidNotReceive()
-                           .PersistLibraryAsync(
-                               Arg.Any<IEnumerable<CollectedCard>>(),
-                               Arg.Any<CancellationToken>());
-        }
+        await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        await persister.DidNotReceive()
+                        .PersistLibraryAsync(
+                            Arg.Any<IEnumerable<CollectedCard>>(),
+                            Arg.Any<CancellationToken>());
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionByIdShouldReturnNullIfCardIsNotCollected()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionByIdShouldReturnNullIfCardIsNotCollected()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var result = await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            Assert.Null(result);
-        }
+        var result = await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        Assert.Null(result);
+    }
 
-        [Fact]
-        public async Task TestSearchInCollectionByIdShouldReturnActualCountIfCardIsCollected()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSearchInCollectionByIdShouldReturnActualCountIfCardIsCollected()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
-            await sut.AddCardAsync(collectedCard, CancellationToken.None);
+        var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+        await sut.AddCardAsync(collectedCard, CancellationToken.None);
 
-            var result = await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
-            Assert.Equal(collectedCard.Count, result?.Count);
-        }
+        var result = await sut.SearchInCollectionByIdAsync("soi", "97", "en", CancellationToken.None);
+        Assert.Equal(collectedCard.Count, result?.Count);
+    }
 
-        [Fact]
-        public async Task TestSetCollectionAsyncShouldTakeTheGivenLibrary()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestSetCollectionAsyncShouldTakeTheGivenLibrary()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var oldCard = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
+        var oldCard = new CollectedCard(new Card("soi", "97", "en"), 1, 0);
 
-            await sut.AddCardAsync(oldCard, CancellationToken.None);
+        await sut.AddCardAsync(oldCard, CancellationToken.None);
 
-            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+        var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
 
-            var collection = new [] { collectedCard };
-            await sut.SetCollectionAsync(collection, CancellationToken.None);
-            var newCollection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Contains(collectedCard, newCollection);
-            Assert.Single(newCollection);
-        }
+        var collection = new [] { collectedCard };
+        await sut.SetCollectionAsync(collection, CancellationToken.None);
+        var newCollection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Contains(collectedCard, newCollection);
+        Assert.Single(newCollection);
+    }
 
-        [Fact]
-        public async Task TestClearLibraryShouldClearLibrary()
-        {
-            var persister = Substitute.For<ICardLibraryPersister>();
-            var sut = new SingleUserCardLibrary(persister);
+    [Fact]
+    public async Task TestClearLibraryShouldClearLibrary()
+    {
+        var persister = Substitute.For<ICardLibraryPersister>();
+        var sut = new SingleUserCardLibrary(persister);
 
-            var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
-            
-            await sut.AddCardAsync(collectedCard, CancellationToken.None);
-            await sut.ClearCollectionAsync(CancellationToken.None);
-            
-            var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
-            Assert.Empty(collection);
-        }
+        var collectedCard = new CollectedCard(new Card("soi", "97", "en"), 2, 0);
+        
+        await sut.AddCardAsync(collectedCard, CancellationToken.None);
+        await sut.ClearCollectionAsync(CancellationToken.None);
+        
+        var collection = await sut.GetCollectedCardsAsync(CancellationToken.None);
+        Assert.Empty(collection);
     }
 }

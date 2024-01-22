@@ -1,8 +1,7 @@
 using MediatR;
 
-namespace MagicCardTracker.Pwa.Commands
+namespace MagicCardTracker.Pwa.Commands;
+
+internal class UpdateSets : IRequest
 {
-    internal class UpdateSets : IRequest
-    {
-    }
 }

@@ -1,26 +1,21 @@
-
-using System;
 using MagicCardTracker.Pwa.Settings;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicCardTracker.Pwa.Extensions
+namespace MagicCardTracker.Pwa.Extensions;
+
+internal static class ServiceCollectionExtensions
 {
-    internal static class ServiceCollectionExtensions
+    public static IServiceCollection AddSettings<T>(
+        this IServiceCollection serviceCollection) where T : SettingsBase
     {
-        public static IServiceCollection AddSettings<T>(
-            this IServiceCollection serviceCollection) where T : SettingsBase
+        serviceCollection.AddSingleton<T>(sp => 
         {
-            serviceCollection.AddSingleton<T>(sp => 
-            {
-                var settings = Activator.CreateInstance<T>();
-                var configuration = sp.GetService<IConfiguration>();
-                configuration.Bind(settings.Key, settings);
+            var settings = Activator.CreateInstance<T>();
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            configuration.Bind(settings.Key, settings);
 
-                return settings;
-            });
-            
-            return serviceCollection;
-        }
+            return settings;
+        });
+        
+        return serviceCollection;
     }
 }

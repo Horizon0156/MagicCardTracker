@@ -1,44 +1,41 @@
-using System;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
 
-namespace MagicCardTracker.Pwa.Exceptions
+namespace MagicCardTracker.Pwa.Exceptions;
+
+internal sealed class CriticalExceptionLogger : ILogger
 {
-    internal sealed class CriticalExceptionLogger : ILogger
+    private readonly NavigationManager _navigationManager;
+
+    public CriticalExceptionLogger(NavigationManager navigationManager)
     {
-        private readonly NavigationManager _navigationManager;
+        _navigationManager = navigationManager;
+    }
 
-        public CriticalExceptionLogger(NavigationManager navigationManager)
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    {
+        return new NoopScope();
+    }
+
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logLevel == LogLevel.Critical;
+    }
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
+        if (!IsEnabled(logLevel))
         {
-            _navigationManager = navigationManager;
+            return;
         }
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return new NoopScope();
-        }
+        // Inform the user about the unexpected (allows to reload the app)
+        _navigationManager.NavigateTo("yikes");
+    }
 
-        public bool IsEnabled(LogLevel logLevel)
+    private sealed class NoopScope : IDisposable
+    {
+        public void Dispose()
         {
-            return logLevel == LogLevel.Critical;
-        }
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-        {
-            if (!IsEnabled(logLevel))
-            {
-                return;
-            }
-
-            // Inform the user about the unexpected (allows to reload the app)
-            _navigationManager.NavigateTo("yikes");
-        }
-
-        private sealed class NoopScope : IDisposable
-        {
-            public void Dispose()
-            {
-            }
         }
     }
 }

@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace MagicCardTracker.Contracts
 {
     /// <summary>

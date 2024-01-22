@@ -1,12 +1,11 @@
-namespace MagicCardTracker.Pwa.Settings
-{
-    internal class CollectionSettings : SettingsBase
-    {   
-        public int DisplayBatchSize { get; set; }
+namespace MagicCardTracker.Pwa.Settings;
 
-        public CollectionSettings()
-        {
-            DisplayBatchSize = 100;
-        }
+internal class CollectionSettings : SettingsBase
+{   
+    public int DisplayBatchSize { get; set; }
+
+    public CollectionSettings()
+    {
+        DisplayBatchSize = 100;
     }
 }
