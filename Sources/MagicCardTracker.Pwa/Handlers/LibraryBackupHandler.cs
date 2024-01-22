@@ -9,6 +9,7 @@ namespace MagicCardTracker.Pwa.Handlers;
 
 internal class LibraryBackupHandler : 
     IRequestHandler<ExportLibrary>,
+    IRequestHandler<ExportCsv>,
     IRequestHandler<ImportLibrary>
 {
     private readonly IBrowserTools _browserTools;
@@ -42,6 +43,39 @@ internal class LibraryBackupHandler :
         await _browserTools.SaveAsFileAsync(
             "MCTLibrary.json",
             serializedCollection,
+            cancellationToken);
+    }
+
+    public async Task Handle(ExportCsv request, CancellationToken cancellationToken)
+    {
+        var collection = await _cardLibrary.GetCollectedCardsAsync(cancellationToken);
+
+        var csvFile = "\"Count\",\"Tradelist Count\",\"Name\",\"Edition\",\"Condition\",\"Language\"," + 
+             "\"Foil\",\"Tags\",\"Last Modified\",\"Collector Number\",\"Alter\",\"Proxy\",\"Purchase Price\"";
+
+        foreach(var card in collection)
+        {
+            var language = string.Equals(card.LanguageCode, "en", StringComparison.OrdinalIgnoreCase)
+                ? "English"
+                : "German";
+
+            if (card.Count > 0)
+            {
+                csvFile += Environment.NewLine;
+                csvFile += $"\"{card.Count}\",\"{card.Count}\",\"{card.Name}\",\"{card.SetCode}\",\"Near Mint\",\"{language}\"," + 
+                    $"\"\",\"\",\"\",\"{card.Number}\",\"False\",\"False\",\"\"";
+            }
+            if (card.FoilCount > 0)
+            {
+                csvFile += Environment.NewLine;
+                csvFile += $"\"{card.FoilCount}\",\"{card.Count}\",\"{card.Name}\",\"{card.SetCode}\",\"Near Mint\",\"{language}\"," + 
+                    $"\"foil\",\"\",\"\",\"{card.Number}\",\"False\",\"False\",\"\"";
+            }
+        }
+        
+        await _browserTools.SaveAsFileAsync(
+            "MCTExport.csv",
+            csvFile,
             cancellationToken);
     }
 }
