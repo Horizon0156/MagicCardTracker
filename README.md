@@ -4,6 +4,8 @@
 
 ![Magic Card Tracker](https://raw.githubusercontent.com/Horizon0156/MagicCardTracker/main/Artwork/banner_small.jpg)
 
+> Archive note: Due to time constraints, the app will no longer be developed. There are great alternatives such as Moxfield or Manabox. A CSV exporter was added in the latest version which allows to transfer your collection to other apps.
+
 Magic Card Tracker (MCT) is a Progressive Web Application to keep track of your MTG card collection. Card information and prices are loaded from [Scryfall](https://scryfall.com), MCT will enrich your collection information and store the data in your browser. Besides the hosting of the application itself, no additional backend services or databases are required. 
 
 _This application was implemented for personal use and is designed to be simple, extendable and lightweight. Actually, I started this project to try out Blazor in spare time and built the features as I needed those to keep track of my cards while getting rid of Excel. Feel free to run this application to track your collection as well, but appreciate that not everything might work as you would have expected it. Neither Wizards nor Scryfall endorsed this application. In case you host MCT and made it available to the public, please have look at the privacy policy and license information and adjust those to your needs. In addition, you are not allowed to drop the disclaimer about Wizards and the usage related to the Fan Content Policy._
