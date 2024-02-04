@@ -6,6 +6,7 @@ using MagicCardTracker.Pwa.Extensions;
 using MagicCardTracker.Pwa.Helpers;
 using MagicCardTracker.Pwa.Notifications;
 using MagicCardTracker.Pwa.Profiles;
+using MagicCardTracker.Pwa.Services.Dialogs;
 using MagicCardTracker.Pwa.Settings;
 using MagicCardTracker.Pwa.Storage;
 using MagicCardTracker.ScryfallClient;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<ICardLibraryPersister, LocalStorageCardLibrary>();
 builder.Services.AddScoped<ICardLibrary, SingleUserCardLibrary>();
 builder.Services.AddScoped<IObjectCache, LocalStorageCache>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IDialogService, DialogService>();
 
 var host = builder.Build();
 var settings = host.Services.GetService<IUserSettings>();

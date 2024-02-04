@@ -1,16 +1,13 @@
-// For format details, see https://aka.ms/devcontainer.json. 
-// For config options, see the README at: 
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.3/containers/dotnet
 {
 	"name": "Magic Card Tracker (.NET 8)",
 	"image": "mcr.microsoft.com/vscode/devcontainers/dotnet:8.0",
-	"settings": {},
-	"extensions": [
-		"ms-dotnettools.csharp",
-		"ms-dotnettools.blazorwasm-companion",
-		"fernandoescolar.vscode-solution-explorer",
-		"formulahendry.dotnet-test-explorer"
-	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csdevkit"
+			]
+		}
+	},
 	"forwardPorts": [5000, 5001],
 	"postCreateCommand": "dotnet restore; dotnet dev-certs https",
 	"remoteUser": "vscode"

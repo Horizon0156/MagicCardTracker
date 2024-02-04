@@ -9,37 +9,38 @@
 @inject NavigationManager _navigationManager;
 @implements IDisposable;
 
-<div class="row">
-    <div class="col-12 lead d-flex justify-content-between">
-        <span>Sets</span>
-        
-        @if (_hasCards)
-        {
-            <span class="ms-2 action-link" @onclick="@ToggleShowAll"> @(_showAll ? "Show collected" : "Show all") </span>
-        }
-    </div>
+<div class="flex flex-col">
+    <label class="text-2xl font-bold">
+        Sets
+    </label>
+    @if(_showAll) 
+    {
+        <button class="self-start mt-4 text-purple-400 hover:underline" @onclick="@ToggleShowAll"> Show collected </button>
+    }
+    @if(!_showAll) 
+    {
+        <button class="self-start mt-4 text-purple-400 hover:underline" @onclick="@ToggleShowAll"> Show all </button>
+    }
+    
 </div>
 
-@if (_majorSets != null && _collectedSets != null)
-{
-    @foreach (var set in _showAll 
+<div class="mt-4 flex flex-col gap-4">
+@foreach (var set in _showAll 
                 ? _majorSets
                 : _collectedSets)
-    {
-        <div class="row mt-2 selectable" @onclick="@(() => BrowseSet(set))">
-            <div class="col-12 d-flex bg-elevated content">
-                <img class="set-icon" src="@set.SetIconUrl" alt="@set.Code.ToUpper()"/>
-                <div class="ms-4 d-flex flex-column flex-grow-1">
-                    <span> @set.Name (@set.Code.ToUpper())</span>
-                    <span class="color-white-60">@set.NumberOfCollectedCards / @set.NumberOfCards collected</span>
-                    <div class="progress mt-1">
-                        <div class="progress-bar" role="progressbar" style="width: @(set.Completeness)%;"></div>
-                    </div>
+{
+    <div class="flex bg-neutral-700 cursor-pointer p-4 rounded-md" @onclick="@(() => BrowseSet(set))">
+        <img class="w-10 invert" src="@set.SetIconUrl" alt="@set.Code.ToUpper()"/>
+            <div class="ms-4 flex flex-col grow">
+                <span> @set.Name (@set.Code.ToUpper())</span>
+                <span class="text-sm text-neutral-400">@set.NumberOfCollectedCards / @set.NumberOfCards collected</span>
+                <div class="h-2 mt-1 bg-neutral-800 rounded-md">
+                    <div class="bg-purple-400 rounded-md h-2" role="progressbar" style="width: @(set.Completeness)%;"></div>
                 </div>
             </div>
-        </div>
-    }
+    </div>
 }
+</div>
 
 @code 
 {
@@ -49,9 +50,9 @@
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
-    private IEnumerable<Set>? _majorSets;
+    private IEnumerable<Set> _majorSets = Enumerable.Empty<Set>();
 
-    private IEnumerable<Set>? _collectedSets;
+    private IEnumerable<Set> _collectedSets = Enumerable.Empty<Set>();
 
 
     public void Dispose()
@@ -67,7 +68,7 @@
 
     private async Task LoadSetsAsync()
     {
-        var sets = await _mediator.Send(new GetSetsWithCollectionInfo(), _cts.Token);
+        var sets = await _mediator.Send(new GetSetsWithCollectionInfo(), _cts.Token) ?? Enumerable.Empty<Set>();
         _majorSets = sets.Where(s => s.IsCoreOrExpansionSet || s.NumberOfCollectedCards > 0);
         _collectedSets = sets.Where(s => s.NumberOfCollectedCards > 0);
         _hasCards = _collectedSets.Any();

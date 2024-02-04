@@ -1,27 +1,12 @@
 @using Contracts
-@inject IUserSettings _settings
+@inject IDialogService _dialogService
 
 @if (Cards != null && Cards.Any())
 {
-    <div class="row">
+    <div class="grid grid-cols-5 gap-4">
     @foreach (var card in Cards)
     {   
-        <div class="col-md-3 col-sm-4 col-6 mt-2 position-relative">
-            @if (ShowCountBadge && card is CollectedCard collectableCard)
-            {
-                <div class="mb-2 justify-content-center d-flex">
-                        <span class="badge rounded-pill bg-bad">
-                            @collectableCard.TotalCount
-                        </span>
-
-                        <span class="ms-2 badge rounded-pill bg-good">
-                            @collectableCard.Prices?.ToString(_settings.Currency, collectableCard.FoilCount > 0)
-                        </span>
-                    </div>
-            }
-            <img class="magic-card" src="@(card.ImageUrl)"
-        @onclick="@(async () => await OpenDetailsAsync(card))" />
-        </div>
+        <img class="rounded-2xl cursor-pointer" src="@(card.ImageUrl)" @onclick="() => OpenDetails(card)" />
     }
     </div>
 } 
@@ -29,8 +14,6 @@ else
 {
     @ChildContent
 }
-
-<CardOverlay @ref="_cardOverlay"></CardOverlay>
 
 @code
 {
@@ -43,15 +26,8 @@ else
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    private CardOverlay? _cardOverlay;
-
-    private Task OpenDetailsAsync(Card card)
+    private void OpenDetails(Card card)
     {
-        if (_cardOverlay == null)
-        {
-            return Task.CompletedTask;
-        }
-        
-        return _cardOverlay.OpenAsync(card);
+        _dialogService.ShowDialog<CardDetailsDialog>("Card", card);
     }
 }

@@ -94,7 +94,7 @@ namespace MagicCardTracker.Contracts
                 ? Prices.CalculateValue(currency, isFoilCard: true)
                 : 0;
 
-            return Math.Max(standardValue, foilValue);
+            return Math.Round(Math.Max(standardValue, foilValue), 2);
         }
 
         /// <summary>

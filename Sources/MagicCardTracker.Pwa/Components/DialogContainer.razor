@@ -1,0 +1,44 @@
+@implements IDisposable
+@inject IDialogService _dialogService
+
+@if (_dialogType != null)
+{
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center">
+        <div class="mt-8">
+            <DynamicComponent Type="_dialogType" Parameters="_parameters"></DynamicComponent>
+        </div>
+    </div>
+}
+
+@code
+{
+    private Type? _dialogType;
+    private Dictionary<string, object> _parameters = [];
+
+    protected override Task OnInitializedAsync()
+    {
+        _dialogService.CloseRequested += CloseDialog;
+        _dialogService.DialogRequested += ShowDialog;
+
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        _dialogService.CloseRequested -= CloseDialog;
+        _dialogService.DialogRequested -= ShowDialog;
+    }
+
+    private void CloseDialog(object? sender, EventArgs e)
+    {
+        _dialogType = null;
+        StateHasChanged();
+    }
+
+    private void ShowDialog(object? sender, DialogMetadata dialogMetadata)
+    {
+        _dialogType = dialogMetadata.DialogType;
+        _parameters = dialogMetadata.Parameters;
+        StateHasChanged();
+    }
+}

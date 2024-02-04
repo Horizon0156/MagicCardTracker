@@ -8,30 +8,22 @@
 @inject IMediator _mediator
 @implements IDisposable
 
-<div class="row">
-    <div class="col-12 lead d-flex justify-content-between">
-        <span>Search results</span>
-    </div>
+<div class="block">
+    <label class="text-2xl font-bold">
+        Search for '@Query'
+    </label>
+    <label class="block text-sm text-neutral-400">@(_searchResult?.NumberOfMatchedCards.ToString() ?? "-") cards</label>
 </div>
 
-@if (_cachedCards != null)
-{
-    <CardDisplay Cards="@_cachedCards">
-        <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
-            Phew... Sorry, there was no card that matches your search criteria
-        </div>
-    </CardDisplay>
+<div class="mt-4">
+    <CardDisplay Cards="@_cachedCards" />
+</div>
 
-    @if (_searchResult?.HasMoreResults ?? false)
-    {
-        <div class="row">
-            <div class="col-12">
-                <div class="content text-center">
-                    <span class="action-link" @onclick="@LoadMoreAsync"> Show more... </span>
-                </div>
-            </div>
-        </div>
-    }
+@if (_searchResult?.HasMoreResults ?? false)
+{
+    <div class="mt-4 text-center">
+        <span class="action-link" @onclick="@LoadMoreAsync"> Show more... </span>
+    </div>
 }
 
 @code {

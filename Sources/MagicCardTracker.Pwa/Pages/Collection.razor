@@ -8,144 +8,21 @@
 @inject CollectionSettings _settings
 @implements IDisposable
 
-<div class="row">
-    <div class="col-12 lead d-flex justify-content-between">
-        <span>Collection</span>
-        <div>
-            <span class="me-4 action-link" @onclick="@ShowFilter">Filter</span>
-            <a href="collection/quick-collect"> Quick Collect</a>
-        </div>
-    </div>
+<div class="block">
+    <label class="text-2xl font-bold">
+        Collection
+    </label>
+    <label class="block text-sm text-neutral-400">@_filteredCollection.Count() cards</label>
 </div>
 
-<div class="side-panel shadow @(_showFilter ? "show" : null)">
-    <div class="d-flex flex-column content bg-elevated h-100">
-        <span class="lead">Filter</span>
-        <div class="mt-4">
-            <label> Set </label>
-            <input class="form-control w-100" maxlength="4" @bind="SetCode" />
-        </div>
-        <div class="mt-4">
-            <label> Color </label>
-            <div class="d-flex justify-content-evenly">
-                <span class="text-black color-indicator selectable lead @(_filteredColors.Contains("B") ? "selected" : null)" @onclick="@(() => SetColorFilter("B"))">
-                    <i class="bi bi-circle-fill"></i>
-                </span>
-                <span class="text-white ms-2 color-indicator selectable lead @(_filteredColors.Contains("W") ? "selected" : null)" @onclick="@(() => SetColorFilter("W"))">
-                    <i class="bi bi-circle-fill"></i>
-                    </span>
-                <span class="text-green ms-2 color-indicator selectable lead @(_filteredColors.Contains("G") ? "selected" : null)" @onclick="@(() => SetColorFilter("G"))">
-                    <i class="bi bi-circle-fill"></i>
-                    </span>
-                <span class="text-blue ms-2 color-indicator selectable lead @(_filteredColors.Contains("U") ? "selected" : null)" @onclick="@(() => SetColorFilter("U"))">
-                    <i class="bi bi-circle-fill"></i>
-                    </span>
-                <span class="text-red ms-2 color-indicator selectable lead @(_filteredColors.Contains("R") ? "selected" : null)" @onclick="@(() => SetColorFilter("R"))">
-                    <i class="bi bi-circle-fill"></i>
-                    </span>
-            </div>
-        </div>
-        <div class="mt-4">
-            <label> Type </label>
-            <div class="mt-2 d-flex text-center small">
-                <span class="p-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Creature) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Creature))">
-                      Creature
-                </span>
-                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Planeswalker) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Planeswalker))">
-                      Planeswalker
-                </span>
-                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Enchantment) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Enchantment))">
-                      Enchantment
-                </span>
-                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Instant) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Instant))">
-                      Instant
-                </span>
-            </div>
-            <div class="mt-1 d-flex text-center small">
-                <span class="p-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Sorcery) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Sorcery))">
-                      Sorcery
-                </span>
-                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Artifact) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Artifact))">
-                      Artifact
-                </span>
-                <span class="p-1 ms-1 col text-truncate selectable @(_filteredCardTypes.Contains(CardType.Land) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetCardType(CardType.Land))">
-                      Land
-                </span>
-            </div>
-        </div>
-        <div class=" mt-4">
-            <label>Legalities</label>
-            <div class="mt-2 d-flex text-center small">
-                <span class="p-1 col text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Standard) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Standard))">
-                      Standard
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Pioneer) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Pioneer))">
-                      Pioneer
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Modern) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Modern))">
-                      Modern
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Legacy) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Legacy))">
-                      Legacy
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Vintage) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Vintage))">
-                      Vintage
-                </span>
-            </div>
-            <div class="mt-1 d-flex text-center small">
-                <span class="p-1 col text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Brawl) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Brawl))">
-                      Brawl
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Historic) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Historic))">
-                      Historic
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Pauper) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Pauper))">
-                      Pauper
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Penny) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Penny))">
-                      Penny
-                </span>
-                <span class="p-1 ms-1 col  text-truncate selectable @(_filteredLegalities.HasFlag(Legality.Commander) ? "bg-good" : "bg-bad")" 
-                      @onclick="@(() => SetLegalityFilter(Legality.Commander))">
-                      Commander
-                </span>
-            </div>
-        </div>
-        <button class="btn btn-primary mt-4" @onclick="@Filter"> Filter </button>
-        <button class="btn btn-outline-primary mt-2" @onclick="@CancelFilter"> Cancel </button>
-    </div>
+<div class="mt-4">
+    <CardDisplay Cards="@_loadedCards" />
 </div>
-
-<CardDisplay Cards="@_loadedCards">
-    <div class="color-white-60 text-center flex-grow-1 d-flex justify-content-center align-items-center lead">
-        Hell, no... Looks like you don't have any cards in your collection
-    </div>
-</CardDisplay>
 
 @if (_hasMore)
 {
-    <div class="row">
-        <div class="col-12">
-            <div class="content text-center">
-                <span class="action-link" @onclick="@ShowMore"> Show more... </span>
-            </div>
-        </div>
+    <div class="mt-4 text-center">
+        <span class="action-link" @onclick="@ShowMore"> Show more... </span>
     </div>
 }
 

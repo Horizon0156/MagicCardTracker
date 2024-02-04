@@ -1,46 +1,46 @@
 ﻿@using System.Threading
+@using MagicCardTracker.Pwa.Dialogs
 @using MagicCardTracker.Pwa.Helpers
 @inject NavigationManager _navigationManager
 @inject IBrowserTools _browserTools
+@inject IDialogService _dialogService
 
-<nav class="navbar navbar-dark navbar-expand-lg">
-
-    <div class="container-fluid">
-        <div clas="navbar-brand">
-            <a href=""> 
-            <img class="img-fluid" src="MCT_Logo_Wide.png" style="height:40px" />
-            </a>
-        </div>
-        <button class="navbar-toggler border-0 shadow-none" @onclick="ToggleNavMenu">
-            <i class="bi bi-list"></i>
-        </button>
-        <div class="@_navbarClass navbar-collapse">
-            <div class="flex-grow-1 d-flex align-items-center mx-4">
-                <i class="bi bi-search"></i>
-                <form class="form flex-grow-1" @onsubmit="@NavigateToSearch">
-                    <input class="form-control border-0" type="search" @bind="_queryString"
-                        placeholder="Search for Magic cards...">
-                </form>
-            </div>
-            <ul class="navbar-nav mt-2 mt-lg-0 ms-4 ms-lg-0">
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="/collection" @onclick="CloseNavMenu">
-                        <i class="bi bi-book me-2 me-lg-1"></i> Collection
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="/sets" @onclick="CloseNavMenu">
-                        <i class="bi bi-collection me-2 me-lg-1"></i> Sets
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="/profile" @onclick="CloseNavMenu">
-                        <i class="bi bi-pie-chart-fill me-2 me-lg-1"></i> Profile
-                    </NavLink>
-                </li>
-            </ul>
-        </div>
+<nav class="bg-neutral-800">
+  <div class="flex flex-wrap items-center justify-between mx-auto px-4 py-2 border-b-2 border-neutral-700">
+    <img src="MCT_Logo_Wide.png" class="h-10" alt="Magic Card Tracker" />
+    <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+    <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+      <ul class="font-medium flex flex-col p-4 md:p-0 md:mt-0 mt-4 md:flex-row md:space-x-8">
+        <li>
+            <NavLink class="block py-2 px-3 hover:text-purple-400" href="/collection" @onclick="CloseNavMenu">
+                Collection
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="block py-2 px-3 hover:text-purple-400" href="/sets" @onclick="CloseNavMenu">
+                Sets
+            </NavLink>
+        </li>
+        @* <li>
+            <NavLink class="block py-2 px-3 hover:text-purple-400" href="/wishlist" @onclick="CloseNavMenu">
+                Wishlist
+            </NavLink>
+        </li> *@
+        <li>
+            <button class="block py-2 px-3 hover:text-purple-400" @onclick="@OpenSearchDialog">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </button>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
 
 @code
@@ -63,6 +63,11 @@
         _navigationManager.LocationChanged += ScrollToTop;
 
         return Task.CompletedTask;
+    }
+
+    private void OpenSearchDialog()
+    {
+        _dialogService.ShowDialog<SearchDialog>();
     }
 
     private void NavigateToSearch()

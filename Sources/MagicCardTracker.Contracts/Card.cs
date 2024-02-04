@@ -56,7 +56,7 @@ namespace MagicCardTracker.Contracts
         /// <summary>
         ///     Gets or sets the language code of this card.
         /// </summary>
-        public string LanguageCode { get; }
+        public string LanguageCode { get; set; }
 
         /// <summary>
         ///     Gets or sets the image url of this card.

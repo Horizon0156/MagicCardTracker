@@ -52,7 +52,7 @@ The application is build on top of the following frameworks / libraries. Without
 * [.NET8 / ASP.NET Core Blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor) 
 * [Blazored/LocalStorage](https://github.com/Blazored/LocalStorage) for accessing the local storage
 * [ChartJs.Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) for the charts
-* [Bootstrap 5](https://getbootstrap.com/docs/5.0/getting-started/introduction/) for the grid layout and CSS helper classes
+* [tailwindcss](https://tailwindcss.com/)
 * [Satans Minions Font](https://www.dafont.com/satans-minions.font) for the typings in the application's logo
 * [AutoMapper](https://automapper.org/), [NSubstitue](https://nsubstitute.github.io/), [XUnit](https://xunit.net/), [MediatR](https://github.com/jbogard/MediatR) for unit testing, DTOs and separation of concerns.
 * [Scryfall](https://scryfall.com/) for the card database, imaginary and pricing information

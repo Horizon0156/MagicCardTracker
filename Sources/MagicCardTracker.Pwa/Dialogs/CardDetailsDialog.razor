@@ -1,0 +1,115 @@
+﻿@using MediatR
+@using MagicCardTracker.Contracts
+@using MagicCardTracker.Pwa.Commands
+@using MagicCardTracker.Pwa.Queries
+@using MagicCardTracker.Pwa.Services.Dialogs
+
+@inject IDialogService _dialogService
+@inject IMediator _mediator
+
+<div class="bg-neutral-800 w-[800px] p-4 rounded-md" @onkeydown="CloseOnEscape">
+    <div class="text-xl leading-none flex justify-between content-center">
+        <span> @_card?.Name </span>
+        <svg @onclick="@Close" class="ms-4 w-6 h-6 cursor-pointer hover:stroke-purple-400 transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+    </div>
+    <hr class="my-4 -mx-4 border-neutral-700">
+    <div class="flex gap-4">
+        <div class="text-center">
+            <img class="rounded-2xl max-w-64" src="@_card!.ImageUrl"/>
+            <a href="https://scryfall.com/card/@_card.SetCode/@_card.Number" class="mt-4 border transition-colors border-purple-400 text-purple-400 hover:text-white rounded-md w-full px-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                <span class="ms-2">Buy on Cardmarket</span>
+            </a>
+            <a href="https://scryfall.com/card/@_card.SetCode/@_card.Number" target="_blank" class="mt-4 border transition-colors border-purple-400 text-purple-400 hover:text-white rounded-md w-full px-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+                <span class="ms-2">Show on Scryfall</span>
+            </a>
+            @* <button class="mt-4 border transition-colors border-purple-400 text-purple-400 hover:text-white rounded-md w-full px-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                </svg>
+                <span class="ms-2">Add to Wishlist</span>
+            </button> *@
+        </div>
+        <div class="grow flex flex-col">
+            <div class="block">
+                <label class="block">Shadows over Inistrad (@_card.SetCode.ToUpper()) <span class="float-end">@_card.GetSingleCardValue(Currency.Euro) €</span></label>
+                <label class="block text-sm text-neutral-400">#@_card!.Number, @_card.Rarity.ToString(), EDH Rank: 12</label>
+            </div>
+            <hr class="my-2 border-neutral-700">
+            <div class="flex">
+                <div class="block">
+                    <label>Quantity</label>
+                    <input class="w-24" type="number" min="0" @bind="@_card!.Count"/>
+                </div>
+                <div class="block grow ms-4">
+                    <label>Language</label>
+                    <select class="w-full" @bind="@_card!.LanguageCode">
+                        <option value="en">English</option>
+                        <option value="de">German</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex mt-2">
+                <div class="block grow">
+                    <label>Finish</label>
+                    <select class="w-full">
+                        <option>Non-Foil</option>
+                        <option>Foil</option>
+                    </select>
+                </div>
+                <div class="block grow ms-4">
+                    <label>Binder</label>
+                    <select class="w-full">
+                        <option>None</option>
+                    </select>
+                </div>
+            </div>
+            <div class="block mt-2">
+                <span>Notes</span>
+                <textarea rows="3" class="w-full"></textarea>
+            </div>
+            <hr class="my-4 border-neutral-700">
+            <button class="self-end mt-auto transition-colors bg-purple-600 hover:bg-purple-700 rounded-md min-w-24 p-2" @onclick="@UpdateCollection"> Save </button>
+        </div>        
+    </div>
+</div>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public Card? Card { get; set; }
+
+    private CollectedCard? _card;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Card == null) throw new ArgumentNullException(nameof(Card));
+
+        _card = Card is CollectedCard
+            ? Card as CollectedCard
+            : await _mediator.Send(new GetCollectableCard(Card));
+    }
+
+    private async Task UpdateCollection()
+    {
+        await _mediator.Send(new AddCard(_card!));
+        Close();
+    }
+
+    private void Close()
+    {
+        _dialogService.CloseDialog();
+    }
+
+    private void CloseOnEscape(KeyboardEventArgs e)
+    {
+        Console.WriteLine(e);
+    }
+}

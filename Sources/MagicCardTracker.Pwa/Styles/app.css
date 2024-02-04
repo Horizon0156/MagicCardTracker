@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    input,
+    select,
+    textarea {
+        @apply block py-1 bg-black rounded-md border-transparent focus:border-purple-600 focus:ring-0 !important;
+    }
+}
+
+.active {
+
+    @apply text-purple-400;
+}

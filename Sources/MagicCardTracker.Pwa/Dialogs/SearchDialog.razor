@@ -1,0 +1,52 @@
+﻿@using MediatR
+@using MagicCardTracker.Contracts
+@using MagicCardTracker.Pwa.Commands
+@using MagicCardTracker.Pwa.Queries
+@using MagicCardTracker.Pwa.Services.Dialogs
+
+@inject IDialogService _dialogService
+@inject NavigationManager _navigationManager
+
+<div class="bg-neutral-800 w-[800px] p-4 rounded-md flex flex-col">
+    <div class="text-xl leading-none flex justify-between content-center">
+        <span> Search </span>
+        <svg @onclick="@Close" class="ms-4 w-6 h-6 cursor-pointer hover:stroke-purple-400 transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+    </div>
+    <hr class="my-4 -mx-4 border-neutral-700">
+    <form class="block w-full" @onsubmit="@Search">
+        <input class="w-full" type="text" @ref="_searchBox" @bind="@_searchText"/>
+        <label class="text-sm text-neutral-400">
+            Pro tip: This search supports the <a class="text-purple-400 hover:underline" target="_blank" href="https://scryfall.com/docs/syntax">Scryfall syntax</a>
+        </label>
+    </form>   
+    <hr class="my-4 -mx-4 border-neutral-700">
+    <button class="self-end transition-colors border border-purple-400 text-purple-400 hover:text-white rounded-md min-w-24 px-2 py-1" @onclick="@Close"> Cancel </button>
+</div>
+
+@code {
+
+    private ElementReference _searchBox;
+    private string? _searchText;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await _searchBox.FocusAsync();
+    }
+
+
+    private void Search()
+    {
+        if (!string.IsNullOrEmpty(_searchText))
+        {
+            _navigationManager.NavigateTo($"/search/{_searchText}");
+            Close();
+        }
+    }
+
+    private void Close()
+    {
+        _dialogService.CloseDialog();
+    }
+}
